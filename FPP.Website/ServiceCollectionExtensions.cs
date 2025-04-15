@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
 using FPP.Services.Interfaces;
 using FPP.Services.Implement;
+using FPP.Core.Models;
 
 public static class ServiceCollectionExtensions
 {
@@ -77,6 +78,9 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IBaseRepository, BaseRepository>();
         services.AddSingleton<IDynamicRepository, DynamicRepository>();
         services.AddSingleton<ILogger, Logger>();
+        var amazonConfig = configuration.GetSection("AmazonStorageConfig").Get<AmazonStorageConfig>();
+        services.AddSingleton(amazonConfig);
+        services.AddSingleton<IMinIOService, MinIOService>();
 
         services.AddSingleton<IUploadService, UploadService>();
         return services;
