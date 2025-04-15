@@ -1,8 +1,6 @@
-﻿using Fanex.Data.Repository;
-using FPP.Core.Models;
+﻿using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Criteria;
-using FPP.Models;
 using FPP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -42,18 +40,13 @@ namespace FPP.Services.Implement
             var criteria = new ImportCostExpenseCriteria
             {
                 BUId = buId.Value,
+                FileName = file.FileName,
+                SavedFileName = savedFileName,
                 TermListJson = JsonConvert.SerializeObject(items),
             };
 
             commandResult = await baseService.ExecuteNonQueryAsync(criteria);
             return commandResult;
-        }
-
-        public async Task<IEnumerable<CostExpenseHistory>> GetUploadCostExpenseHistoryAsync()
-        {
-            var criteria = new GetUploadCostExpenseHistoryCriteria();
-
-            return await baseService.GetDataAsync<CostExpenseHistory>(criteria);
         }
 
         private int? ExtractBUId(ExcelWorksheet worksheet)

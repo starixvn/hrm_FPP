@@ -8,7 +8,7 @@ public class ImportCostExpenseCriteria : CriteriaBase
 
     public string FileName { get; set; }
 
-    public string UrlFileName { get; set; }
+    public string SavedFileName { get; set; }
 
     public int CreatedBy { get; set; }
 
