@@ -1,7 +1,7 @@
-﻿const merge = require('webpack-merge');
+﻿const { merge } = require('webpack-merge');
 const utils = require('./utils');
 const baseWebpackConfigGenerator = require('./webpack.base.conf');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const pathConfig = require('../config/path');
 const environment = 'pro';
 const baseConfigs = baseWebpackConfigGenerator(environment);
@@ -19,14 +19,18 @@ module.exports = merge(baseConfigs,
             maxAssetSize: 512000
         },
         plugins: [
-            new CleanWebpackPlugin([`${jsRootPath}/`], {
-                root: process.cwd()
-            }),
-            new CleanWebpackPlugin([`${cssRootPath}/*.css`, `${cssRootPath}/*.map`, `${cssRootPath}/*.js`], {
-                root: process.cwd()
-            }),
-            new CleanWebpackPlugin([`${cssRootPath}/pages/*/*.css`, `${cssRootPath}/pages/*/*.js`, `${cssRootPath}/pages/*/*.map`], {
-                root: process.cwd()
+            new CleanWebpackPlugin({
+                cleanOnceBeforeBuildPatterns: [
+                    `${jsRootPath}/`,
+                    `${cssRootPath}/*.css`,
+                    `${cssRootPath}/*.map`,
+                    `${cssRootPath}/*.js`,
+                    `${cssRootPath}/pages/*/*.css`,
+                    `${cssRootPath}/pages/*/*.js`,
+                    `${cssRootPath}/pages/*/*.map`
+                ],
+                root: process.cwd(),
+                dangerouslyAllowCleanPatternsOutsideProject: true
             })
         ]
     },
