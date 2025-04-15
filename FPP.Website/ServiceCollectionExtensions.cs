@@ -1,11 +1,16 @@
 ﻿namespace FPP.Website;
 
 using System;
+using Core.Repositories;
+using Core.Services;
 using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
 using Fanex.Logging;
-using Core.Repositories;
-using Core.Services;
+using GO.UserControl.Client.AspNetCore;
+using GO.UserControl.Client.AspNetCore.Session;
+using GO.UserControl.Client.Core;
+using GO.UserControl.Client.Core.Services;
+using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
@@ -74,6 +79,15 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDIServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+        services.AddSingleton<IUserControlSettings>(new UserControlSettings(configuration));
+        services.AddSingleton<IUserControlSession, UserControlSession>();
+        services.AddSingleton<IAuthService, AuthService>();
+        services.AddSingleton<ICryptoService, CryptoService>();
+        services.AddSingleton<IUserService, UserService>();
+        services.AddSingleton<IRoleService, RoleService>();
+        services.AddSingleton<IFunctionService, FunctionService>();
+
         services.AddSingleton<IBaseService, BaseService>();
         services.AddSingleton<IBaseRepository, BaseRepository>();
         services.AddSingleton<IDynamicRepository, DynamicRepository>();

@@ -133,6 +133,10 @@ body {
     padding: 0.35em 0.65em;
 }
 
+.validation-summary-errors ul {
+    margin-bottom: 0;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
     width: 6px;
