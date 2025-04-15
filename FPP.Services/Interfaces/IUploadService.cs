@@ -4,6 +4,6 @@ namespace FPP.Services.Interfaces
 {
     public interface IUploadService
     {
-        Task<bool> ImportBUCostExcelAsync(IFormFile file);
+        Task<bool> ImportCostExpenseExcelAsync(IFormFile file);
     }
 }

@@ -15,7 +15,7 @@ namespace FPP.Website.Controllers
                 return BadRequest("No file uploaded.");
             }
 
-            var res = await uploadService.ImportBUCostExcelAsync(file);
+            var res = await uploadService.ImportCostExpenseExcelAsync(file);
             return new JsonResult(res);
         }
     }

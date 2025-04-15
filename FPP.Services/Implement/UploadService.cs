@@ -16,7 +16,7 @@ namespace FPP.Services.Implement
         private const int BuCellRow = 1;
         private const int BuCellCol = 2;
 
-        public async Task<bool> ImportBUCostExcelAsync(IFormFile file)
+        public async Task<bool> ImportCostExpenseExcelAsync(IFormFile file)
         {
             await using var stream = file.OpenReadStream();
             using var package = new ExcelPackage(stream);
