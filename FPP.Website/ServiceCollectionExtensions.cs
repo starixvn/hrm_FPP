@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+using FPP.Services.Interfaces;
+using FPP.Services.Implement;
 
 public static class ServiceCollectionExtensions
 {
@@ -76,6 +78,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IDynamicRepository, DynamicRepository>();
         services.AddSingleton<ILogger, Logger>();
 
+        services.AddSingleton<IUploadService, UploadService>();
         return services;
     }
 }
