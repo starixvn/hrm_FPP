@@ -17,10 +17,11 @@ namespace FPP.Website.Controllers
                 return BadRequest("No file uploaded.");
             }
 
-            var path = $"{MinIOFolderConstants.BUCostAndExpense}/{file.FileName}";
+            var fileName = $"{file.FileName}_{DateTime.Now:yyyyMMddHHmmss}";
+            var path = $"{MinIOFolderConstants.BUCostAndExpense}/{fileName}";
             await minIOService.UploadFileAsync(file, Bucket.FPP, path);
 
-            var res = await uploadService.ImportCostExpenseExcelAsync(file);
+            var res = await uploadService.ImportCostExpenseExcelAsync(file, fileName);
             return new JsonResult(res);
         }
     }

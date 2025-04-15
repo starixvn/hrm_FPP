@@ -6,7 +6,7 @@ namespace FPP.Services.Interfaces
 {
     public interface IUploadService
     {
-        Task<CommandResult> ImportCostExpenseExcelAsync(IFormFile file);
+        Task<CommandResult> ImportCostExpenseExcelAsync(IFormFile file, string savedFileName);
 
         Task<IEnumerable<CostExpenseHistory>> GetUploadCostExpenseHistoryAsync();
     }

@@ -2,22 +2,38 @@ using FPP.Core.Constants;
 using FPP.Core.Criteria;
 using FPP.Core.Models;
 using FPP.Core.Services;
-using Microsoft.AspNetCore.Authorization;
+using FPP.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers;
 
-public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService baseService) : Controller
+public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService baseService, IUploadService uploadService) : Controller
 {
-    [HttpGet]
-    public async Task<IActionResult> DownloadExcel(string fileName)
+    [HttpPost]
+    public async Task<IActionResult> UploadExcel(IFormFile file)
     {
-        if (string.IsNullOrEmpty(fileName))
+        if (file == null || file.Length == 0)
+        {
+            return BadRequest("No file uploaded.");
+        }
+
+        var fileName = $"{file.FileName}_{DateTime.Now:yyyyMMddHHmmss}";
+        var path = $"{MinIOFolderConstants.BUCostAndExpense}/{fileName}";
+        await minIOService.UploadFileAsync(file, Bucket.FPP, path);
+
+        var res = await uploadService.ImportCostExpenseExcelAsync(file, fileName);
+        return new JsonResult(res);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DownloadExcel(string savedFileName)
+    {
+        if (string.IsNullOrEmpty(savedFileName))
         {
             return BadRequest("File name is required.");
         }
 
-        var path = $"{MinIOFolderConstants.BUCostAndExpense}/{fileName}";
+        var path = $"{MinIOFolderConstants.BUCostAndExpense}/{savedFileName}";
         var filePath = await minIOService.GetFilePath(Bucket.FPP, path);
 
         return Redirect(filePath);
