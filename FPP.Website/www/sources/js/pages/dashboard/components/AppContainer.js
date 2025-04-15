@@ -159,7 +159,6 @@ const AppContainer = () => {
                     columns={columns} 
                     dataSource={generateData()}
                     pagination={false}
-                    scroll={{ x: 1500, y: 600 }}
                     rowClassName={(record) => {
                         if (record.isSection) return 'section-row';
                         if (record.isTotal) return 'total-row';
