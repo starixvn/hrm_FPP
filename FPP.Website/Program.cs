@@ -1,4 +1,5 @@
 using Fanex.Data.SqlServer;
+using Fanex.Logging.Sentry.RavenClient;
 using FPP.Website;
 using FPP.Website.Middlewares;
 using Newtonsoft.Json;
@@ -16,8 +17,8 @@ services.AddControllersWithViews()
         options.SerializerSettings.DateFormatString = "dd MMM, yyyy HH:mm:ss";
     });
 
-
-//services.AddFanexSql(configuration);
+//services.AddFanexLogSentry(configuration);
+services.AddFanexSql(configuration);
 services.AddDIServices(configuration);
 
 var app = builder.Build();
