@@ -11,4 +11,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FPP.Core\FPP.Core.csproj" />
+    <ProjectReference Include="..\FPP.Criteria\FPP.Criteria.csproj" />
+    <ProjectReference Include="..\FPP.Models\FPP.Models.csproj" />
+  </ItemGroup>
+
 </Project>

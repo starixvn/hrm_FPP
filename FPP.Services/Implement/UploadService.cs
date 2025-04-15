@@ -1,10 +1,17 @@
-﻿using FPP.Services.Interfaces;
+﻿using Fanex.Data.Repository;
+using FPP.Core.Models;
+using FPP.Core.Services;
+using FPP.Criteria;
+using FPP.Models;
+using FPP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using OfficeOpenXml;
 
 namespace FPP.Services.Implement
 {
-    public class UploadService : IUploadService
+    public class UploadService(
+        IBaseService baseService) : IUploadService
     {
         private const int SheetIndex = 4;
         private const int StartItemRow = 8;
@@ -16,8 +23,9 @@ namespace FPP.Services.Implement
         private const int BuCellRow = 1;
         private const int BuCellCol = 2;
 
-        public async Task<bool> ImportCostExpenseExcelAsync(IFormFile file)
+        public async Task<CommandResult> ImportCostExpenseExcelAsync(IFormFile file)
         {
+            var commandResult = new CommandResult();
             await using var stream = file.OpenReadStream();
             using var package = new ExcelPackage(stream);
             var worksheet = package.Workbook.Worksheets[SheetIndex];
@@ -25,13 +33,27 @@ namespace FPP.Services.Implement
             var buId = ExtractBUId(worksheet);
             if (buId == null)
             {
-                return false;
+                return commandResult;
             }
 
             var months = ExtractMonths(worksheet);
-            var result = ExtractExpenses(worksheet, buId.Value, months);
+            var items = ExtractExpenses(worksheet, months);
 
-            return true;
+            var criteria = new ImportCostExpenseCriteria
+            {
+                BUId = buId.Value,
+                TermListJson = JsonConvert.SerializeObject(items),
+            };
+
+            commandResult = await baseService.ExecuteNonQueryAsync(criteria);
+            return commandResult;
+        }
+
+        public async Task<IEnumerable<CostExpenseHistory>> GetUploadCostExpenseHistoryAsync()
+        {
+            var criteria = new GetUploadCostExpenseHistoryCriteria();
+
+            return await baseService.GetDataAsync<CostExpenseHistory>(criteria);
         }
 
         private int? ExtractBUId(ExcelWorksheet worksheet)
@@ -69,24 +91,9 @@ namespace FPP.Services.Implement
             return months;
         }
 
-        private List<ExtractedExpense> ExtractExpenses(ExcelWorksheet worksheet, int buId, List<DateTime> months)
+        private List<TermItem> ExtractExpenses(ExcelWorksheet worksheet, List<DateTime> months)
         {
-            var result = new List<ExtractedExpense>();
-            var itemsBuffer = new List<string>();
-            var firstItemRow = StartItemRow;
-
-            var categoryList = new HashSet<string>
-        {
-            "Communication Exp",
-            "Cost of Sales Exp",
-            "Establishment Exp",
-            "Personnel Exp",
-            "Marketing Exp",
-            "General & Admin Exp",
-            "Finance Exp",
-            "Tax Exp",
-            "Forex"
-        };
+            var result = new List<TermItem>();
 
             for (var row = StartItemRow; row <= worksheet.Dimension.End.Row; row++)
             {
@@ -95,50 +102,21 @@ namespace FPP.Services.Implement
                 {
                     continue;
                 }
-                if (!categoryList.Contains(cellText))
+                for (var i = 0; i < months.Count; i++)
                 {
-                    if (itemsBuffer.Count == 0)
-                    {
-                        firstItemRow = row;
-                    }
+                    var col = StartMonthCol + i;
+                    var value = worksheet.Cells[row, col].Text;
+                    var amount = decimal.TryParse(value, out var a) ? a : 0;
 
-                    itemsBuffer.Add(cellText);
-                    continue;
-                }
-                foreach (var itemName in itemsBuffer)
-                {
-                    var itemRow = firstItemRow + itemsBuffer.IndexOf(itemName);
-                    for (var i = 0; i < months.Count; i++)
+                    result.Add(new TermItem
                     {
-                        var col = StartMonthCol + i;
-                        var value = worksheet.Cells[itemRow, col].Text;
-                        var amount = decimal.TryParse(value, out var a) ? a : 0;
-
-                        result.Add(new ExtractedExpense
-                        {
-                            BUId = buId,
-                            Category = cellText,
-                            Item = itemName,
-                            Month = new DateTime(months[i].Year, months[i].Month, 1),
-                            Amount = amount
-                        });
-                    }
+                        TermName = cellText,
+                        Month = new DateTime(months[i].Year, months[i].Month, 1),
+                        Amount = amount
+                    });
                 }
-                itemsBuffer.Clear();
-                // TODO: handle summary if needed
             }
-
             return result;
-        }
-
-
-        public class ExtractedExpense
-        {
-            public int BUId { get; set; }
-            public string Category { get; set; }
-            public string Item { get; set; }
-            public DateTime Month { get; set; }
-            public decimal Amount { get; set; }
         }
     }
 }
