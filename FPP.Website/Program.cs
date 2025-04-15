@@ -1,6 +1,6 @@
-using Amazon.Runtime.Internal;
 using Fanex.Data.SqlServer;
 using FPP.Website;
+using FPP.Website.Middlewares;
 using Newtonsoft.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +15,7 @@ services.AddControllersWithViews()
         options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Unspecified;
         options.SerializerSettings.DateFormatString = "dd MMM, yyyy HH:mm:ss";
     });
+
 
 //services.AddFanexSql(configuration);
 services.AddDIServices(configuration);

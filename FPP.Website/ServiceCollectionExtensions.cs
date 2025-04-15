@@ -1,10 +1,9 @@
 ﻿
-
 namespace FPP.Website;
 
 using System;
 using Fanex.Data.Repository;
-using FPP.Core.Models;
+using Fanex.Logging;
 using FPP.Core.Repositories;
 using FPP.Core.Services;
 using Microsoft.Extensions.Configuration;
@@ -31,6 +30,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IBaseService, BaseService>();
         services.AddSingleton<IBaseRepository, BaseRepository>();
         services.AddSingleton<IDynamicRepository, DynamicRepository>();
+        services.AddSingleton<ILogger, Logger>();
 
 
         return services;
