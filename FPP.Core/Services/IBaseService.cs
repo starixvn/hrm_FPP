@@ -1,16 +1,15 @@
-﻿
-namespace FPP.Core.Services;
+﻿namespace FPP.Core.Services;
 
-using Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
+using Models;
 
 public interface IBaseService
 {
     Task<IEnumerable<T>> GetDataAsync<T>(ICriteria criteria);
 
-    Task<CommandResult> ExecuteNonQueryAsync(ICriteria command);
+    Task<CommandResult> ExecuteNonQueryAsync(BaseNonQueryCommand command);
 
     Task<T> GetDataEntityAsync<T>(ICriteria criteria);
 

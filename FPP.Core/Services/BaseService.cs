@@ -1,16 +1,11 @@
-﻿
-
-namespace FPP.Core.Services;
+﻿namespace FPP.Core.Services;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using Models;
-using Repositories;
 
-public class BaseService(
-    IDynamicRepository dynamicRepository,
-    IBaseRepository baseRepository) : IBaseService
+public class BaseService(IDynamicRepository dynamicRepository) : IBaseService
 {
     public async Task<IEnumerable<T>> GetDataAsync<T>(ICriteria criteria)
     {
@@ -23,12 +18,19 @@ public class BaseService(
         return new List<T>();
     }
 
-    public async Task<CommandResult> ExecuteNonQueryAsync(ICriteria command)
+    public async Task<CommandResult> ExecuteNonQueryAsync(BaseNonQueryCommand command)
     {
-        var commandResult = new CommandResult();
+        var commandResult = new CommandResult
+        {
+            Code = 1,
+            Message = "Invalid input data."
+        };
+
         if (command != null && command.IsValid())
         {
-            commandResult = await baseRepository.ExecuteNonQueryAsync(command);
+            await dynamicRepository.ExecuteAsync(command);
+            commandResult.Code = command.ErrCode;
+            commandResult.Message = command.ErrMsg;
         }
 
         return commandResult;

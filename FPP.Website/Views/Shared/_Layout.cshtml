@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PRIMER.</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/styles/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/styles/admin.css" asp-append-version="true" />
@@ -11,126 +11,13 @@
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <!-- Top Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container-fluid">
-            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand fw-bold ms-2" href="#">FPP</a>
-            
-            <div class="d-flex flex-grow-1 px-4">
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <input type="text" class="form-control border-start-0" placeholder="Search">
-                </div>
-            </div>
+    @await Component.InvokeAsync("Navbar")
+    @await Component.InvokeAsync("Sidebar")
 
-            <div class="d-flex align-items-center">
-                <button class="btn btn-link text-white">
-                    <i class="bi bi-fullscreen"></i>
-                </button>
-                <button class="btn btn-link text-white position-relative">
-                    <i class="bi bi-bell"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        5
-                    </span>
-                </button>
-                <div class="dropdown">
-                    <button class="btn btn-link text-white dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Logout</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <div class="d-flex">
-        <!-- Sidebar -->
-        <div class="sidebar bg-white border-end">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">
-                            <i class="bi bi-house-door me-2"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-grid me-2"></i> Apps
-                            <span class="badge bg-danger rounded-pill ms-2">5</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-window me-2"></i> Widgets
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-box me-2"></i> Material
-                            <span class="badge bg-primary rounded-pill ms-2">10</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-file-text me-2"></i> Forms
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-table me-2"></i> Datatable
-                            <span class="badge bg-secondary rounded-pill ms-2">3</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-cart me-2"></i> Ecommerce
-                            <span class="badge bg-danger rounded-pill ms-2">New</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-kanban me-2"></i> Taskboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-graph-up me-2"></i> Charts
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-geo-alt me-2"></i> Maps
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-arrows-move me-2"></i> Drag and Drop
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">
-                            <i class="bi bi-file-earmark me-2"></i> Pages
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="flex-grow-1 bg-light">
-            <div class="container-fluid p-4">
-                @RenderBody()
-            </div>
+    <!-- Main Content -->
+    <div class="flex-grow-1 bg-light">
+        <div class="container-fluid p-4">
+            @RenderBody()
         </div>
     </div>
 

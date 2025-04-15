@@ -1,11 +1,11 @@
 ﻿namespace FPP.Website;
 
 using System;
-using Core.Repositories;
 using Core.Services;
 using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
 using Fanex.Logging;
+using FPP.Core.Models;
 using GO.UserControl.Client.AspNetCore;
 using GO.UserControl.Client.AspNetCore.Session;
 using GO.UserControl.Client.Core;
@@ -15,10 +15,9 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Services.Implement;
+using Services.Interfaces;
 using StackExchange.Redis;
-using FPP.Services.Interfaces;
-using FPP.Services.Implement;
-using FPP.Core.Models;
 
 public static class ServiceCollectionExtensions
 {
@@ -79,6 +78,11 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection AddDIServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var amazonConfig = configuration.GetSection("AmazonStorageConfig").Get<AmazonStorageConfig>();
+        services.AddSingleton(amazonConfig);
+
+        services.AddSingleton<ILogger, Logger>();
+
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddSingleton<IUserControlSettings>(new UserControlSettings(configuration));
         services.AddSingleton<IUserControlSession, UserControlSession>();
@@ -88,15 +92,12 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IRoleService, RoleService>();
         services.AddSingleton<IFunctionService, FunctionService>();
 
-        services.AddSingleton<IBaseService, BaseService>();
-        services.AddSingleton<IBaseRepository, BaseRepository>();
         services.AddSingleton<IDynamicRepository, DynamicRepository>();
-        services.AddSingleton<ILogger, Logger>();
-        var amazonConfig = configuration.GetSection("AmazonStorageConfig").Get<AmazonStorageConfig>();
-        services.AddSingleton(amazonConfig);
-        services.AddSingleton<IMinIOService, MinIOService>();
 
+        services.AddSingleton<IBaseService, BaseService>();
+        services.AddSingleton<IMinIOService, MinIOService>();
         services.AddSingleton<IUploadService, UploadService>();
+
         return services;
     }
 }

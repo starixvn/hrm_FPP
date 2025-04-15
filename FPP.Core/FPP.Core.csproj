@@ -17,8 +17,4 @@
         <PackageReference Include="Fanex.Caching.Redis" Version="2.2.8" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Helpers\" />
-    </ItemGroup>
-
 </Project>

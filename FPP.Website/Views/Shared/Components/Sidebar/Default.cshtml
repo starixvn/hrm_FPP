@@ -1,0 +1,90 @@
+@using GO.UserControl.Client.Core.Models
+@model IList<MenuItem>
+
+@{
+    var controller = ViewContext.RouteData.Values["Controller"];
+    var area = ViewContext.RouteData.DataTokens["area"];
+    var url = $"/{area}/{controller}";
+}
+
+<div class="d-flex">
+    <div class="sidebar bg-white border-end">
+        <div class="position-sticky pt-3">
+            <ul class="nav flex-column">
+                @foreach (var item in Model)
+                {
+                    var classActive = url == item.URL ? "active" : "";
+                    <li class="nav-item">
+                        <a class="nav-link @classActive" href="@item.URL">
+                            <i class="bi me-2"></i> @item.MenuItemName
+                        </a>
+                    </li>
+                }
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="bi bi-house-door me-2"></i> Home
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-grid me-2"></i> Apps
+                        <span class="badge bg-danger rounded-pill ms-2">5</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-window me-2"></i> Widgets
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-box me-2"></i> Material
+                        <span class="badge bg-primary rounded-pill ms-2">10</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-file-text me-2"></i> Forms
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-table me-2"></i> Datatable
+                        <span class="badge bg-secondary rounded-pill ms-2">3</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-cart me-2"></i> Ecommerce
+                        <span class="badge bg-danger rounded-pill ms-2">New</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-kanban me-2"></i> Taskboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-graph-up me-2"></i> Charts
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-geo-alt me-2"></i> Maps
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-arrows-move me-2"></i> Drag and Drop
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-file-earmark me-2"></i> Pages
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

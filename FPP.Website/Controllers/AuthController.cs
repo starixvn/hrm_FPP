@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using FPP.Core.Constants;
 using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Models.Auth;
 using GO.UserControl.Client.Core.Services;
@@ -48,6 +49,7 @@ public class AuthController(
             session.OnUserId = loginResult.OnUserId;
             session.MenuItems = await userService.GetMenuItemAsync();
             session.Functions = await userService.GetFunctionPermissionAsync(session.SiteId, session.UserId);
+            session.Set(SessionKey.CurrentUser, await userService.GetByIdAsync(loginResult.UserId));
             await DoLoginAsync(loginResult.UserId);
 
             return RedirectToAction("Index", "Home");
@@ -83,7 +85,7 @@ public class AuthController(
         var forwardedFor = HttpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
         if (!string.IsNullOrEmpty(forwardedFor))
         {
-            return forwardedFor.Split(',')[0].Trim();
+            return forwardedFor.Split(',', StringSplitOptions.RemoveEmptyEntries)[0].Trim();
         }
 
         return HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString() ?? "Unknown";
