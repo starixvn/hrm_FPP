@@ -1,10 +1,12 @@
+using FPP.Core.Constants;
+using FPP.Core.Services;
 using FPP.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers
 {
-    public class UploadController(ILogger<UploadController> logger, IUploadService uploadService) : Controller
+    public class UploadController(IMinIOService minIOService, IUploadService uploadService) : Controller
     {
         [AllowAnonymous]
         [HttpPost]
@@ -14,6 +16,9 @@ namespace FPP.Website.Controllers
             {
                 return BadRequest("No file uploaded.");
             }
+
+            var path = $"{MinIOFolderConstants.BUCostAndExpense}/{file.FileName}";
+            await minIOService.UploadFileAsync(file, Bucket.FPP, path);
 
             var res = await uploadService.ImportCostExpenseExcelAsync(file);
             return new JsonResult(res);
