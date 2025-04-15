@@ -1,8 +1,221 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Charts";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <!-- Bar Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="chart-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Bar</h5>
+                        <small class="text-muted">Basic</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="basicBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Bar</h5>
+                        <small class="text-muted">Horizontal</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="horizontalBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Bar</h5>
+                        <small class="text-muted">Stacked</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="stackedBarChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Line Charts Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="chart-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Line</h5>
+                        <small class="text-muted">Basic</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="basicLineChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Line</h5>
+                        <small class="text-muted">Stepped</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="steppedLineChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="chart-card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0">Line</h5>
+                        <small class="text-muted">Points</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <canvas id="pointsLineChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        // Bar Charts
+        new Chart(document.getElementById('basicBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [{
+                    data: [6, 5, 8, 8, 5, 5, 4],
+                    backgroundColor: '#3f51b5',
+                    barThickness: 20
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 10 }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('horizontalBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [{
+                    data: [8, 7, 9, 7, 8, 7, 7],
+                    backgroundColor: '#7986cb',
+                    barThickness: 20
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, max: 10 }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('stackedBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [{
+                    data: [6, 5, 8, 8, 5, 5, 4],
+                    backgroundColor: '#3f51b5',
+                    barThickness: 20
+                }, {
+                    data: [4, 4, 3, 3, 5, 4, 3],
+                    backgroundColor: '#e8eaf6',
+                    barThickness: 20
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { 
+                        stacked: true,
+                        beginAtZero: true,
+                        max: 15
+                    },
+                    x: {
+                        stacked: true
+                    }
+                }
+            }
+        });
+
+        // Line Charts
+        new Chart(document.getElementById('basicLineChart'), {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [{
+                    data: [6, 5, 8, 8, 5, 5, 4],
+                    borderColor: '#3f51b5',
+                    fill: true,
+                    backgroundColor: 'rgba(63, 81, 181, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 10 }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('steppedLineChart'), {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [{
+                    data: [6, 5, 8, 4, 8, 5, 4],
+                    borderColor: '#3f51b5',
+                    stepped: true
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 10 }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('pointsLineChart'), {
+            type: 'line',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6', '7'],
+                datasets: [{
+                    data: [6, 5, 8, 8, 5, 5, 4],
+                    borderColor: '#3f51b5',
+                    pointStyle: 'rectRot',
+                    pointRadius: 8,
+                    pointBackgroundColor: '#3f51b5'
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 10 }
+                }
+            }
+        });
+    </script>
+} 
