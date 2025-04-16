@@ -3,13 +3,18 @@ using FPP.Core.Criteria;
 using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Services.Interfaces;
+using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService baseService, IUploadService uploadService) : ControllerBase
+public class BUCostAndExpenseController(
+    IMinIOService minIOService, 
+    IBaseService baseService, 
+    IUploadService uploadService, 
+    IUserControlSession session) : ControllerBase
 {
     [HttpPost("UploadExcel")]
     public async Task<IActionResult> UploadExcel(IFormFile file)
@@ -23,7 +28,7 @@ public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService
         var path = $"{MinIOFolderConstants.BUCostAndExpense}/{fileName}";
         await minIOService.UploadFileAsync(file, Bucket.FPP, path);
 
-        var res = await uploadService.ImportCostExpenseExcelAsync(file, fileName);
+        var res = await uploadService.ImportCostExpenseExcelAsync(file, fileName, session.UserId);
         return new JsonResult(res);
     }
 

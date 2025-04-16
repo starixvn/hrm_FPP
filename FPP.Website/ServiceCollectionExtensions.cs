@@ -97,6 +97,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IBaseService, BaseService>();
         services.AddSingleton<IMinIOService, MinIOService>();
         services.AddSingleton<IUploadService, UploadService>();
+        services.AddSingleton<IReportService, ReportService>();
 
         return services;
     }

@@ -5,4 +5,7 @@
 		<Setting Key="MonthlyCostExpense_Get" SpName="MonthlyCostExpense_Get" DbName="bodb_FPP" Plain="0" />
 		<Setting Key="MonthlyCostExpense_GetUploadHistory" SpName="MonthlyCostExpense_GetUploadHistory" DbName="bodb_FPP" Plain="0" />
 	</Function>
+	<Function Name="Category">
+		<Setting Key="Category_GetAll" SpName="Category_GetAll" DbName="bodb_FPP" Plain="0" />
+	</Function>
 </Functions>
