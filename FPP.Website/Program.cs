@@ -12,13 +12,13 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-
 services.AddControllersWithViews()
     .AddNewtonsoftJson(options =>
     {
         options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Unspecified;
         options.SerializerSettings.DateFormatString = "dd MMM, yyyy HH:mm:ss";
     });
+
 
 services.AddFanexLogSentry(configuration);
 services.AddFanexSql(configuration);
@@ -51,7 +51,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
-
 
 app.MapControllerRoute(
     name: "default",

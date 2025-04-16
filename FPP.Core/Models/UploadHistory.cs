@@ -7,5 +7,5 @@ public class UploadHistory
     public string FileName { get; set; } = string.Empty;
     public string SavedFileName { get; set; } = string.Empty;
     public DateTime CreateTime { get; set; }
-    public string UploadedBy { get; set; } = string.Empty;
+    public string CreatedBy { get; set; } = string.Empty;
 }

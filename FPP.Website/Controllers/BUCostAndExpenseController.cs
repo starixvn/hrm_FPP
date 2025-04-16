@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers;
 
-public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService baseService, IUploadService uploadService) : Controller
+[Route("api/[controller]")]
+[ApiController]
+public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService baseService, IUploadService uploadService) : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("UploadExcel")]
     public async Task<IActionResult> UploadExcel(IFormFile file)
     {
         if (file == null || file.Length == 0)
@@ -25,7 +27,7 @@ public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService
         return new JsonResult(res);
     }
 
-    [HttpGet]
+    [HttpGet("DownloadExcel")]
     public async Task<IActionResult> DownloadExcel(string savedFileName)
     {
         if (string.IsNullOrEmpty(savedFileName))
@@ -34,19 +36,50 @@ public class BUCostAndExpenseController(IMinIOService minIOService, IBaseService
         }
 
         var path = $"{MinIOFolderConstants.BUCostAndExpense}/{savedFileName}";
-        var filePath = await minIOService.GetFilePath(Bucket.FPP, path);
+        var stream = await minIOService.GetFileContentAsync(Bucket.FPP, path);
 
-        return Redirect(filePath);
+        return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", savedFileName);
     }
 
-    [HttpGet]
-    public async Task<IEnumerable<UploadHistory>> GetUploadHistory(int? empId = null)
+    [HttpGet("GetUploadHistory")]
+    public async Task<ActionResult<IEnumerable<UploadHistory>>> GetUploadHistory(int? empId = null)
     {
         var criteria = new GetUploadHistoryCriteria
         {
             UploadedBy = empId
         };
+        var mockData = new List<UploadHistory>
+        {
+            new()
+            {
+                BUId = 5,
+                BUCode = "BU5",
+                FileName = "April_Costs312313.xlsx",
+                SavedFileName = "Uploaded_168293874244142414.xlsx",
+                CreatedBy = "5",
+                CreateTime = new DateTime(2025, 4, 15, 22, 45, 27)
+            },
+            new()
+            {
+                BUId = 5,
+                BUCode = "BU5",
+                FileName = "April_Costs312313.xlsx",
+                SavedFileName = "Uploaded_168293874244142414.xlsx",
+                CreatedBy = "5",
+                CreateTime = new DateTime(2025, 4, 15, 22, 45, 37)
+            },
+            new()
+            {
+                BUId = 920,
+                BUCode = "BU920",
+                FileName = "FMS General Document (1).xlsx",
+                SavedFileName = "FMS General Document (1).xlsx_20250416110252",
+                CreatedBy = "Mira",
+                CreateTime = new DateTime(2025, 4, 16, 0, 2, 53)
+            }
+        };
 
-        return await baseService.GetDataAsync<UploadHistory>(criteria);
+        return Ok(mockData);
+        //return await baseService.GetDataAsync<UploadHistory>(criteria);
     }
 }

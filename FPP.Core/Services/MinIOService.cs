@@ -13,6 +13,8 @@ public interface IMinIOService
 
     Task<IEnumerable<S3FileObject>> GetFileAsync(string bucketName, string directory);
 
+    Task<Stream> GetFileContentAsync(string bucketName, string filePath);
+
     Task<string> GetFilePath(string bucketName, string filePath, string defaultFile = "");
 
     Task<bool> DeleteFileAsync(string bucketName, string objectName);
@@ -96,6 +98,22 @@ public class MinIOService : IMinIOService
             FileName = o.Key.Split("/").Last(),
             FilePath = $"{s3Config.ExternalUrl}/{bucketName}/{o.Key}"
         });
+    }
+
+    public async Task<Stream> GetFileContentAsync(string bucketName, string filePath)
+    {
+        var request = new GetObjectRequest
+        {
+            BucketName = bucketName,
+            Key = filePath
+        };
+        Console.WriteLine(request.Key);
+
+        using var response = await client.GetObjectAsync(request);
+        var memoryStream = new MemoryStream();
+        await response.ResponseStream.CopyToAsync(memoryStream);
+        memoryStream.Position = 0; // Reset stream position
+        return memoryStream;
     }
 
     public async Task<string> GetFilePath(string bucketName, string filePath, string defaultFile = "")

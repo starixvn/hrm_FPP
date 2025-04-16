@@ -1,0 +1,159 @@
+.upload-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f2f5;
+    padding: 24px;
+}
+
+.upload-card {
+    width: 100%;
+    max-width: 600px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 
+                0 1px 6px -1px rgba(0, 0, 0, 0.02), 
+                0 2px 4px 0 rgba(0, 0, 0, 0.02);
+    border-radius: 12px;
+    padding: 40px;
+}
+
+.page-title {
+    text-align: center;
+    color: #1890ff;
+    margin-bottom: 40px !important;
+    font-size: 24px !important;
+    font-weight: 500 !important;
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.upload-dragger {
+    width: 100% !important;
+    height: 280px !important;
+    padding: 0;
+    background: #fafafa;
+    border: 2px dashed #d9d9d9;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.upload-dragger:hover {
+    border-color: #1890ff;
+    background: #f5f5f5;
+    transform: translateY(-2px);
+}
+
+.ant-upload-drag-icon {
+    color: #1890ff;
+    font-size: 48px;
+    margin-bottom: 16px;
+}
+
+.ant-upload-text {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.85);
+    margin: 0 0 8px;
+}
+
+.ant-upload-hint {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.45);
+}
+
+.upload-button {
+    height: 44px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 160px;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    border-radius: 22px;
+    background: linear-gradient(45deg, #1890ff, #40a9ff);
+    border: none;
+    box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.upload-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(24, 144, 255, 0.4);
+    background: linear-gradient(45deg, #40a9ff, #69c0ff);
+}
+
+.upload-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+.upload-button:disabled {
+    background: linear-gradient(45deg, #bfbfbf, #d9d9d9);
+    box-shadow: none;
+    transform: none;
+    cursor: not-allowed;
+}
+
+/* Add loading animation */
+.upload-button.ant-btn-loading:before {
+    background: linear-gradient(45deg, #1890ff, #40a9ff);
+    opacity: 0.8;
+}
+
+@media (max-width: 576px) {
+    .upload-card {
+        padding: 24px 20px;
+    }
+
+    .page-title {
+        font-size: 20px !important;
+        margin-bottom: 32px !important;
+    }
+
+    .upload-dragger {
+        height: 240px !important;
+    }
+
+    .upload-button {
+        max-width: 140px;
+    }
+}
+
+/* Table Styles */
+.ant-table {
+    border: 1px solid #d9d9d9 !important;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ant-table-thead > tr > th {
+    background-color: #f5f5f5 !important;
+    border-bottom: 1px solid #d9d9d9 !important;
+    color: rgba(0, 0, 0, 0.85);
+    font-weight: 500;
+}
+
+.ant-table-tbody > tr > td {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ant-table-tbody > tr:hover > td {
+    background-color: #fafafa;
+}
+
+.ant-table-cell {
+    padding: 16px !important;
+}
+
+.ant-table-pagination {
+    margin: 16px;
+} 
