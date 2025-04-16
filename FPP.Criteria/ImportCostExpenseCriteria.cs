@@ -4,7 +4,7 @@ namespace FPP.Criteria;
 
 public class ImportCostExpenseCriteria : BaseNonQueryCommand
 {
-    public int BUId { get; set; }
+    public int GroupUnitId { get; set; }
 
     public string FileName { get; set; }
 
@@ -16,7 +16,7 @@ public class ImportCostExpenseCriteria : BaseNonQueryCommand
 
     public override string GetSettingKey() => "MonthlyCostExpense_Import";
 
-    public override bool IsValid() => BUId > 0 && !string.IsNullOrEmpty(FileName) && !string.IsNullOrEmpty(TermListJson);
+    public override bool IsValid() => GroupUnitId > 0 && !string.IsNullOrEmpty(FileName) && !string.IsNullOrEmpty(TermListJson);
 }
 
 public class TermItem 

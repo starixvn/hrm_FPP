@@ -17,9 +17,9 @@ namespace FPP.Services.Implement
         private const int StartMonthCol = 3; // Column C 
         private const int EndMonthCol = 14; // Column L
         private const int NameCol = 2; // Column B
-        private const int MinLengthBuCode = 3;
-        private const int BuCellRow = 1;
-        private const int BuCellCol = 2;
+        private const int MinLengthGroupUnit = 3;
+        private const int UnitCellRow = 1;
+        private const int UnitCellCol = 2;
 
         public async Task<CommandResult> ImportCostExpenseExcelAsync(IFormFile file, string savedFileName)
         {
@@ -28,8 +28,8 @@ namespace FPP.Services.Implement
             using var package = new ExcelPackage(stream);
             var worksheet = package.Workbook.Worksheets[SheetIndex];
 
-            var buId = ExtractBUId(worksheet);
-            if (buId == null)
+            var groupUnitId = ExtractGroupUnitId(worksheet);
+            if (groupUnitId == null)
             {
                 return commandResult;
             }
@@ -39,7 +39,7 @@ namespace FPP.Services.Implement
 
             var criteria = new ImportCostExpenseCriteria
             {
-                BUId = buId.Value,
+                GroupUnitId = groupUnitId.Value,
                 FileName = file.FileName,
                 SavedFileName = savedFileName,
                 TermListJson = JsonConvert.SerializeObject(items),
@@ -49,16 +49,16 @@ namespace FPP.Services.Implement
             return commandResult;
         }
 
-        private int? ExtractBUId(ExcelWorksheet worksheet)
+        private int? ExtractGroupUnitId(ExcelWorksheet worksheet)
         {
-            var buCell = worksheet.Cells[BuCellRow, BuCellCol].Text;
-            if (buCell.Length < MinLengthBuCode)
+            var groupUnitCell = worksheet.Cells[UnitCellRow, UnitCellCol].Text;
+            if (groupUnitCell.Length < MinLengthGroupUnit)
             {
                 return null;
             }
 
-            var buCode = buCell[..MinLengthBuCode];
-            return int.TryParse(buCode, out var buId) ? buId : null;
+            var groupUnit = groupUnitCell[..MinLengthGroupUnit];
+            return int.TryParse(groupUnit, out var groupUnitId) ? groupUnitId : null;
         }
 
         private List<DateTime> ExtractMonths(ExcelWorksheet worksheet)
