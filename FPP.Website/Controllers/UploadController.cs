@@ -24,5 +24,13 @@ namespace FPP.Website.Controllers
             var res = await uploadService.ImportCostExpenseExcelAsync(file, fileName);
             return new JsonResult(res);
         }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public async Task<IActionResult> GetCostExpense(int groupUnitId)
+        {
+            var res = await uploadService.GetCostExpenseExcelAsync(groupUnitId);
+            return new JsonResult(res);
+        }
     }
 }

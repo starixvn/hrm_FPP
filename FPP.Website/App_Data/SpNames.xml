@@ -2,6 +2,6 @@
 <Functions>
 	<Function Name="CostExpense">
 		<Setting Key="MonthlyCostExpense_Import" SpName="MonthlyCostExpense_Import" DbName="bodb_FPP" Plain="0" />
-		<Setting Key="MonthlyCostExpense_Import" SpName="MonthlyCostExpense_Import" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="MonthlyCostExpense_GetByUnit" SpName="MonthlyCostExpense_GetByUnit" DbName="bodb_FPP" Plain="0" />
 	</Function>
 </Functions>
