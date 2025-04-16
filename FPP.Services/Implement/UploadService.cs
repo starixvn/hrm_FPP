@@ -51,11 +51,13 @@ namespace FPP.Services.Implement
             return commandResult;
         }
 
-        public async Task<IEnumerable<MonthlyCostExpenseCategory>> GetCostExpenseExcelAsync(int groupUnitId)
+        public async Task<IEnumerable<MonthlyCostExpenseCategory>> GetCostExpenseExcelAsync(int groupUnitId, int year, int? categoryId)
         {
             var criteria = new GetCostExpenseCriteria
             {
-                GroupUnitId = groupUnitId
+                GroupUnitId = groupUnitId,
+                Year = year,
+                CategoryId = categoryId
             };
             var data = await baseService.GetDataAsync<MonthlyCostExpenseDetail>(criteria);
             var groupedData = data

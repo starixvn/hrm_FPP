@@ -8,6 +8,6 @@ namespace FPP.Services.Interfaces
     {
         Task<CommandResult> ImportCostExpenseExcelAsync(IFormFile file, string savedFileName);
 
-        Task<IEnumerable<MonthlyCostExpenseCategory>> GetCostExpenseExcelAsync(int groupUnitId);
+        Task<IEnumerable<MonthlyCostExpenseCategory>> GetCostExpenseExcelAsync(int groupUnitId, int year, int? categoryId);
     }
 }

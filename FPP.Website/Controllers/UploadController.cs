@@ -27,9 +27,9 @@ namespace FPP.Website.Controllers
 
         [AllowAnonymous]
         [HttpGet]
-        public async Task<IActionResult> GetCostExpense(int groupUnitId)
+        public async Task<IActionResult> GetCostExpense(int groupUnitId, int year, int? categoryId)
         {
-            var res = await uploadService.GetCostExpenseExcelAsync(groupUnitId);
+            var res = await uploadService.GetCostExpenseExcelAsync(groupUnitId, year, categoryId);
             return new JsonResult(res);
         }
     }
