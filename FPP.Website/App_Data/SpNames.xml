@@ -1,4 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Functions>
-    
+	<Function Name="CostExpense">
+		<Setting Key="MonthlyCostExpense_Import" SpName="MonthlyCostExpense_Import" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="MonthlyCostExpense_Import" SpName="MonthlyCostExpense_Import" DbName="bodb_FPP" Plain="0" />
+	</Function>
 </Functions>
