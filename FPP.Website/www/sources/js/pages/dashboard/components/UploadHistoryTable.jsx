@@ -21,26 +21,8 @@ const UploadHistoryTable = () => {
     }
   };
 
-  const handleDownload = async (savedFileName) => {
-    try {
-      const response = await axios.get(
-        `/api/BUCostAndExpense/DownloadExcel?savedFileName=${savedFileName}`,
-        {
-          responseType: "blob",
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", savedFileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      message.error("Failed to download file");
-      console.error("Error downloading file:", error);
-    }
+  const handleDownload = async (savedFileName, fileName) => {
+    window.location.href = `/api/BUCostAndExpense/DownloadExcel?savedFileName=${savedFileName}&fileName=${fileName}`;
   };
 
   useEffect(() => {
@@ -51,20 +33,23 @@ const UploadHistoryTable = () => {
       title: "BU ID",
       dataIndex: "buId",
       key: "buId",
+      align: "center",
     },
     {
       title: "BU Code",
       dataIndex: "buCode",
       key: "buCode",
+      align: "center",
     },
     {
       title: "File Name",
       dataIndex: "fileName",
       key: "fileName",
+      align: "center",
       render: (text, record) => (
         <Button
           type="link"
-          onClick={() => handleDownload(record.savedFileName)}>
+          onClick={() => handleDownload(record.savedFileName, record.fileName)}>
           {text}
         </Button>
       ),
@@ -73,22 +58,27 @@ const UploadHistoryTable = () => {
       title: "Created By",
       dataIndex: "createdBy",
       key: "createdBy",
+      align: "center",
     },
     {
       title: "Created Date",
-      dataIndex: "createTime",
-      key: "createTime",
+      dataIndex: "createdDate",
+      key: "createdDate",
+      align: "center",
       render: (text) => new Date(text).toLocaleString(),
     },
   ];
 
   return (
     <Table
+      className="custom-table"
       columns={columns}
       dataSource={data}
       loading={loading}
       rowKey="SavedFileName"
       pagination={{ pageSize: 10 }}
+      size="small"
+      bordered
     />
   );
 };

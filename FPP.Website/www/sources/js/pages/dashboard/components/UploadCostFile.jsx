@@ -79,7 +79,7 @@ const UploadCostFile = () => {
 
   return (
     <div className="upload-content">
-      <Dragger {...uploadProps} className="upload-dragger">
+      <Dragger {...uploadProps} className="upload-dragger" multiple={false}>
         <p className="ant-upload-drag-icon">
           <InboxOutlined />
         </p>
@@ -90,14 +90,16 @@ const UploadCostFile = () => {
           Support for a single Excel file upload
         </p>
       </Dragger>
-      <Button
-        type="primary"
-        onClick={handleUpload}
-        disabled={fileList.length === 0}
-        loading={uploading}
-        className="upload-button">
-        {uploading ? "Uploading" : "Upload"}
-      </Button>
+      <div className="upload-button-container">
+        <Button
+          type="primary"
+          onClick={handleUpload}
+          disabled={fileList.length === 0}
+          loading={uploading}
+          className="upload-button">
+          {uploading ? "Uploading" : "Upload"}
+        </Button>
+      </div>
     </div>
   );
 };

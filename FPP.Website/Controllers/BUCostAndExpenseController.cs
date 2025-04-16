@@ -24,16 +24,20 @@ public class BUCostAndExpenseController(
             return BadRequest("No file uploaded.");
         }
 
-        var fileName = $"{file.FileName}_{DateTime.Now:yyyyMMddHHmmss}";
-        var path = $"{MinIOFolderConstants.BUCostAndExpense}/{fileName}";
+        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
+        var extension = Path.GetExtension(file.FileName);
+        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+
+        var saveFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
+        var path = $"{MinIOFolderConstants.BUCostAndExpense}/{saveFileName}";
         await minIOService.UploadFileAsync(file, Bucket.FPP, path);
 
-        var res = await uploadService.ImportCostExpenseExcelAsync(file, fileName, session.UserId);
+        var res = await uploadService.ImportCostExpenseExcelAsync(file, savedFileName, session.UserId);
         return new JsonResult(res);
     }
 
     [HttpGet("DownloadExcel")]
-    public async Task<IActionResult> DownloadExcel(string savedFileName)
+    public async Task<IActionResult> DownloadExcel(string savedFileName, string fileName)
     {
         if (string.IsNullOrEmpty(savedFileName))
         {
@@ -43,7 +47,7 @@ public class BUCostAndExpenseController(
         var path = $"{MinIOFolderConstants.BUCostAndExpense}/{savedFileName}";
         var stream = await minIOService.GetFileContentAsync(Bucket.FPP, path);
 
-        return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", savedFileName);
+        return File(stream, "application/octet-stream", fileName);
     }
 
     [HttpGet("GetUploadHistory")]

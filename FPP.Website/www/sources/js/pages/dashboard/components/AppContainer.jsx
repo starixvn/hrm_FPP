@@ -10,7 +10,7 @@ const AppContainer = () => {
     <div>
       <Card className="upload-card">
         <Title level={2} className="page-title">
-          Upload BU Cost and Expense
+          Upload Monthly BU Cost or Expense
         </Title>
         <UploadCostFile />
       </Card>

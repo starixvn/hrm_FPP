@@ -6,6 +6,6 @@ public class UploadHistory
     public string BUCode { get; set; } = string.Empty;
     public string FileName { get; set; } = string.Empty;
     public string SavedFileName { get; set; } = string.Empty;
-    public DateTime CreateTime { get; set; }
+    public DateTime CreatedDate { get; set; }
     public string CreatedBy { get; set; } = string.Empty;
 }
