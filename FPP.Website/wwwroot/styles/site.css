@@ -29,3 +29,185 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+:root {
+  --primary: #3f51b5;
+  --primary-dark: #283593;
+  --primary-light: #7986cb;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Login page */
+.form-control {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: var(--primary);
+}
+
+.input-group-text {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+}
+
+.form-check-input:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.form-check-input:focus {
+  box-shadow: none;
+  border-color: var(--primary);
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  padding: 0.75rem 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(63, 81, 181, 0.25);
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--primary) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  height: 64px;
+}
+
+.navbar .form-control {
+  background-color: rgba(255,255,255,0.1);
+  border: none;
+  color: white;
+}
+
+.navbar .input-group-text {
+  background-color: transparent;
+  border: none;
+  color: rgba(255,255,255,0.7);
+}
+
+/* Sidebar */
+.sidebar {
+  width: 250px;
+  min-height: calc(100vh - 64px);
+  background: white;
+}
+
+.sidebar .nav-link {
+  color: #424242;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  margin: 0 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav-link:hover {
+  background-color: rgba(63, 81, 181, 0.04);
+  color: var(--primary);
+}
+
+.sidebar .nav-link.active {
+  background-color: rgba(63, 81, 181, 0.12);
+  color: var(--primary);
+}
+
+.sidebar .nav-link i {
+  font-size: 1.25rem;
+  width: 24px;
+  text-align: center;
+}
+
+/* Charts */
+.chart-container {
+  position: relative;
+  margin: auto;
+  height: 300px;
+}
+
+.chart-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+.chart-card .card-header {
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.chart-card .card-body {
+  padding: 1.5rem;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+}
+
+.validation-summary-errors ul {
+  margin-bottom: 0;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sidebar {
+      position: fixed;
+      left: -250px;
+      z-index: 1040;
+      transition: left 0.3s ease;
+  }
+
+  .sidebar.show {
+      left: 0;
+  }
+
+  .sidebar-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.3);
+      z-index: 1039;
+  }
+} 
