@@ -5,20 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/styles/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="~/styles/styles.css" asp-append-version="true" />
     @RenderSection("Styles", required: false)
 </head>
-<body>
+<body class="sb-nav-fixed">
     @await Component.InvokeAsync("Navbar")
-     <div class="d-flex">
+     <div id="layoutSidenav">
         @await Component.InvokeAsync("Sidebar")
          <!-- Main Content -->
-        <div class="flex-grow-1 bg-light">
-            <div class="container-fluid p-4">
-                @RenderBody()
-            </div>
-        </div>
+         <div id="layoutSidenav_content">
+             <main>
+                <div class="container-fluid px-4">
+                    @RenderBody()
+                </div>
+            </main>
+         </div>
      </div>
     
 
