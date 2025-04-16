@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Text;
 using FPP.Core.Constants;
 using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Models.Auth;
@@ -26,6 +27,7 @@ public class AuthController(
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
+        model.Password = Encoding.UTF8.GetString(Convert.FromBase64String(model.Password));
         var token = cryptoService.GenerateRijndaelKeyIV();
         var keyIv = token.Split(':');
         var rijndaelKey = keyIv[0];

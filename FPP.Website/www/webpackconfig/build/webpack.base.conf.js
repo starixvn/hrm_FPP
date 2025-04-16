@@ -15,8 +15,10 @@ function generateConfig(environment) {
         entry: {
             /*js*/
             [`${jsPath}/lib/lang-vi-VN`]: pathConfig.scriptPaths.language,
+            [`${jsPath}/pages/login`]: pathConfig.scriptPaths.login,
             [`${jsPath}/pages/dashboard/index`]: pathConfig.scriptPaths.dashboard_index,
             /*css*/
+            [`${cssPath}/pages/login`]: pathConfig.cssPaths.login,
             [`${cssPath}/pages/dashboard/index`]: pathConfig.cssPaths.dashboard_index,
         },
         output: {

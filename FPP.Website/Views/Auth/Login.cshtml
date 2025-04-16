@@ -11,46 +11,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - FPP</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/styles/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/styles/admin.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <environment include="Development">
+        <link rel="stylesheet" href="~/css/dev/pages/login.chunk.css" asp-append-version="true" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="~/css/pro/pages/login.chunk.css" asp-append-version="true" />
+    </environment>
 </head>
-<body class="bg-light">
+<body>
     <div class="min-vh-100 d-flex align-items-center">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6 col-lg-5 col-xl-4">
                     <div class="text-center mb-4">
-                        <h2 class="fw-bold text-primary mb-0">FPP</h2>
+                        <h2 class="fw-bold mb-0">FPP</h2>
                     </div>
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4">
                             <form asp-action="Login" asp-controller="Auth" method="post">
-                                <div class="mb-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white border-end-0">
-                                            <i class="bi bi-person text-muted"></i>
-                                        </span>
-                                        <input type="text" class="form-control border-start-0 ps-0"
-                                               asp-for="Username" placeholder="Username" required />
-                                    </div>
-                                </div>
-                                <div class="mb-4">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-white border-end-0">
-                                            <i class="bi bi-lock text-muted"></i>
-                                        </span>
-                                        <input type="password" class="form-control border-start-0 ps-0"
-                                               asp-for="Password" placeholder="Password" required />
-                                    </div>
-                                </div>
                                 @if (!ViewData.ModelState.IsValid)
                                 {
                                     <div class="alert alert-danger mb-4">
                                         @Html.ValidationSummary(false, "", new { @class = "list-unstyled mb-0" })
                                     </div>
                                 }
-                                <button type="submit" class="btn btn-primary w-100 mb-3">
+                                <div class="mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text border-end-0">
+                                            <i class="bi bi-person text-muted"></i>
+                                        </span>
+                                        <input type="text" class="form-control border-start-0 ps-0" autocomplete="off"
+                                               asp-for="Username" placeholder="Username" required />
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="input-group">
+                                        <span class="input-group-text border-end-0">
+                                            <i class="bi bi-lock text-muted"></i>
+                                        </span>
+                                        <input type="password" class="form-control border-start-0 ps-0"
+                                               asp-for="Password" placeholder="Password" required />
+                                    </div>
+                                </div>
+                                <button id="btn-signin" type="submit" class="btn btn-primary w-100 mb-3">
                                     Sign In
                                 </button>
                             </form>
@@ -63,5 +67,11 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <environment include="Development">
+        <script src="~/js/dev/pages/login.chunk.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/pro/pages/login.chunk.js" asp-append-version="true"></script>
+    </environment>
 </body>
 </html> 

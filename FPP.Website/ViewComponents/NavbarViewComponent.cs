@@ -9,7 +9,7 @@ public class NavbarViewComponent(IUserControlSession session) : ViewComponent
 {
     public IViewComponentResult Invoke()
     {
-        var user = session.Get<User>(SessionKey.CurrentUser);
+        var user = session.Get<User>(SessionKey.CurrentUser) ?? new User();
         return View(user);
     }
 }
