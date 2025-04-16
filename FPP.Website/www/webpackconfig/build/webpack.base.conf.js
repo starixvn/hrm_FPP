@@ -17,13 +17,15 @@ function generateConfig(environment) {
             [`${jsPath}/lib/lang-vi-VN`]: pathConfig.scriptPaths.language,
             [`${jsPath}/pages/login`]: pathConfig.scriptPaths.login,
             [`${jsPath}/pages/dashboard/index`]: pathConfig.scriptPaths.dashboard_index,
+            [`${jsPath}/pages/report/index`]: pathConfig.scriptPaths.report_index,
             /*css*/
             [`${cssPath}/pages/login`]: pathConfig.cssPaths.login,
             [`${cssPath}/pages/dashboard/index`]: pathConfig.cssPaths.dashboard_index,
+            [`${cssPath}/pages/report/index`]: pathConfig.cssPaths.report_index
         },
         output: {
             path: pathConfig.projectRoot,
-            filename: "[name].chunk.js",
+            filename: '[name].chunk.js',
             chunkFilename: `${jsPath}/lib/[name].chunk.js`
         },
         module: {
@@ -33,10 +35,7 @@ function generateConfig(environment) {
                     use: {
                         loader: 'babel-loader',
                         options: {
-                            presets: [
-                                '@babel/preset-env',
-                                '@babel/preset-react'
-                            ],
+                            presets: ['@babel/preset-env', '@babel/preset-react'],
                             plugins: [
                                 '@babel/plugin-proposal-class-properties',
                                 '@babel/plugin-proposal-object-rest-spread',

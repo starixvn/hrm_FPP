@@ -1,0 +1,95 @@
+.report-container {
+    padding: 24px;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+}
+
+.report-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03),
+        0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+}
+
+.report-card .ant-card-head {
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px 24px;
+}
+
+.report-card .ant-card-head-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.report-card .ant-card-body {
+    padding: 24px;
+}
+
+/* Table Styles */
+.report-card .ant-table {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.report-card .ant-table-thead>tr>th {
+    background-color: #fafafa;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 16px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.85);
+}
+
+.report-card .ant-table-tbody>tr>td {
+    padding: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.report-card .ant-table-tbody>tr:hover>td {
+    background-color: #fafafa;
+}
+
+.report-card .ant-table-cell {
+    text-align: right;
+}
+
+.report-card .ant-table-cell:first-child {
+    text-align: left;
+}
+
+/* Filter Controls */
+.report-card .ant-space {
+    margin-bottom: 24px;
+}
+
+.report-card .ant-select {
+    min-width: 160px;
+}
+
+.report-card .ant-picker {
+    min-width: 120px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .report-container {
+        padding: 16px;
+    }
+
+    .report-card .ant-card-body {
+        padding: 16px;
+    }
+
+    .report-card .ant-space {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 16px;
+    }
+
+    .report-card .ant-select,
+    .report-card .ant-picker {
+        width: 100% !important;
+    }
+}

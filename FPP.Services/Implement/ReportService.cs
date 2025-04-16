@@ -17,19 +17,37 @@ namespace FPP.Services.Implement
                 Year = year,
                 CategoryId = categoryId
             };
-            var data = await baseService.GetDataAsync<MonthlyCostExpenseDetail>(criteria);
-            var groupedData = data
-                .GroupBy(d => new { d.CategoryId, d.CategoryName })
-                .Select(g => new MonthlyCostExpenseCategory
+            var monthlyExpenses = await baseService.GetDataAsync<MonthlyCostExpense>(criteria);
+            var grouped = monthlyExpenses
+                .GroupBy(x => new { x.CategoryId, x.CategoryName })
+                .Select(categoryGroup => new MonthlyCostExpenseCategory
                 {
-                    CategoryId = g.Key.CategoryId,
-                    CategoryName = g.Key.CategoryName,
-                    Details = g.ToList(),
-                    TotalAmount = g.Sum(d => d.TotalAmount)
+                    CategoryId = categoryGroup.Key.CategoryId,
+                    CategoryName = categoryGroup.Key.CategoryName,
+                    MonthlyTotalAmounts = categoryGroup
+                        .GroupBy(x => x.Month.ToString("yyyy-MM"))
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Sum(x => x.Amount)
+                        ),
+                    Details = categoryGroup
+                        .GroupBy(x => new { x.TermId, x.TermName })
+                        .Select(termGroup => new MonthlyCostExpenseDetail
+                        {
+                            TermId = termGroup.Key.TermId,
+                            TermName = termGroup.Key.TermName,
+                            MonthlyAmounts = termGroup
+                                .GroupBy(x => x.Month.ToString("yyyy-MM"))
+                                .ToDictionary(
+                                    g => g.Key,
+                                    g => g.Sum(x => x.Amount)
+                                )
+                        })
+                        .ToList()
                 })
                 .ToList();
 
-            return groupedData;
+            return grouped;
         }
 
     }

@@ -6,6 +6,7 @@ const cssPaths = {
     build: 'wwwroot/css',
     login: ['./www/sources/css/pages/login.scss'],
     dashboard_index: ['./www/sources/css/pages/dashboard/index.scss'],
+    report_index: ['./www/sources/css/pages/report/index.scss']
 };
 
 const scriptPaths = {
@@ -13,6 +14,7 @@ const scriptPaths = {
     login: ['./www/sources/js/pages/login.js'],
     language: ['./www/sources/js/common/languages/ViewResources_vi_VN.js'],
     dashboard_index: ['./www/sources/js/pages/dashboard/index.jsx'],
+    report_index: ['./www/sources/js/pages/report/index.jsx']
 };
 
 module.exports = {

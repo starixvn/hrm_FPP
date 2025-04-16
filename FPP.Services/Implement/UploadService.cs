@@ -11,7 +11,7 @@ namespace FPP.Services.Implement
     public class UploadService(
         IBaseService baseService) : IUploadService
     {
-        private const int SheetIndex = 4;
+        private const int SheetIndex = 0;
         private const int StartItemRow = 8;
         private const int MonthRow = 2;
         private const int StartMonthCol = 3; // Column C 

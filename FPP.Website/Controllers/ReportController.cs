@@ -1,15 +1,20 @@
 using FPP.Core.Criteria;
 using FPP.Core.Models;
 using FPP.Core.Services;
+using FPP.Models;
 using FPP.Services.Interfaces;
+using FPP.Website.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ReportController(IReportService reportService, IBaseService baseService) : ControllerBase
+    [FppAuthorize]
+    public class ReportController(IReportService reportService, IBaseService baseService) : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetCostExpense(int groupUnitId, int year, int? categoryId)
@@ -23,7 +28,7 @@ namespace FPP.Website.Controllers
         {
             var criteria = new GetCategoryCriteria();
 
-            var result = await baseService.GetDataAsync<UploadHistory>(criteria);
+            var result = await baseService.GetDataAsync<Category>(criteria);
             return Ok(result);
         }
     }

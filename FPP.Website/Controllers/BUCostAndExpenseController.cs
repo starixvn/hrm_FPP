@@ -30,9 +30,12 @@ public class BUCostAndExpenseController(
 
         var savedFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
         var path = $"{MinIOFolderConstants.BUCostAndExpense}/{savedFileName}";
-        await minIOService.UploadFileAsync(file, Bucket.FPP, path);
-
         var res = await uploadService.ImportCostExpenseExcelAsync(file, savedFileName, session.UserId);
+        if (!res.IsSuccessful)
+        {
+            return BadRequest(res.Message);
+        }
+        await minIOService.UploadFileAsync(file, Bucket.FPP, path);
         return new JsonResult(res);
     }
 
