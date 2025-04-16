@@ -9,4 +9,7 @@
 	<PackageReference Include="Fanex.Data" Version="4.3.3" />
 	<PackageReference Include="Fanex.Data.Repository" Version="4.3.3" />
    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FPP.Core\FPP.Core.csproj" />
+  </ItemGroup>
 </Project>

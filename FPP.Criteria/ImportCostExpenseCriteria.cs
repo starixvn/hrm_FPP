@@ -1,8 +1,8 @@
-﻿using Fanex.Data.Repository;
+﻿using FPP.Core.Models;
 
 namespace FPP.Criteria;
 
-public class ImportCostExpenseCriteria : CriteriaBase
+public class ImportCostExpenseCriteria : BaseNonQueryCommand
 {
     public int BUId { get; set; }
 
