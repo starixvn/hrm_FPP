@@ -28,8 +28,8 @@ public class BUCostAndExpenseController(
         var extension = Path.GetExtension(file.FileName);
         var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
 
-        var saveFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
-        var path = $"{MinIOFolderConstants.BUCostAndExpense}/{saveFileName}";
+        var savedFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
+        var path = $"{MinIOFolderConstants.BUCostAndExpense}/{savedFileName}";
         await minIOService.UploadFileAsync(file, Bucket.FPP, path);
 
         var res = await uploadService.ImportCostExpenseExcelAsync(file, savedFileName, session.UserId);

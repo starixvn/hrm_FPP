@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Upload, Button, message } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import axios from "axios";
-import "./AppContainer.css";
 
 const { Dragger } = Upload;
 
