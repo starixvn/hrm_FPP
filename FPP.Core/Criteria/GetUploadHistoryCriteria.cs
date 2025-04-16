@@ -6,7 +6,7 @@ public class GetUploadHistoryCriteria : CriteriaBase
 {
     public int? UploadedBy { get; set; }
 
-    public override string GetSettingKey() => "BUCostAndExpense_GetUploadHistory";
+    public override string GetSettingKey() => "MonthlyCostExpense_GetUploadHistory";
 
     public override bool IsValid() => true;
 }
