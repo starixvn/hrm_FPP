@@ -25,7 +25,7 @@ namespace FPP.Services.Implement
                     CategoryId = categoryGroup.Key.CategoryId,
                     CategoryName = categoryGroup.Key.CategoryName,
                     MonthlyTotalAmounts = categoryGroup
-                        .GroupBy(x => x.Month.ToString("yyyy-MM"))
+                        .GroupBy(x => x.Month.ToString("MMM yyyy"))
                         .ToDictionary(
                             g => g.Key,
                             g => g.Sum(x => x.Amount)
@@ -37,7 +37,7 @@ namespace FPP.Services.Implement
                             TermId = termGroup.Key.TermId,
                             TermName = termGroup.Key.TermName,
                             MonthlyAmounts = termGroup
-                                .GroupBy(x => x.Month.ToString("yyyy-MM"))
+                                .GroupBy(x => x.Month.ToString("MMM yyyy"))
                                 .ToDictionary(
                                     g => g.Key,
                                     g => g.Sum(x => x.Amount)

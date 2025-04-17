@@ -24,7 +24,7 @@ namespace FPP.Website.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategory(int? empId = null)
+        public async Task<IActionResult> GetCategory()
         {
             var criteria = new GetCategoryCriteria();
 

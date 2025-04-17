@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Card, Select, Space, Spin, ConfigProvider, Collapse, Typography, Row, Col } from 'antd';
+import { Table, Card, Select, Spin, ConfigProvider, Typography, Row, Col } from 'antd';
 import axios from 'axios';
 
 const { Option } = Select;
-const { Panel } = Collapse;
 const { Title } = Typography;
 
 const AppContainer = () => {
@@ -58,21 +57,18 @@ const AppContainer = () => {
     return [];
   }, [costExpenseData]);
 
-  // Filter controls
   const renderFilters = () => (
-    <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
+    <Row className="report-filters" gutter={[16, 16]}>
       <Col span={8}>
-        <div>
-          <div style={{ marginBottom: 4 }}>Group Unit</div>
-          <Select placeholder="Select Group Unit" style={{ width: '100%' }} onChange={setGroupUnitId} value={groupUnitId}>
-            <Option value={920}>920</Option>
-          </Select>
-        </div>
+        <div className="filter-label">Group Unit</div>
+        <Select placeholder="Select Group Unit" onChange={setGroupUnitId} value={groupUnitId}>
+          <Option value={920}>920</Option>
+        </Select>
       </Col>
       <Col span={8}>
         <div>
-          <div style={{ marginBottom: 4 }}>Year</div>
-          <Select placeholder="Year" style={{ width: '100%' }} onChange={setYear} value={year}>
+          <div className="filter-label">Year</div>
+          <Select placeholder="Year" onChange={setYear} value={year}>
             <Option value="2024">2024</Option>
             <Option value="2025">2025</Option>
             <Option value="2026">2026</Option>
@@ -81,10 +77,10 @@ const AppContainer = () => {
       </Col>
       <Col span={8}>
         <div>
-          <div style={{ marginBottom: 4 }}>Category</div>
-          <Select placeholder="Select Category" style={{ width: '100%' }} onChange={setCategoryId} value={categoryId} allowClear>
+          <div className="filter-label">Category</div>
+          <Select placeholder="Select Category" onChange={setCategoryId} value={categoryId} allowClear>
             {categoryData.map((category) => (
-              <Option key={category.id} value={category.id}>
+              <Option key={category.categoryId} value={category.categoryId}>
                 {category.name}
               </Option>
             ))}
@@ -94,72 +90,138 @@ const AppContainer = () => {
     </Row>
   );
 
-  // Desktop view for monthly data
-  const renderDetails = (details, monthlyTotalAmounts) => {
-    return (
-      <div style={{ padding: '0 8px', overflowX: 'auto' }}>
-        {details.map((detail, index) => (
-          <div key={index} style={{ marginBottom: '8px', padding: '4px', borderBottom: '1px solid #f0f0f0' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ minWidth: '150px', flex: '0 0 auto' }}>{detail.termName}</span>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'nowrap' }}>
-                {months.map((month) => (
-                  <span key={month} style={{ width: '60px', textAlign: 'right', flex: '0 0 auto' }}>
-                    {detail.monthlyAmounts[month]}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
-        <div style={{ padding: '4px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: 'bold', minWidth: '150px', flex: '0 0 auto' }}>Total</span>
-            <div style={{ display: 'flex', gap: '16px', flexWrap: 'nowrap' }}>
-              {months.map((month) => (
-                <span key={month} style={{ width: '60px', textAlign: 'right', fontWeight: 600, flex: '0 0 auto' }}>
-                  {monthlyTotalAmounts[month]}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+  const columns = useMemo(() => {
+    const baseColumns = [
+      {
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        fixed: 'left',
+        width: 120,
+        render: (text, record) => {
+          if (record.isCategory) {
+            return <strong>{text}</strong>;
+          } else if (record.isGrandTotal) {
+            return <strong>{text}</strong>;
+          } else {
+            return <span>{text}</span>;
+          }
+        }
+      }
+    ];
+
+    const monthColumns = months.map((month) => ({
+      title: month,
+      dataIndex: month,
+      key: month,
+      width: 60,
+      align: 'right',
+      render: (text, record) => {
+        const value = text || '0';
+        if (record.isCategory || record.isGrandTotal) {
+          return <strong>{value}</strong>;
+        }
+        return value;
+      }
+    }));
+
+    return [...baseColumns, ...monthColumns];
+  }, [months]);
+
+  const dataSource = useMemo(() => {
+    if (!costExpenseData.length) return [];
+
+    const flatData = [];
+
+    costExpenseData.forEach((category, categoryIndex) => {
+      if (category.details && category.details.length) {
+        category.details.forEach((term, termIndex) => {
+          const termRow = {
+            key: `term_${category.categoryId}_${termIndex}`,
+            name: term.termName,
+            isCategory: false
+          };
+
+          months.forEach((month) => {
+            termRow[month] = term.monthlyAmounts[month];
+          });
+
+          flatData.push(termRow);
+        });
+      }
+
+      const categoryRow = {
+        key: `category_${category.categoryId}`,
+        name: category.categoryName,
+        isCategory: true
+      };
+
+      months.forEach((month) => {
+        categoryRow[month] = category.monthlyTotalAmounts[month];
+      });
+
+      flatData.push(categoryRow);
+    });
+
+    return flatData;
+  }, [costExpenseData, months]);
+
+  const calculateGrandTotals = () => {
+    if (!costExpenseData.length) return null;
+
+    const totalsRow = {
+      key: 'grand_total',
+      name: 'Grand Total',
+      isGrandTotal: true
+    };
+
+    months.forEach((month) => {
+      totalsRow[month] = costExpenseData.reduce((sum, category) => sum + (Number(category.monthlyTotalAmounts[month]) || 0), 0);
+    });
+
+    return totalsRow;
   };
 
-  // Panel header
-  const renderPanelHeader = (item) => {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'space-between', overflowX: 'auto' }}>
-        <span style={{ fontWeight: 'bold', minWidth: '150px', flex: '0 0 auto' }}>{item.categoryName}</span>
-        <div style={{ display: 'flex', gap: '16px', flexWrap: 'nowrap' }}>
-          {months.map((month) => (
-            <span key={month} style={{ width: '60px', textAlign: 'right', flex: '0 0 auto' }}>
-              {month}
-            </span>
-          ))}
-        </div>
-      </div>
-    );
+  const tableData = useMemo(() => {
+    return dataSource
+      .filter((item) => !item.isSeparator)
+      .concat(calculateGrandTotals())
+      .filter(Boolean);
+  }, [dataSource]);
+
+  const getRowClassName = (record) => {
+    if (record.isGrandTotal) {
+      return 'grand-total-row';
+    } else if (record.isCategory) {
+      return 'category-row';
+    }
+    return '';
   };
 
   return (
     <div className="report-container">
       <ConfigProvider>
-        <Card title={<Title level={4}>Cost Expense Report</Title>} className="report-card" bodyStyle={{ padding: 24 }}>
+        <Card title={<Title level={4}>Cost Expense Report</Title>} className="report-card">
           {renderFilters()}
 
           <Spin spinning={loading}>
-            <div style={{ overflowX: 'auto' }}>
-              <Collapse defaultActiveKey={costExpenseData.map((item) => item.categoryId)}>
-                {costExpenseData.map((item) => (
-                  <Panel key={item.categoryId} header={renderPanelHeader(item)}>
-                    {renderDetails(item.details, item.monthlyTotalAmounts)}
-                  </Panel>
-                ))}
-              </Collapse>
-            </div>
+            <Table
+              className="cost-expense-table"
+              columns={columns}
+              dataSource={tableData}
+              pagination={false}
+              scroll={{ x: 'max-content', y: 'calc(100vh - 240px)' }}
+              bordered
+              rowClassName={getRowClassName}
+              onRow={(record) => {
+                if (record?.isSeparator) {
+                  return {
+                    className: 'separator-row'
+                  };
+                }
+                return {};
+              }}
+            />
           </Spin>
         </Card>
       </ConfigProvider>
