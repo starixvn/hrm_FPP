@@ -5,6 +5,13 @@
     var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
     var area = ViewContext.RouteData.DataTokens["Area"]?.ToString();
     var url = $"{(!string.IsNullOrWhiteSpace(area) ? $"/{area}" : string.Empty)}/{controller}";
+
+    var iconMap = new Dictionary<string, string>
+    {
+        { "report", "bi-file-earmark-text" },
+        { "upload", "bi-upload" },
+        { "default", "bi-upload" }
+    };
 }
 
 <div id="layoutSidenav_nav">
@@ -14,8 +21,17 @@
                 @foreach (var item in Model)
                 {
                     var classActive = url == item.URL ? "active" : "";
-                    <a class ="nav-link @classActive" href = "@item.URL" >
-                        <i class="bi bi-upload me-2"></i> @item.MenuItemName
+                    var iconClass = "bi-upload";
+                    foreach (var icon in iconMap)
+                    {
+                        if (item.URL.ToLower().Contains(icon.Key))
+                        {
+                            iconClass = icon.Value;
+                            break;
+                        }
+                    }
+                    <a class="nav-link @classActive" href="@item.URL">
+                        <i class="bi @iconClass me-2"></i> @item.MenuItemName
                     </a>
                 }
             </div>
