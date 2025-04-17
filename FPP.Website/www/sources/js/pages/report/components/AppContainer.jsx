@@ -123,10 +123,11 @@ const AppContainer = () => {
       align: 'right',
       render: (text, record) => {
         const value = text || '0';
+        const formattedValue = Number(value).toLocaleString('en-US');
         if (record.isCategory || record.isGrandTotal) {
-          return <strong>{value}</strong>;
+          return <strong>{formattedValue}</strong>;
         }
-        return value;
+        return formattedValue;
       }
     }));
 
