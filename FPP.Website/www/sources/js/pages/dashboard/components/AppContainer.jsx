@@ -16,7 +16,7 @@ const BUCost = () => {
     <div>
       <Card className="upload-card">
         <Title level={2} className="page-title">
-          Upload Monthly BU Cost or Expense
+          Cost/Expense Upload
         </Title>
         <UploadCostFile onUploadSuccess={handleUploadSuccess} />
       </Card>

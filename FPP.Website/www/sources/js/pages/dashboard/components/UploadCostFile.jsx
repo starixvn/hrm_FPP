@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Upload, Button, message } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 const { Dragger } = Upload;
 
@@ -43,8 +44,7 @@ const UploadCostFile = ({ onUploadSuccess }) => {
         onUploadSuccess?.();
       }
     } catch (error) {
-      console.error("Upload error:", error);
-      message.error(error.response?.data?.message || "Upload failed");
+      message.error(error.response?.data || "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -102,6 +102,10 @@ const UploadCostFile = ({ onUploadSuccess }) => {
       </div>
     </div>
   );
+};
+
+UploadCostFile.propTypes = {
+  onUploadSuccess: PropTypes.func,
 };
 
 export default UploadCostFile;
