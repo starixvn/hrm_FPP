@@ -44,7 +44,7 @@ const UploadCostFile = ({ onUploadSuccess }) => {
         onUploadSuccess?.();
       }
     } catch (error) {
-      message.error(error.response?.data || "Upload failed");
+      message.error(error.response?.data || 'The file has changed or is no longer available. Please reselect the file and try again.');
     } finally {
       setUploading(false);
     }

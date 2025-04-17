@@ -52,8 +52,13 @@ namespace FPP.Services.Implement
                     return commandResult;
                 }
 
-                var items = ExtractExpenses(worksheet, monthInfos);
-                if (items == null || items.Count == 0)
+                var (items, duplicateTerm) = ExtractExpenses(worksheet, monthInfos);
+                if (items == null)
+                {
+                    commandResult.Message = $"Duplicate term name found: {duplicateTerm}";
+                    return commandResult;
+                }
+                if (items.Count == 0)
                 {
                     commandResult.Message = "Could not extract expense data from the worksheet";
                     return commandResult;
@@ -114,9 +119,10 @@ namespace FPP.Services.Implement
             return monthInfos;
         }
 
-        private List<TermItem> ExtractExpenses(ExcelWorksheet worksheet, List<MonthInfo> monthInfos)
+        private (List<TermItem>? Items, string? DuplicateTerm) ExtractExpenses(ExcelWorksheet worksheet, List<MonthInfo> monthInfos)
         {
             var result = new List<TermItem>();
+            var termNames = new HashSet<string>();
 
             for (var row = StartItemRow; row <= worksheet.Dimension.End.Row; row++)
             {
@@ -124,6 +130,11 @@ namespace FPP.Services.Implement
                 if (string.IsNullOrWhiteSpace(cellText))
                 {
                     continue;
+                }
+
+                if (!termNames.Add(cellText))
+                {
+                    return (null, cellText);
                 }
 
                 foreach (var monthInfo in monthInfos)
@@ -139,7 +150,7 @@ namespace FPP.Services.Implement
                     });
                 }
             }
-            return result;
+            return (result, null);
         }
     }
 }
