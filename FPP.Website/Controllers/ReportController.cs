@@ -1,5 +1,4 @@
 using FPP.Core.Criteria;
-using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Models;
 using FPP.Services.Interfaces;
@@ -26,7 +25,7 @@ namespace FPP.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> GetFilterData()
         {
-            var res = new FilterDataCostExpense()
+            var res = new FilterDataCostExpense
             {
                 Categories = await baseService.GetDataAsync<Category>(new GetCategoryCriteria()),
                 Units = await baseService.GetDataAsync<Unit>(new GetUploadedUnitCriteria())

@@ -11,9 +11,9 @@ namespace FPP.Website.Controllers;
 [Route("api/[controller]")]
 [ApiController]
 public class BUCostAndExpenseController(
-    IMinIOService minIOService, 
-    IBaseService baseService, 
-    IUploadService uploadService, 
+    IMinIOService minIOService,
+    IBaseService baseService,
+    IUploadService uploadService,
     IUserControlSession session) : ControllerBase
 {
     [HttpPost("UploadExcel")]
@@ -26,7 +26,7 @@ public class BUCostAndExpenseController(
 
         var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(file.FileName);
         var extension = Path.GetExtension(file.FileName);
-        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+        var timestamp = DateTimeOffset.Now.ToString("yyyyMMddHHmmss");
 
         var savedFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
         var path = $"{MinIOFolderConstants.BUCostAndExpense}/{savedFileName}";

@@ -95,7 +95,7 @@ public class MinIOService : IMinIOService
         var response = await client.ListObjectsV2Async(request);
         return response.S3Objects.Select(o => new S3FileObject
         {
-            FileName = o.Key.Split("/").Last(),
+            FileName = o.Key.Split("/")[^1],
             FilePath = $"{s3Config.ExternalUrl}/{bucketName}/{o.Key}"
         });
     }
@@ -107,7 +107,6 @@ public class MinIOService : IMinIOService
             BucketName = bucketName,
             Key = filePath
         };
-        Console.WriteLine(request.Key);
 
         using var response = await client.GetObjectAsync(request);
         var memoryStream = new MemoryStream();

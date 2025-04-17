@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-namespace FPP.Core.Models;
+﻿namespace FPP.Core.Models;
 
 public class S3FileObject
 {
