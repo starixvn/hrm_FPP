@@ -1,0 +1,1 @@
+$((function(){$("#btn-signin").click((function(n){var o=$("#Password").val();$("#Password").val(btoa(unescape(encodeURIComponent(o))))}))}));
