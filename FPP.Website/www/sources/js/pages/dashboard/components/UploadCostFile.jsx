@@ -5,7 +5,7 @@ import axios from "axios";
 
 const { Dragger } = Upload;
 
-const UploadCostFile = () => {
+const UploadCostFile = ({ onUploadSuccess }) => {
   const [fileList, setFileList] = useState([]);
   const [uploading, setUploading] = useState(false);
 
@@ -40,6 +40,7 @@ const UploadCostFile = () => {
       if (response.data) {
         message.success("Upload successful!");
         setFileList([]);
+        onUploadSuccess?.();
       }
     } catch (error) {
       console.error("Upload error:", error);

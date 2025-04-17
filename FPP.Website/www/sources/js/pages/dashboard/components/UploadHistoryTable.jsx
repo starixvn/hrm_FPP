@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, message } from "antd";
 import axios from "axios";
 
-const UploadHistoryTable = () => {
+const UploadHistoryTable = ({ refetchData }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -27,7 +27,8 @@ const UploadHistoryTable = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [refetchData]);
+
   const columns = [
     {
       title: "BU ID",
@@ -75,7 +76,7 @@ const UploadHistoryTable = () => {
       columns={columns}
       dataSource={data}
       loading={loading}
-      rowKey="SavedFileName"
+      rowKey={(record) => `${record.buId}-${record.createdDate}`}
       pagination={{ pageSize: 10 }}
       size="small"
       bordered

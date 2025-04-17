@@ -148,3 +148,15 @@
     text-align: right;
   }
 }
+
+/* Table Styles */
+.custom-table .ant-table {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.custom-table .ant-table-thead > tr > th {
+  background-color: #47638d !important;
+  color: white !important;
+}
