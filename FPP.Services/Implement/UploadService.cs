@@ -1,4 +1,4 @@
-﻿using FPP.Core.Models;
+using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Criteria;
 using FPP.Models;
@@ -15,7 +15,7 @@ namespace FPP.Services.Implement
         private const int SheetIndex = 0;
         private const int StartItemRow = 8;
         private const int MonthRow = 2;
-        private const int StartMonthCol = 3; // Column C 
+        private const int StartMonthCol = 3; // Column C
         private const int EndMonthCol = 14; // Column L
         private const int NameCol = 2; // Column B
         private const int MinLengthGroupUnit = 3;
@@ -100,21 +100,32 @@ namespace FPP.Services.Implement
             var monthInfos = new List<MonthInfo>();
             for (var col = StartMonthCol; col <= EndMonthCol; col++)
             {
-                var header = worksheet.Cells[MonthRow, col].Text;
-                if (string.IsNullOrWhiteSpace(header))
+                var cell = worksheet.Cells[MonthRow, col];
+                if (cell.Value == null)
                 {
                     continue;
                 }
 
-                if (DateTime.TryParse(header, out var month) ||
-                    DateTime.TryParseExact(header, "MM-yy", null, System.Globalization.DateTimeStyles.None, out month))
+                DateTime month;
+                if (cell.Value is double excelDate)
                 {
-                    monthInfos.Add(new MonthInfo
-                    {
-                        Month = month,
-                        ColumnIndex = col
-                    });
+                    month = DateTime.FromOADate(excelDate);
                 }
+                else if (DateTime.TryParse(cell.Value.ToString(), out month) ||
+                    DateTime.TryParseExact(cell.Value.ToString(), "MMM dd yyyy", null, System.Globalization.DateTimeStyles.None, out month))
+                {
+                    // Use the parsed month
+                }
+                else
+                {
+                    continue;
+                }
+
+                monthInfos.Add(new MonthInfo
+                {
+                    Month = month,
+                    ColumnIndex = col
+                });
             }
             return monthInfos;
         }
