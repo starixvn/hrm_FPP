@@ -24,4 +24,10 @@ namespace FPP.Models
         public DateTime Month { get; set; }
         public decimal Amount { get; set; }
     }
+
+    public class MonthInfo
+    {
+        public DateTime Month { get; set; }
+        public int ColumnIndex { get; set; }
+    }
 }

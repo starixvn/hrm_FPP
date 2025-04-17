@@ -1,6 +1,7 @@
 ﻿using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Criteria;
+using FPP.Models;
 using FPP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
@@ -24,29 +25,56 @@ namespace FPP.Services.Implement
         public async Task<CommandResult> ImportCostExpenseExcelAsync(IFormFile file, string savedFileName, int userId)
         {
             var commandResult = new CommandResult();
-            await using var stream = file.OpenReadStream();
-            using var package = new ExcelPackage(stream);
-            var worksheet = package.Workbook.Worksheets[SheetIndex];
 
-            var groupUnitId = ExtractGroupUnitId(worksheet);
-            if (groupUnitId == null)
+            try
             {
-                return commandResult;
+                await using var stream = file.OpenReadStream();
+                using var package = new ExcelPackage(stream);
+
+                if (package.Workbook.Worksheets.Count == 0)
+                {
+                    commandResult.Message = "Excel file does not contain any worksheets";
+                    return commandResult;
+                }
+
+                var worksheet = package.Workbook.Worksheets[SheetIndex];
+                var groupUnitId = ExtractGroupUnitId(worksheet);
+                if (groupUnitId == null)
+                {
+                    commandResult.Message = "Could not extract BU ID from the worksheet";
+                    return commandResult;
+                }
+
+                var monthInfos = ExtractMonths(worksheet);
+                if (monthInfos == null || monthInfos.Count == 0)
+                {
+                    commandResult.Message = "Could not extract months from the worksheet";
+                    return commandResult;
+                }
+
+                var items = ExtractExpenses(worksheet, monthInfos);
+                if (items == null || items.Count == 0)
+                {
+                    commandResult.Message = "Could not extract expense data from the worksheet";
+                    return commandResult;
+                }
+
+                var criteria = new ImportCostExpenseCriteria
+                {
+                    GroupUnitId = groupUnitId.Value,
+                    FileName = file.FileName,
+                    SavedFileName = savedFileName,
+                    CreatedBy = userId,
+                    TermListJson = JsonConvert.SerializeObject(items),
+                };
+
+                commandResult = await baseService.ExecuteNonQueryAsync(criteria);
+            }
+            catch (Exception ex)
+            {
+                commandResult.Message = $"Error processing Excel file: {ex.Message}";
             }
 
-            var months = ExtractMonths(worksheet);
-            var items = ExtractExpenses(worksheet, months);
-
-            var criteria = new ImportCostExpenseCriteria
-            {
-                GroupUnitId = groupUnitId.Value,
-                FileName = file.FileName,
-                SavedFileName = savedFileName,
-                CreatedBy = userId,
-                TermListJson = JsonConvert.SerializeObject(items),
-            };
-
-            commandResult = await baseService.ExecuteNonQueryAsync(criteria);
             return commandResult;
         }
 
@@ -62,9 +90,9 @@ namespace FPP.Services.Implement
             return int.TryParse(groupUnit, out var groupUnitId) ? groupUnitId : null;
         }
 
-        private List<DateTime> ExtractMonths(ExcelWorksheet worksheet)
+        private List<MonthInfo> ExtractMonths(ExcelWorksheet worksheet)
         {
-            var months = new List<DateTime>();
+            var monthInfos = new List<MonthInfo>();
             for (var col = StartMonthCol; col <= EndMonthCol; col++)
             {
                 var header = worksheet.Cells[MonthRow, col].Text;
@@ -72,20 +100,21 @@ namespace FPP.Services.Implement
                 {
                     continue;
                 }
+
                 if (DateTime.TryParse(header, out var month) ||
                     DateTime.TryParseExact(header, "MM-yy", null, System.Globalization.DateTimeStyles.None, out month))
                 {
-                    months.Add(month);
-                }
-                else
-                {
-                    months.Add(DateTime.MinValue);
+                    monthInfos.Add(new MonthInfo
+                    {
+                        Month = month,
+                        ColumnIndex = col
+                    });
                 }
             }
-            return months;
+            return monthInfos;
         }
 
-        private List<TermItem> ExtractExpenses(ExcelWorksheet worksheet, List<DateTime> months)
+        private List<TermItem> ExtractExpenses(ExcelWorksheet worksheet, List<MonthInfo> monthInfos)
         {
             var result = new List<TermItem>();
 
@@ -96,16 +125,16 @@ namespace FPP.Services.Implement
                 {
                     continue;
                 }
-                for (var i = 0; i < months.Count; i++)
+
+                foreach (var monthInfo in monthInfos)
                 {
-                    var col = StartMonthCol + i;
-                    var value = worksheet.Cells[row, col].Text;
+                    var value = worksheet.Cells[row, monthInfo.ColumnIndex].Text;
                     var amount = decimal.TryParse(value, out var a) ? a : 0;
 
                     result.Add(new TermItem
                     {
                         TermName = cellText,
-                        Month = new DateTime(months[i].Year, months[i].Month, 1),
+                        Month = new DateTime(monthInfo.Month.Year, monthInfo.Month.Month, 1),
                         Amount = amount
                     });
                 }

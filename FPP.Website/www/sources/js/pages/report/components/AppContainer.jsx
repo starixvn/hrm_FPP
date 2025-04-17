@@ -10,7 +10,7 @@ const AppContainer = () => {
   const [costExpenseData, setCostExpenseData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [year, setYear] = useState(2025);
-  const [groupUnitId, setGroupUnitId] = useState(920);
+  const [groupUnitId, setGroupUnitId] = useState();
   const [categoryId, setCategoryId] = useState(null);
 
   const fetchCostExpenseData = async () => {
