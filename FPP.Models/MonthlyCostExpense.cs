@@ -5,7 +5,7 @@ namespace FPP.Models
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public Dictionary<string, decimal> MonthlyTotalAmounts { get; set; }
-        public List<MonthlyCostExpenseDetail> Details { get; set; }
+        public IEnumerable<MonthlyCostExpenseDetail> Details { get; set; }
     }
 
     public class MonthlyCostExpenseDetail

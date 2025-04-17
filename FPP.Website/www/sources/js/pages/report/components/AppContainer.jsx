@@ -8,7 +8,7 @@ const { Title } = Typography;
 const AppContainer = () => {
   const [loading, setLoading] = useState(false);
   const [costExpenseData, setCostExpenseData] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const [year, setYear] = useState(2025);
   const [groupUnitId, setGroupUnitId] = useState(920);
   const [categoryId, setCategoryId] = useState(null);
@@ -33,8 +33,8 @@ const AppContainer = () => {
 
   const fetchCategoryData = async () => {
     try {
-      const response = await axios.get(`/Report/GetCategory`);
-      setCategoryData(response.data);
+      const response = await axios.get(`/Report/GetFilterData`);
+      setFilterData(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -58,28 +58,33 @@ const AppContainer = () => {
   }, [costExpenseData]);
 
   const renderFilters = () => (
-    <Row className="report-filters" gutter={[16, 16]}>
+    <Row className="report-filters" gutter={[32, 32]}>
       <Col span={8}>
-        <div className="filter-label">Group Unit</div>
-        <Select placeholder="Select Group Unit" onChange={setGroupUnitId} value={groupUnitId}>
-          <Option value={920}>920</Option>
-        </Select>
-      </Col>
-      <Col span={8}>
-        <div>
-          <div className="filter-label">Year</div>
-          <Select placeholder="Year" onChange={setYear} value={year}>
-            <Option value="2024">2024</Option>
-            <Option value="2025">2025</Option>
-            <Option value="2026">2026</Option>
+        <div className="filter-option">
+          <div className="filter-label">BU</div>
+          <Select placeholder="Select BU" onChange={setGroupUnitId} value={groupUnitId}>
+            {filterData?.units?.map((unit) => (
+              <Option key={unit.groupUnitId} value={unit.groupUnitId}>
+                {unit.groupUnitId} - {unit.code}
+              </Option>
+            ))}
           </Select>
         </div>
       </Col>
       <Col span={8}>
-        <div>
+        <div className="filter-option">
+          <div className="filter-label">Year</div>
+          <Select placeholder="Year" onChange={setYear} value={year}>
+            <Option value="2024">2024</Option>
+            <Option value="2025">2025</Option>
+          </Select>
+        </div>
+      </Col>
+      <Col span={8}>
+        <div className="filter-option">
           <div className="filter-label">Category</div>
           <Select placeholder="Select Category" onChange={setCategoryId} value={categoryId} allowClear>
-            {categoryData.map((category) => (
+            {filterData?.categories?.map((category) => (
               <Option key={category.categoryId} value={category.categoryId}>
                 {category.name}
               </Option>
@@ -210,7 +215,7 @@ const AppContainer = () => {
               columns={columns}
               dataSource={tableData}
               pagination={false}
-              scroll={{ x: 'max-content', y: 'calc(100vh - 240px)' }}
+              scroll={{ x: 'max-content', y: 'calc(100vh - 324px)' }}
               bordered
               rowClassName={getRowClassName}
               onRow={(record) => {

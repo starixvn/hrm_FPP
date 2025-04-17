@@ -24,12 +24,14 @@ namespace FPP.Website.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCategory()
+        public async Task<IActionResult> GetFilterData()
         {
-            var criteria = new GetCategoryCriteria();
-
-            var result = await baseService.GetDataAsync<Category>(criteria);
-            return Ok(result);
+            var res = new FilterDataCostExpense()
+            {
+                Categories = await baseService.GetDataAsync<Category>(new GetCategoryCriteria()),
+                Units = await baseService.GetDataAsync<Unit>(new GetUploadedUnitCriteria())
+            };
+            return Ok(res);
         }
     }
 }

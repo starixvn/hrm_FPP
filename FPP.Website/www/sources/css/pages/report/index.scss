@@ -1,7 +1,5 @@
 .report-container {
-    padding: 24px;
-    background-color: #f0f2f5;
-    min-height: 100vh;
+    margin-top: 24px;
 }
 
 .report-card {
@@ -37,6 +35,12 @@
     .ant-select {
         width: 100%;
         min-width: 160px;
+    }
+
+    .filter-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
     }
 }
 
