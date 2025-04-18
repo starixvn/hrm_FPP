@@ -1,33 +1,21 @@
-import React, { useState } from "react";
-import UploadCostFile from "./UploadCostFile";
-import UploadHistoryTable from "./UploadHistoryTable";
-import { Card, Typography } from "antd";
+import React from 'react';
+import { Typography } from 'antd';
+const { Title, Text } = Typography;
 
-const { Title } = Typography;
-
-const BUCost = () => {
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const handleUploadSuccess = () => {
-    setRefreshKey((prev) => prev + 1);
-  };
-
-  return (
-    <div>
-      <Card className="upload-card">
-        <Title level={2} className="page-title">
-          Cost/Expense Upload
-        </Title>
-        <UploadCostFile onUploadSuccess={handleUploadSuccess} />
-      </Card>
-      <Card className="history-card" style={{ marginTop: 24 }}>
-        <Title level={2} className="page-title">
-          Upload History
-        </Title>
-        <UploadHistoryTable refetchData={refreshKey} />
-      </Card>
-    </div>
-  );
+const AppContainer = () => {
+    return (
+        <div className="dashboard-container">
+            <div className="welcome-section">
+                <Title level={1} className="welcome-title">
+                    Welcome to FMS
+                </Title>
+                <Text className="welcome-subtitle">
+                    Financial Management System - Your comprehensive solution for cost and expense
+                    management
+                </Text>
+            </div>
+        </div>
+    );
 };
 
-export default BUCost;
+export default AppContainer;

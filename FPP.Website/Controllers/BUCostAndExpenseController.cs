@@ -3,7 +3,9 @@ using FPP.Core.Criteria;
 using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Services.Interfaces;
+using FPP.Website.Filters;
 using GO.UserControl.Client.Core.Session;
+using GO.UserControl.Client.Core.Enumerables;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers;
@@ -17,6 +19,7 @@ public class BUCostAndExpenseController(
     IUserControlSession session) : ControllerBase
 {
     [HttpPost("UploadExcel")]
+    [FppPermission(Policy.Host, FunctionKey.CostExpenseUpload)]
     public async Task<IActionResult> UploadExcel(IFormFile file)
     {
         if (file == null || file.Length == 0)
@@ -40,6 +43,7 @@ public class BUCostAndExpenseController(
     }
 
     [HttpGet("DownloadExcel")]
+    [FppPermission(Policy.Read, FunctionKey.CostExpenseUpload)]
     public async Task<IActionResult> DownloadExcel(string savedFileName, string fileName)
     {
         if (string.IsNullOrEmpty(savedFileName))
@@ -54,6 +58,7 @@ public class BUCostAndExpenseController(
     }
 
     [HttpGet("GetUploadHistory")]
+    [FppPermission(Policy.Read, FunctionKey.CostExpenseUpload)]
     public async Task<IActionResult> GetUploadHistory(int? empId = null)
     {
         var criteria = new GetUploadHistoryCriteria
