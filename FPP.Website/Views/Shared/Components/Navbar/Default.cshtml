@@ -1,0 +1,32 @@
+@using GO.UserControl.Client.Core.Models.User
+@model User
+
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+    <a class="navbar-brand ps-3" asp-controller="Home" asp-action="Index">
+        <img src="~/images/images1.png" alt="FMS Logo" height="40" />
+        <span class="fw-bold">FMS</span>
+    </a>
+    <!-- Sidebar Toggle-->
+    <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="navbar-toggler-icon"></i></button>
+    <!-- Navbar Search-->
+    <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0"></form>
+    <!-- Navbar-->
+    <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+        <li class="nav-item">
+            <span class="nav-link text-white time-display" id="current-time">
+                <i class="bi bi-clock me-2"></i>
+                <div class="time"></div>
+                <span class="timezone">GMT+8</span>
+            </span>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @Model.Nickname <i class="bi bi-person-circle"></i>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <li><a class="dropdown-item" asp-controller="Auth" asp-action="Logout">Logout</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
