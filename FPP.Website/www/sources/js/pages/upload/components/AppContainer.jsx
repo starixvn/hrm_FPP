@@ -5,7 +5,7 @@ import { Card, Typography } from 'antd';
 
 const { Title } = Typography;
 
-const BUCost = () => {
+const BUCost = ({ isHost }) => {
     const [refreshKey, setRefreshKey] = useState(0);
 
     const handleUploadSuccess = () => {
@@ -14,7 +14,7 @@ const BUCost = () => {
 
     return (
         <div>
-            {window.isHost && (
+            {isHost && (
                 <Card className="upload-card">
                     <Title level={2} className="page-title">
                         Cost/Expense Upload

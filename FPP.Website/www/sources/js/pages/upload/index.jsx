@@ -4,4 +4,7 @@ import ReactDOM from 'react-dom';
 import AppContainer from './components/AppContainer';
 import '../../../css/pages/dashboard/index.scss';
 
-ReactDOM.render(<AppContainer />, document.getElementById('app-container'));
+const appContainer = document.getElementById('app-container');
+const isHost = appContainer.getAttribute('data-param') === 'True';
+
+ReactDOM.render(<AppContainer isHost={isHost} />, document.getElementById('app-container'));

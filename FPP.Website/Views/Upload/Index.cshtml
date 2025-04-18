@@ -11,9 +11,6 @@
 }
 
 @section Scripts {
-	<script>
-        window.isHost = @ViewBag.isHost;
-	</script>
     <environment include="Development">
         <script src="~/js/dev/pages/upload/index.chunk.js" asp-append-version="true"></script>
     </environment>
@@ -22,5 +19,5 @@
     </environment>
 }
 <div class="container-fluid">
-   <div id="app-container"></div>
+    <div id="app-container" data-param="@ViewBag.IsHost"></div>
 </div>

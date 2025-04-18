@@ -5,18 +5,16 @@ using FPP.Models;
 using FPP.Services.Interfaces;
 using FPP.Website.Filters;
 using GO.UserControl.Client.Core.Enumerables;
-using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers
 {
     [FppAuthorize]
-    public class ReportController(IReportService reportService, IBaseService baseService, IUserControlSession session) : Controller
+    public class ReportController(IReportService reportService, IBaseService baseService) : Controller
     {
         [FppPermission(Policy.Read, FunctionKey.CostExpenseReport)]
         public IActionResult Index()
         {
-            ViewBag.IsHost = session.HasPermissionOnFunction(FunctionKey.CostExpenseReport, Policy.Host);
             return View();
         }
 
