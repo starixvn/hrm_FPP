@@ -12,5 +12,6 @@ public static class Bucket
 public static class MinIOFolderConstants
 {
     public const string BUCostAndExpense = "BUCostAndExpense";
+    public const string InterCharging = "InterCharging";
 }
 

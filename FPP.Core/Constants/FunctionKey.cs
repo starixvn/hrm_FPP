@@ -6,4 +6,8 @@ public static class FunctionKey
 
     public const string CostExpenseReport = "CostExpenseReport";
 
+    public const string InterChargingUpload = "InterChargingUpload";
+
+    public const string InterChargingReport = "InterChargingReport";
+
 }
