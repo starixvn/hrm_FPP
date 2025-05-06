@@ -41,7 +41,6 @@ namespace FPP.Services.Implement
 
                 var worksheet = package.Workbook.Worksheets[SheetIndex];
 
-                // Extract Report BU ID (Owner Group Unit ID)
                 var ownerGroupUnitId = ExtractOwnerGroupUnitId(worksheet);
                 if (!ownerGroupUnitId.HasValue)
                 {
@@ -49,7 +48,6 @@ namespace FPP.Services.Implement
                     return commandResult;
                 }
 
-                // Extract Period/Month
                 var month = ExtractMonth(worksheet);
                 if (!month.HasValue)
                 {
@@ -64,7 +62,6 @@ namespace FPP.Services.Implement
                     return commandResult;
                 }
 
-                // Validate total amount
                 var totalAmount = chargedItems.Sum(x => x.Amount);
                 if (totalAmount != 0)
                 {
@@ -72,7 +69,6 @@ namespace FPP.Services.Implement
                     return commandResult;
                 }
 
-                // Validate Excel total cell
                 var excelTotal = GetExcelTotal(worksheet);
                 if (excelTotal != 0)
                 {

@@ -55,13 +55,13 @@ const UploadHistoryTable = ({ refetchData }) => {
             ),
         },
         {
-            title: 'Created By',
+            title: 'Uploaded By',
             dataIndex: 'createdBy',
             key: 'createdBy',
             align: 'center',
         },
         {
-            title: 'Created Date',
+            title: 'Uploaded Date Time',
             dataIndex: 'createdDate',
             key: 'createdDate',
             align: 'center',
