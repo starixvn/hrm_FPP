@@ -17,14 +17,26 @@ function generateConfig(environment) {
             [`${jsPath}/lib/lang-vi-VN`]: pathConfig.scriptPaths.language,
             [`${jsPath}/pages/login`]: pathConfig.scriptPaths.login,
             [`${jsPath}/pages/dashboard/index`]: pathConfig.scriptPaths.dashboard_index,
-            [`${jsPath}/pages/upload/index`]: pathConfig.scriptPaths.upload_index,
-            [`${jsPath}/pages/report/index`]: pathConfig.scriptPaths.report_index,
+            [`${jsPath}/pages/costExpense/upload/index`]:
+                pathConfig.scriptPaths.costExpense_upload_index,
+            [`${jsPath}/pages/costExpense/report/index`]:
+                pathConfig.scriptPaths.costExpense_report_index,
+            [`${jsPath}/pages/interCharging/upload/index`]:
+                pathConfig.scriptPaths.interCharging_upload_index,
+            [`${jsPath}/pages/interCharging/report/index`]:
+                pathConfig.scriptPaths.interCharging_report_index,
             /*css*/
             [`${cssPath}/pages/login`]: pathConfig.cssPaths.login,
             [`${cssPath}/pages/error`]: pathConfig.cssPaths.error,
             [`${cssPath}/pages/dashboard/index`]: pathConfig.cssPaths.dashboard_index,
-            [`${cssPath}/pages/upload/index`]: pathConfig.cssPaths.upload_index,
-            [`${cssPath}/pages/report/index`]: pathConfig.cssPaths.report_index,
+            [`${cssPath}/pages/costExpense/upload/index`]:
+                pathConfig.cssPaths.costExpense_upload_index,
+            [`${cssPath}/pages/costExpense/report/index`]:
+                pathConfig.cssPaths.costExpense_report_index,
+            [`${cssPath}/pages/interCharging/upload/index`]:
+                pathConfig.cssPaths.interCharging_upload_index,
+            [`${cssPath}/pages/interCharging/report/index`]:
+                pathConfig.cssPaths.interCharging_report_index,
         },
         output: {
             path: pathConfig.projectRoot,

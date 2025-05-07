@@ -7,8 +7,10 @@ const cssPaths = {
     login: ['./www/sources/css/pages/login.scss'],
     error: ['./www/sources/css/pages/error.scss'],
     dashboard_index: ['./www/sources/css/pages/dashboard/index.scss'],
-    upload_index: ['./www/sources/css/pages/upload/index.scss'],
-    report_index: ['./www/sources/css/pages/report/index.scss'],
+    costExpense_upload_index: ['./www/sources/css/pages/costExpense/upload/index.scss'],
+    costExpense_report_index: ['./www/sources/css/pages/costExpense/report/index.scss'],
+    interCharging_upload_index: ['./www/sources/css/pages/interCharging/upload/index.scss'],
+    interCharging_report_index: ['./www/sources/css/pages/interCharging/report/index.scss'],
 };
 
 const scriptPaths = {
@@ -17,8 +19,10 @@ const scriptPaths = {
     error: ['./www/sources/js/pages/login.js'],
     language: ['./www/sources/js/common/languages/ViewResources_vi_VN.js'],
     dashboard_index: ['./www/sources/js/pages/dashboard/index.jsx'],
-    upload_index: ['./www/sources/js/pages/upload/index.jsx'],
-    report_index: ['./www/sources/js/pages/report/index.jsx'],
+    costExpense_upload_index: ['./www/sources/js/pages/costExpense/upload/index.jsx'],
+    costExpense_report_index: ['./www/sources/js/pages/costExpense/report/index.jsx'],
+    interCharging_upload_index: ['./www/sources/js/pages/interCharging/upload/index.jsx'],
+    interCharging_report_index: ['./www/sources/js/pages/interCharging/report/index.jsx'],
 };
 
 module.exports = {
