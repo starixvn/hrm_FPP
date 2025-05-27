@@ -6,6 +6,7 @@ using FPP.Website.ViewModels.InterInvoice;
 using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace FPP.Website.Controllers;
 public class InterInvoiceController(
@@ -31,6 +32,16 @@ public class InterInvoiceController(
     public IActionResult Detail(int id)
     {
         return View(id);
+    }
+    [HttpPost]
+    //[FppPermission(Policy.Read, "My BU Invoices.Read", "My BU Invoices.Host", "Global Invoices.Read", "Global Invoices.Host")]
+    public async Task<IActionResult> GetInvoiceList([FromBody] GetInterInvoiceListCriteria criteria)
+    {
+        var isGlobalInvoice = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
+        criteria.IsGlobal = isGlobalInvoice;
+
+        var result = await baseService.GetDataAsync<InterInvoice>(criteria);
+        return Json(result);
     }
 
     public async Task<IActionResult> GetPreparedData()

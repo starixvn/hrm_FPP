@@ -1,1 +1,19 @@
-.listing-invoice-container {}
+.listing-invoice-container {
+    margin-top: 24px;
+}
+
+.listing-invoice-container {
+    .ant-table-thead {
+        .ant-table-cell {
+            background-color: #a5c5f5 !important;
+            font-weight: 600;
+        }
+    }
+
+    .ant-table-summary {
+        .ant-table-cell {
+            font-weight: bold;
+            background-color: #f5f5f5;
+        }
+    }
+}

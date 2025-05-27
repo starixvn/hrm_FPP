@@ -10,4 +10,8 @@ public static class FunctionKey
 
     public const string InterChargingReport = "InterChargingReport";
 
+    public const string MyBUInvoice = "MyBUInvoice";
+
+    public const string GlobalInvoice = "GlobalInvoice";
+
 }

@@ -21,5 +21,9 @@
       <Folder Include="Criteria\InterInvoice\" />
       <Folder Include="Criteria\Common\" />
     </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\FPP.Models\FPP.Models.csproj" />
+    </ItemGroup>
+
 
 </Project>
