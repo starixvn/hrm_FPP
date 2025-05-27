@@ -1,1 +1,62 @@
-.invoice-container {}
+.invoice-container {
+    margin: 24px 0;
+
+    .invoice-form-card {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .invoice-form {
+        .ant-form-item {
+            margin-bottom: 24px;
+        }
+
+        .invoice-item {
+            background-color: #fafafa;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+
+            .ant-form-item {
+                margin-bottom: 0;
+            }
+
+            .anticon-minus-circle {
+                color: #ff4d4f;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.3s;
+
+                &:hover {
+                    color: #ff7875;
+                }
+            }
+        }
+
+        .ant-divider {
+            margin: 32px 0 24px;
+        }
+
+        .ant-btn-dashed {
+            border-style: dashed;
+            border-color: #d9d9d9;
+            color: #595959;
+
+            &:hover {
+                border-color: #40a9ff;
+                color: #40a9ff;
+            }
+        }
+
+        .ant-input-number {
+            width: 100%;
+        }
+
+        .invoice-item-row {
+            align-items: start;
+
+            .remove-item {
+                margin-top: 6px;
+            }
+        }
+    }
+}

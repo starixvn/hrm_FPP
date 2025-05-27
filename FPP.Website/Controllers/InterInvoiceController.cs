@@ -23,6 +23,16 @@ public class InterInvoiceController(
         return View();
     }
 
+    public IActionResult Edit(int id)
+    {
+        return View(id);
+    }
+
+    public IActionResult Detail(int id)
+    {
+        return View(id);
+    }
+
     public async Task<IActionResult> GetPreparedData()
     {
         var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
@@ -68,13 +78,19 @@ public class InterInvoiceController(
     [HttpGet]
     public async Task<IActionResult> GetInvoice(int id)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
         var criteria = new GetInterInvoiceCriteria
         {
             InterInvoiceId = id
         };
 
-        var invoice = await baseService.GetDataAsync<InterInvoice>(criteria);
-        return Json(invoice);
+        var invoice = await baseService.GetDataEntityAsync<InterInvoice>(criteria);
+        invoice.IsHandler = invoice.HandlerId == session.UserId;
+        return new JsonResult(invoice);
     }
 
     [HttpPut]

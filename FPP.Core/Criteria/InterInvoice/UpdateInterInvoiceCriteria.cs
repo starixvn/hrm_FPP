@@ -1,3 +1,4 @@
+using Fanex.Data.Repository;
 using FPP.Core.Models;
 
 namespace FPP.Core.Criteria.InterInvoice

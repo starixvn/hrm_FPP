@@ -1,8 +1,8 @@
-using FPP.Core.Models;
+using Fanex.Data.Repository;
 
 namespace FPP.Core.Criteria.InterInvoice
 {
-    public class GetInterInvoiceCriteria : BaseNonQueryCommand
+    public class GetInterInvoiceCriteria : CriteriaBase
     {
         public int InterInvoiceId { get; set; }
 
