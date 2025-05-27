@@ -5,7 +5,6 @@ using FPP.Website.Filters;
 using GO.UserControl.Client.Core.Session;
 using GO.UserControl.Client.Core.Enumerables;
 using Microsoft.AspNetCore.Mvc;
-using FPP.Models;
 using FPP.Models.InterCharging;
 using FPP.Core.Criteria.InterCharging;
 using FPP.Models.Common;

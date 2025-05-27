@@ -21,7 +21,15 @@ namespace FPP.Core.Criteria.InterInvoice
 
         public override bool IsValid()
         {
-            return BillerUnitId != PayerUnitId && BillerUnitId > 0 && PayerUnitId > 0 && CurrencyId > 0 && CreatedBy > 0 && !string.IsNullOrEmpty(ItemListJson);
+            if (BillerUnitId == PayerUnitId)
+            {
+                return false;
+            }
+            if (string.IsNullOrEmpty(ItemListJson))
+            {
+                return false;
+            }
+            return BillerUnitId > 0 && PayerUnitId > 0 && CurrencyId > 0;
         }
     }
 }

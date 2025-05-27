@@ -121,17 +121,11 @@ namespace FPP.Services.Implement
             var items = new List<ChargedItem>();
             var currentRow = StartDataRow;
 
-            while (currentRow <= worksheet.Dimension.End.Row)
+            while (currentRow <= worksheet.Dimension.End.Row && !string.IsNullOrEmpty(worksheet.Cells[currentRow, BUIdCol].Text.Trim()))
             {
                 var buIdText = worksheet.Cells[currentRow, BUIdCol].Text.Trim();
                 var amount = worksheet.Cells[currentRow, AmountCol].Text.Trim();
                 var description = worksheet.Cells[currentRow, DescriptionCol].Text.Trim();
-
-                // Stop if we hit an empty row
-                if (string.IsNullOrEmpty(buIdText))
-                {
-                    break;
-                }
 
                 if (int.TryParse(buIdText, out var buId) &&
                     decimal.TryParse(amount, out var amountValue) &&
