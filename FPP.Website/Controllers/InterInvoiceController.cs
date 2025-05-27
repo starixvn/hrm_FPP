@@ -25,9 +25,14 @@ public class InterInvoiceController(
 
     public async Task<IActionResult> GetPreparedData()
     {
-        var currencies = await commonService.GetAllCurrenciesAsync();
-        var units = await commonService.GetAllUnitsAsync();
-        return Json(new { currencies, units });
+        var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
+        var vm = new PreparedDataViewModel() {
+            Units = await commonService.GetAllUnitsAsync(),
+            Currencies = await commonService.GetAllCurrenciesAsync(),
+            IsGlobal = false,
+            CurrentEmpUnitId = currentEmpUnit.UnitId
+        };
+        return new JsonResult(vm);
     }
 
     [HttpPost]
@@ -52,6 +57,11 @@ public class InterInvoiceController(
         };
 
         var result = await baseService.ExecuteNonQueryAsync(criteria);
+        if (!result.IsSuccessful)
+        {
+            return BadRequest(result.Message);
+        }
+
         return new JsonResult(result);
     }
 
@@ -88,6 +98,10 @@ public class InterInvoiceController(
         };
 
         var result = await baseService.ExecuteNonQueryAsync(criteria);
+        if (!result.IsSuccessful)
+        {
+            return BadRequest(result.Message);
+        }
         return new JsonResult(result);
     }
 
@@ -108,6 +122,10 @@ public class InterInvoiceController(
         };
 
         var result = await baseService.ExecuteNonQueryAsync(criteria);
+        if (!result.IsSuccessful)
+        {
+            return BadRequest(result.Message);
+        }
         return new JsonResult(result);
     }
 }

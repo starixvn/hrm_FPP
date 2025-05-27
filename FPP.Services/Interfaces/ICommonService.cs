@@ -7,5 +7,7 @@ namespace FPP.Services.Interfaces
         Task<IEnumerable<Currency>> GetAllCurrenciesAsync();
 
         Task<IEnumerable<Unit>> GetAllUnitsAsync();
+
+        Task<Unit> GetUnitByEmpIdAsync(int empId);
     }
 }

@@ -7,7 +7,7 @@ namespace FPP.Core.Criteria.InterInvoice
         public int BillerUnitId { get; set; }
         public int PayerUnitId { get; set; }
         public int CurrencyId { get; set; }
-        public bool PeriodType { get; set; }
+        public int PeriodType { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public string Notes { get; set; }
