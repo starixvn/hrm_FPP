@@ -1,4 +1,4 @@
-﻿namespace FPP.Website;
+namespace FPP.Website;
 
 using System;
 using Core.Services;
@@ -99,6 +99,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICostExpenseService, CostExpenseService>();
         services.AddSingleton<IInterChargingService, InterChargingService>();
         services.AddSingleton<ICommonService, CommonService>();
+        services.AddSingleton<IActivityLogService, ActivityLogService>();
 
         return services;
     }

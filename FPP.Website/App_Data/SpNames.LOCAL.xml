@@ -28,4 +28,8 @@
         <Setting Key="Unit_GetAll" SpName="Unit_GetAll" DbName="bodb_FPP" Plain="0" />
         <Setting Key="Unit_GetUnitByEmpId" SpName="Unit_GetUnitByEmpId" DbName="bodb_FPP" Plain="0" />
     </Function>
+	<Function Name="ActivityLog">
+		<Setting Key="ActivityLog_Insert" SpName="ActivityLog_Insert" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="ActivityLog_Get" SpName="ActivityLog_Get" DbName="bodb_FPP" Plain="0" />
+	</Function>
 </Functions>
