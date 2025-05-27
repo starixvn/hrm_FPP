@@ -98,6 +98,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IMinIOService, MinIOService>();
         services.AddSingleton<ICostExpenseService, CostExpenseService>();
         services.AddSingleton<IInterChargingService, InterChargingService>();
+        services.AddSingleton<ICommonService, CommonService>();
 
         return services;
     }

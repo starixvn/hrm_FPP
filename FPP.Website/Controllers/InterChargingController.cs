@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using FPP.Models;
 using FPP.Models.InterCharging;
 using FPP.Core.Criteria.InterCharging;
+using FPP.Models.Common;
 
 namespace FPP.Website.Controllers;
 public class InterChargingController(
