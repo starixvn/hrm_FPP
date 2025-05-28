@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Typography } from 'antd';
+import { Table, Card, Typography, Button } from 'antd';
 import { fetchInvoices } from '../helper/service';
 import Filter from './Filter';
+import { mapInterInvoiceStatus, mapPeriodType } from '../../components/enum';
+import { EyeOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
 const AppContainer = () => {
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const isHost = document.getElementById('app-container').dataset.isHost === 'True';
 
     const loadInvoices = async (params = {}) => {
         setLoading(true);
@@ -19,6 +22,10 @@ const AppContainer = () => {
     useEffect(() => {
         loadInvoices();
     }, []);
+
+    const handleView = (id) => {
+        window.location.href = `/interInvoice/detail/${id}`;
+    };
 
     const columns = [
         {
@@ -73,10 +80,19 @@ const AppContainer = () => {
             align: 'left',
         },
         {
+            title: 'Period Type',
+            dataIndex: 'periodType',
+            key: 'periodType',
+            sorter: (a, b) => a.periodType - b.periodType,
+            render: (periodType) => mapPeriodType[periodType] || periodType,
+            align: 'left',
+        },
+        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
-            sorter: (a, b) => a.status.localeCompare(b.status),
+            sorter: (a, b) => a.status - b.status,
+            render: (status) => mapInterInvoiceStatus[status] || status,
             align: 'left',
         },
         {
@@ -84,8 +100,9 @@ const AppContainer = () => {
             dataIndex: 'createdDate',
             key: 'createdDate',
             sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
-            render: (date) => new Date(date).toLocaleDateString(),
+            render: (date) => date,
             align: 'left',
+            width: 160,
         },
         {
             title: 'Created By',
@@ -93,6 +110,19 @@ const AppContainer = () => {
             key: 'createdBy',
             sorter: (a, b) => a.createdBy.localeCompare(b.createdBy),
             align: 'left',
+        },
+        {
+            title: 'View',
+            key: 'view',
+            align: 'center',
+            width: 80,
+            render: (_, record) => (
+                <Button
+                    type="text"
+                    icon={<EyeOutlined />}
+                    onClick={() => handleView(record.interInvoiceId)}
+                />
+            ),
         },
     ];
 
@@ -107,7 +137,7 @@ const AppContainer = () => {
                     <Table.Summary.Cell index={1} align="right">
                         {totalAmount.toLocaleString()}
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={2} colSpan={7} />
+                    <Table.Summary.Cell index={2} colSpan={9} />
                 </Table.Summary.Row>
             </Table.Summary>
         );
@@ -116,7 +146,7 @@ const AppContainer = () => {
     return (
         <div className="listing-invoice-container">
             <Card title={<Title level={4}>Inter Invoice</Title>} className="report-card">
-                <Filter onFilter={loadInvoices} />
+                <Filter onFilter={loadInvoices} isHost={isHost} />
                 <Table
                     columns={columns}
                     dataSource={invoices}
@@ -125,7 +155,7 @@ const AppContainer = () => {
                     pagination={false}
                     summary={renderSummaryRow}
                     size="small"
-                    scroll={{ x: 'max-content', y: 'calc(100vh - 324px)' }}
+                    scroll={{ x: 'max-content', y: 'calc(100vh - 375px)' }}
                     bordered
                 />
             </Card>

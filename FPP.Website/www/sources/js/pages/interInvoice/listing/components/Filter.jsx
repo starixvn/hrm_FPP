@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Row, Col, Select, message } from 'antd';
+import { Form, Row, Col, Select, Button } from 'antd';
 import { fetchBuList } from '../helper/service';
 
 const { Option } = Select;
 
-const Filter = ({ onFilter }) => {
+const Filter = ({ onFilter, isHost }) => {
     const [buList, setBuList] = useState([]);
     const [form] = Form.useForm();
 
@@ -25,10 +25,14 @@ const Filter = ({ onFilter }) => {
         onFilter(params);
     };
 
+    const handleCreate = () => {
+        window.location.href = '/interInvoice/create';
+    };
+
     return (
         <Form form={form} onFinish={handleFilter} layout="vertical">
-            <Row gutter={16}>
-                <Col span={12}>
+            <Row gutter={16} align="middle">
+                <Col span={8}>
                     <Form.Item name="billerUnitId" label="Biller" initialValue="all">
                         <Select
                             placeholder="Select Biller"
@@ -48,7 +52,7 @@ const Filter = ({ onFilter }) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col span={8}>
                     <Form.Item name="payerUnitId" label="Payer" initialValue="all">
                         <Select
                             placeholder="Select Payer"
@@ -68,6 +72,15 @@ const Filter = ({ onFilter }) => {
                         </Select>
                     </Form.Item>
                 </Col>
+                {isHost && (
+                    <Col span={8}>
+                        <div className="create-button-container">
+                            <Button type="primary" onClick={handleCreate}>
+                                Create
+                            </Button>
+                        </div>
+                    </Col>
+                )}
             </Row>
         </Form>
     );

@@ -20,6 +20,7 @@ public class InterInvoiceController(
 {
     public IActionResult Index()
     {
+        ViewBag.IsHost = session.HasPermissionOnFunction(FunctionKey.InterInvoice, Policy.Host);
         return View();
     }
 
@@ -42,11 +43,11 @@ public class InterInvoiceController(
     }
 
     [HttpPost]
-    [FppPermission(Policy.Read, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    [FppPermission(Policy.Read, FunctionKey.InterInvoice)]
     public async Task<IActionResult> GetInvoiceList([FromBody] GetInterInvoiceListCriteria criteria)
     {
-        var isGlobalInvoice = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
-        criteria.IsGlobal = isGlobalInvoice;
+        criteria.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
+        criteria.EmpId = session.UserId;
 
         var result = await baseService.GetDataAsync<InterInvoiceList>(criteria);
         return Json(result);

@@ -1,6 +1,3 @@
-@{
-    ViewData["Title"] = "Inter Invoice";
-}
 @section Styles{
      <environment include="Development">
         <link rel="stylesheet" media="all" href="~/css/dev/pages/interInvoice/listing/index.chunk.css" asp-append-version="true" />
@@ -17,8 +14,7 @@
     <environment exclude="Development">
         <script src="~/js/pro/pages/interInvoice/listing/index.chunk.js" asp-append-version="true"></script>
     </environment>
-
 }
 <div class="container-fluid">
-   <div id="app-container"></div>
+   <div id="app-container" data-is-host="@ViewBag.IsHost"></div>
 </div>
