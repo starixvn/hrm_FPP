@@ -1,18 +1,21 @@
+using FPP.Core.Constants;
+using FPP.Core.Criteria.InterCharging;
 using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Services;
 using FPP.Models.InterInvoice;
 using FPP.Services.Interfaces;
 using FPP.Website.ViewModels.InterInvoice;
+using GO.UserControl.Client.Core.Enumerables;
 using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using System.Security.Claims;
 
 namespace FPP.Website.Controllers;
 public class InterInvoiceController(
     IBaseService baseService,
     IUserControlSession session,
-    ICommonService commonService) : Controller
+    ICommonService commonService,
+    IInterInvoiceService interInvoiceService) : Controller
 {
     public IActionResult Index()
     {
@@ -99,7 +102,7 @@ public class InterInvoiceController(
             InterInvoiceId = id
         };
 
-        var invoice = await baseService.GetDataEntityAsync<InterInvoice>(criteria);
+        var invoice = await interInvoiceService.GetInterInvoiceById(id);
         invoice.IsHandler = invoice.HandlerId == session.UserId;
         return new JsonResult(invoice);
     }

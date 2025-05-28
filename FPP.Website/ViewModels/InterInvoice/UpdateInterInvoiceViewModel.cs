@@ -20,6 +20,6 @@ namespace FPP.Website.ViewModels.InterInvoice
         public string Notes { get; set; }
 
         [Required]
-        public List<InvoiceItemViewModel> Items { get; set; } = new List<InvoiceItemViewModel>();
+        public List<InvoiceItemViewModel> Items { get; set; } = new();
     }
 }

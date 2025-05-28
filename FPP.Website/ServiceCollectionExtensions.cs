@@ -100,6 +100,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IInterChargingService, InterChargingService>();
         services.AddSingleton<ICommonService, CommonService>();
         services.AddSingleton<IActivityLogService, ActivityLogService>();
+        services.AddSingleton<IInterInvoiceService, InterInvoiceService>();
 
         return services;
     }
