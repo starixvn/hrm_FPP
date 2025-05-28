@@ -1,6 +1,9 @@
 using FPP.Core.Constants;
+using FPP.Core.Criteria.ActivityLog;
 using FPP.Core.Criteria.InterCharging;
 using FPP.Core.Criteria.InterInvoice;
+using FPP.Core.Enums;
+using FPP.Core.Helpers;
 using FPP.Core.Services;
 using FPP.Models.InterInvoice;
 using FPP.Services.Interfaces;
@@ -16,6 +19,7 @@ public class InterInvoiceController(
     IBaseService baseService,
     IUserControlSession session,
     ICommonService commonService,
+    IActivityLogService activityLogService,
     IInterInvoiceService interInvoiceService) : Controller
 {
     public IActionResult Index()
@@ -52,7 +56,7 @@ public class InterInvoiceController(
         criteria.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
         criteria.EmpId = session.UserId;
 
-       var result = await baseService.GetDataAsync<InterInvoiceList>(criteria);
+        var result = await baseService.GetDataAsync<InterInvoiceList>(criteria);
         return Json(result);
     }
 
@@ -97,6 +101,16 @@ public class InterInvoiceController(
             return BadRequest(result.Message);
         }
         result.OutputId = criteria.OutputId;
+
+        await activityLogService.LogActivity(new InsertActivityLogCriteria
+        {
+            ObjectTypeId = ObjectTypeEnum.Invoice,
+            ObjectId = criteria.OutputId,
+            ActionTypeId = ActionTypeEnum.Create,
+            CreatedBy = session.UserId,
+            ChangedData = JsonHelper.GetStringChanges(null, viewModel),
+            SpName = criteria.GetSettingKey(),
+        });
         return new JsonResult(result);
     }
 
@@ -109,19 +123,20 @@ public class InterInvoiceController(
             return BadRequest(ModelState);
         }
 
-        var isMyBuPermission = session.HasPermissionOnFunction(FunctionKey.MyBUInvoice, Policy.Host);
-        var isGlobalPermission = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
+        var isMyBuPermissionHost = session.HasPermissionOnFunction(FunctionKey.MyBUInvoice, Policy.Host);
+        var isGlobalPermissionHost = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
+        var isGlobalPermissionRead = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
 
-        var invoice = await interInvoiceService.GetInterInvoiceById(id, session.UserId, isEdit, isGlobalPermission);
+        var invoice = await interInvoiceService.GetInterInvoiceById(id, session.UserId, isEdit, isGlobalPermissionRead);
         var currentUserUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
 
-        if (isMyBuPermission)
+        if (isMyBuPermissionHost)
         {
             invoice.IsCanConfirmReject = invoice.HandlerId == session.UserId;
             invoice.IsCanEdit = invoice.BillerUnitId == currentUserUnit.UnitId;
         }
 
-        if (isGlobalPermission)
+        if (isGlobalPermissionHost)
         {
             invoice.IsCanConfirmReject = true;
             invoice.IsCanEdit = true;
@@ -138,6 +153,8 @@ public class InterInvoiceController(
         {
             return BadRequest(ModelState);
         }
+
+        var oldInvoice = await interInvoiceService.GetInterInvoiceById(viewModel.InterInvoiceId, session.UserId, false, true);
 
         var criteria = new UpdateInterInvoiceCriteria
         {
@@ -156,6 +173,28 @@ public class InterInvoiceController(
         {
             return BadRequest(result.Message);
         }
+
+        var oldCriteria = new UpdateInterInvoiceCriteria
+        {
+            InterInvoiceId = oldInvoice.InterInvoiceId,
+            CurrencyId = oldInvoice.CurrencyId,
+            PeriodType = oldInvoice.PeriodType,
+            FromDate = oldInvoice.FromDate,
+            ToDate = oldInvoice.ToDate,
+            Notes = oldInvoice.Notes,
+            ItemListJson = JsonConvert.SerializeObject(oldInvoice.Items)
+        };
+
+        await activityLogService.LogActivity(new InsertActivityLogCriteria
+        {
+            ObjectTypeId = ObjectTypeEnum.Invoice,
+            ObjectId = criteria.InterInvoiceId,
+            ActionTypeId = ActionTypeEnum.Update,
+            CreatedBy = session.UserId,
+            ChangedData = JsonHelper.GetStringChanges(oldCriteria, criteria),
+            SpName = criteria.GetSettingKey(),
+        });
+
         return new JsonResult(result);
     }
 
@@ -181,6 +220,22 @@ public class InterInvoiceController(
         {
             return BadRequest(result.Message);
         }
+
+        var oldCriteria = new UpdateInterInvoiceStatusCriteria
+        {
+            InterInvoiceId = viewModel.InterInvoiceId,
+            Status = 0,
+        };
+
+        await activityLogService.LogActivity(new InsertActivityLogCriteria
+        {
+            ObjectTypeId = ObjectTypeEnum.Invoice,
+            ObjectId = criteria.InterInvoiceId,
+            ActionTypeId = ActionTypeEnum.Update,
+            ChangedData = JsonHelper.GetStringChanges(oldCriteria, criteria),
+            CreatedBy = session.UserId,
+            SpName = criteria.GetSettingKey(),
+        });
         return new JsonResult(result);
     }
 

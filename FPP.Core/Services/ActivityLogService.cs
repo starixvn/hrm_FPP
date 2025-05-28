@@ -19,6 +19,6 @@ public class ActivityLogService(IBaseService baseService) : IActivityLogService
     public async Task<IEnumerable<ActivityLog>> GetLogActivity(GetActivityLogCriteria criteria)
     {
         return await baseService.GetDataAsync<ActivityLog>(criteria);
-        
+
     }
 }

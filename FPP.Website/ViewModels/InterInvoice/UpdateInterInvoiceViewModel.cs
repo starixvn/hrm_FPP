@@ -11,7 +11,7 @@ namespace FPP.Website.ViewModels.InterInvoice
         public int CurrencyId { get; set; }
 
         [Required]
-        public bool PeriodType { get; set; }
+        public int PeriodType { get; set; }
 
         public DateTime? FromDate { get; set; }
 

@@ -28,6 +28,8 @@ namespace FPP.Website.ViewModels.InterInvoice
 
     public class InvoiceItemViewModel
     {
+        public int InterInvoiceId { get; set; }
+
         [Required]
         public string ItemDescription { get; set; }
 

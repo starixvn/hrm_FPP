@@ -1,4 +1,3 @@
-using Fanex.Data.Repository;
 using FPP.Core.Models;
 
 namespace FPP.Core.Criteria.InterInvoice
@@ -7,7 +6,7 @@ namespace FPP.Core.Criteria.InterInvoice
     {
         public int InterInvoiceId { get; set; }
         public int CurrencyId { get; set; }
-        public bool PeriodType { get; set; }
+        public int PeriodType { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public string Notes { get; set; }

@@ -22,6 +22,7 @@ namespace FPP.Services.Implement
 
             foreach (var invoice in invoices)
             {
+
                 invoice.Items = items.Where(i => i.InterInvoiceId == invoice.InterInvoiceId).ToList();
             }
 

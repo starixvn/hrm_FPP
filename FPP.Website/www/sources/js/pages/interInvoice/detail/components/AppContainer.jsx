@@ -12,8 +12,6 @@ import {
 } from '../../components/enum';
 import moment from 'moment';
 
-const { Title, Text } = Typography;
-
 const AppContainer = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -232,15 +230,6 @@ const AppContainer = () => {
                         </span>
                     </div>
                     <div className="header-label">
-                        Creator: <span className="header-value">{invoiceData?.createdByName}</span>
-                    </div>
-                    <div className="header-label">
-                        Created At:{' '}
-                        <span className="header-value">{formatDate(invoiceData?.createdAt)}</span>
-                    </div>
-                </div>
-                <div className="invoice-header-col">
-                    <div className="header-label">
                         PAYER:{' '}
                         <span className="header-value">
                             {invoiceData?.payerGroupUnitId} - {invoiceData?.payerName}
@@ -248,6 +237,13 @@ const AppContainer = () => {
                     </div>
                     <div className="header-label">
                         Handler: <span className="header-value">{invoiceData?.handlerName}</span>
+                    </div>
+                    <div className="header-label">
+                        Creator: <span className="header-value">{invoiceData?.createdByName}</span>
+                    </div>
+                    <div className="header-label">
+                        Created At:{' '}
+                        <span className="header-value">{formatDate(invoiceData?.createdAt)}</span>
                     </div>
                 </div>
                 <div className="invoice-header-col invoice-header-info">

@@ -18,6 +18,7 @@ import {
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { InterInvoiceStatus, PeriodType, mapPeriodType } from '../../components/enum';
 import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -86,7 +87,7 @@ const AppContainer = () => {
                     periodType: invoiceData.periodType,
                     notes: invoiceData.notes,
                     items: invoiceData.items.map((item) => ({
-                        description: item.itemDescription,
+                        itemDescription: item.itemDescription,
                         amount: item.amount,
                     })),
                 };
@@ -94,16 +95,15 @@ const AppContainer = () => {
                 // Set date based on period type
                 switch (invoiceData.periodType) {
                     case PeriodType.Monthly:
-                        formValues.monthlyDate = moment(invoiceData.fromDate);
+                        formValues.monthlyDate = dayjs(invoiceData.fromDate);
                         break;
                     case PeriodType.RangeDate:
-                        formValues.rangeDate = [
-                            moment(invoiceData.fromDate),
-                            moment(invoiceData.toDate),
-                        ];
+                        form.setFieldsValue({
+                            rangeDate: [dayjs(invoiceData.fromDate), dayjs(invoiceData.toDate)],
+                        });
                         break;
                     case PeriodType.OneTime:
-                        formValues.deliveryDate = moment(invoiceData.fromDate);
+                        formValues.deliveryDate = dayjs(invoiceData.fromDate);
                         break;
                 }
 
@@ -131,23 +131,24 @@ const AppContainer = () => {
                 ...values,
                 interInvoiceId: parseInt(window.invoiceId),
                 items: values.items.map((item) => ({
-                    itemDescription: item.description,
-                    amount: item.amount,
+                    interInvoiceId: window.invoiceId,
+                    itemDescription: item.itemDescription,
+                    amount: item.amount.toFixed(2),
                 })),
             };
 
             switch (values.periodType) {
                 case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.toDate();
-                    formData.toDate = values.monthlyDate.toDate();
+                    formData.fromDate = values.monthlyDate.format('YYYY-MM-DD');
+                    formData.toDate = values.monthlyDate.format('YYYY-MM-DD');
                     break;
                 case PeriodType.RangeDate:
-                    formData.fromDate = values.rangeDate[0].toDate();
-                    formData.toDate = values.rangeDate[1].toDate();
+                    formData.fromDate = values.rangeDate[0].format('YYYY-MM-DD');
+                    formData.toDate = values.rangeDate[1].format('YYYY-MM-DD');
                     break;
                 case PeriodType.OneTime:
-                    formData.fromDate = values.deliveryDate.toDate();
-                    formData.toDate = values.deliveryDate.toDate();
+                    formData.fromDate = values.deliveryDate.format('YYYY-MM-DD');
+                    formData.toDate = values.deliveryDate.format('YYYY-MM-DD');
                     break;
             }
             const response = await axios.put('/InterInvoice/UpdateInvoice', formData);
@@ -249,7 +250,7 @@ const AppContainer = () => {
                                             <Col xs={24} sm={24} md={14} lg={14} xl={12} xxl={8}>
                                                 <Form.Item
                                                     {...restField}
-                                                    name={[name, 'description']}
+                                                    name={[name, 'itemDescription']}
                                                     rules={[
                                                         {
                                                             required: true,
@@ -365,7 +366,11 @@ const AppContainer = () => {
                             label="Delivery Date"
                             rules={[{ required: true, message: 'Please select delivery date' }]}
                         >
-                            <DatePicker style={{ width: '100%' }} />
+                            <DatePicker
+                                style={{ width: '100%' }}
+                                showTime={false}
+                                format="YYYY-MM-DD"
+                            />
                         </Form.Item>
                     )}
 

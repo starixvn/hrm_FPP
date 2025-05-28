@@ -74,23 +74,23 @@ const AppContainer = () => {
                 toDate: null,
                 notes: values.notes,
                 items: values.items.map((item) => ({
-                    itemDescription: item.description,
+                    itemDescription: item.itemDescription,
                     amount: item.amount,
                 })),
             };
 
             switch (values.periodType) {
                 case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.toDate();
-                    formData.toDate = values.monthlyDate.toDate();
+                    formData.fromDate = values.monthlyDate.format('YYYY-MM-DD');
+                    formData.toDate = values.monthlyDate.format('YYYY-MM-DD');
                     break;
                 case PeriodType.RangeDate:
-                    formData.fromDate = values.rangeDate[0].toDate();
-                    formData.toDate = values.rangeDate[1].toDate();
+                    formData.fromDate = values.rangeDate[0].format('YYYY-MM-DD');
+                    formData.toDate = values.rangeDate[1].format('YYYY-MM-DD');
                     break;
                 case PeriodType.OneTime:
-                    formData.fromDate = values.deliveryDate.toDate();
-                    formData.toDate = values.deliveryDate.toDate();
+                    formData.fromDate = values.deliveryDate.format('YYYY-MM-DD');
+                    formData.toDate = values.deliveryDate.format('YYYY-MM-DD');
                     break;
             }
             const response = await axios.post('/InterInvoice/CreateInvoice', formData);
@@ -202,7 +202,7 @@ const AppContainer = () => {
 
                     <Divider>Service Details</Divider>
 
-                    <Form.List name="items" initialValue={[{ description: '', amount: null }]}>
+                    <Form.List name="items" initialValue={[{ itemDescription: '', amount: null }]}>
                         {(fields, { add, remove }) => (
                             <>
                                 {fields.map(({ key, name, ...restField }) => (
@@ -215,7 +215,7 @@ const AppContainer = () => {
                                             <Col xs={24} sm={24} md={14} lg={14} xl={12} xxl={8}>
                                                 <Form.Item
                                                     {...restField}
-                                                    name={[name, 'description']}
+                                                    name={[name, 'itemDescription']}
                                                     rules={[
                                                         {
                                                             required: true,

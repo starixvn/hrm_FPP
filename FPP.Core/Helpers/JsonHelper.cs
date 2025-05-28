@@ -1,11 +1,15 @@
 using System.Reflection;
 using FPP.Core.Models;
+using Newtonsoft.Json;
 
 namespace FPP.Core.Helpers;
 
 public static class JsonHelper
 {
-    public static List<FieldChange> GetChanges<T>(T oldObj, T newObj) where T : class
+
+    private static readonly List<string> SkippedFields = ["CreatedBy", "ModifiedBy", "ErrCode", "ErrMsg", "OutputId"];
+
+    public static List<FieldChange> GetChanges<T>(T? oldObj, T? newObj) where T : class
     {
         var changes = new List<FieldChange>();
 
@@ -13,6 +17,11 @@ public static class JsonHelper
 
         foreach (var prop in props)
         {
+            // Skip CreatedBy and ModifiedBy fields
+            if (SkippedFields.Contains(prop.Name)) {
+                continue;
+            }
+
             object oldVal;
             if (oldObj == null)
             {
@@ -37,5 +46,11 @@ public static class JsonHelper
         }
 
         return changes;
+    }
+
+    public static string GetStringChanges<T>(T? oldObj, T? newObj) where T : class
+    {
+        var changes = GetChanges(oldObj, newObj);
+        return JsonConvert.SerializeObject(changes);
     }
 }
