@@ -11,6 +11,7 @@ import {
     mapColorStatus,
 } from '../../components/enum';
 import moment from 'moment';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(true);
@@ -101,8 +102,9 @@ const AppContainer = () => {
 
     const renderIsEditingButton = () => {
         return (
-            <Button type="primary" className="confirm-btn" disabled={!invoiceData.isCanEdit}>
-                Invoice Adjusting by {invoiceData.editingBy}
+            <Button type="primary" className="editing-btn" disabled={!invoiceData.isCanEdit}>
+                <ExclamationCircleOutlined />
+                Invoice Adjusting by {invoiceData.editedByName}
             </Button>
         );
     };

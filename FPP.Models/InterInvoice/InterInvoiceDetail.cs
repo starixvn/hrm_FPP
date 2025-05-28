@@ -26,7 +26,7 @@ namespace FPP.Models.InterInvoice
             get => _CreatedAt;
             set => _CreatedAt = value.AddHours(12);
         }
-        public bool IsEditting { get; set; }
+        public bool IsEditing { get; set; }
         public DateTime? EditingStartedAt { get; set; }
         public int? EditedBy { get; set; }
         public string EditedByName { get; set; }

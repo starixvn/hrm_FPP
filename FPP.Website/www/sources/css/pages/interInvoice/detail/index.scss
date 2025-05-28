@@ -149,5 +149,16 @@
                 border-color: #22455a;
             }
         }
+
+        .editing-btn {
+            background-color: #22455a;
+            border-color: #22455a;
+            opacity: 0.5;
+
+            &:hover {
+                background-color: #22455a;
+                border-color: #22455a;
+            }
+        }
     }
 }
