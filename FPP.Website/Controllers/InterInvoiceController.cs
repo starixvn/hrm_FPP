@@ -4,6 +4,7 @@ using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Services;
 using FPP.Models.InterInvoice;
 using FPP.Services.Interfaces;
+using FPP.Website.Filters;
 using FPP.Website.ViewModels.InterInvoice;
 using GO.UserControl.Client.Core.Enumerables;
 using GO.UserControl.Client.Core.Session;
@@ -36,14 +37,15 @@ public class InterInvoiceController(
     {
         return View(id);
     }
+
     [HttpPost]
-    //[FppPermission(Policy.Read, "My BU Invoices.Read", "My BU Invoices.Host", "Global Invoices.Read", "Global Invoices.Host")]
+    [FppPermission(Policy.Read, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> GetInvoiceList([FromBody] GetInterInvoiceListCriteria criteria)
     {
         var isGlobalInvoice = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
         criteria.IsGlobal = isGlobalInvoice;
 
-        var result = await baseService.GetDataAsync<InterInvoice>(criteria);
+        var result = await baseService.GetDataAsync<InterInvoiceList>(criteria);
         return Json(result);
     }
 

@@ -1,6 +1,6 @@
-namespace FPP.Models.InterCharging;
+namespace FPP.Models.InterInvoice;
 
-public class InterInvoice
+public class InterInvoiceList
 {
     public int InterInvoiceId { get; set; }
     public string BillerUnitId { get; set; } = string.Empty;

@@ -20,6 +20,7 @@
 		<Setting Key="InterInvoice_GetById" SpName="InterInvoice_GetById" DbName="bodb_FPP" Plain="0" />
 		<Setting Key="InterInvoice_Update" SpName="InterInvoice_Update" DbName="bodb_FPP" Plain="0" />
 		<Setting Key="InterInvoice_UpdateStatus" SpName="InterInvoice_UpdateStatus" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="InterInvoice_GetList" SpName="InterInvoice_GetList" DbName="bodb_FPP" Plain="0" />
 		<Setting Key="BU_GetList" SpName="BU_GetList" DbName="bodb_FPP" Plain="0" />
 	</Function>
 	<Function Name="Currency">
