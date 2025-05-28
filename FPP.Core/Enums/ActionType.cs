@@ -1,6 +1,6 @@
 namespace FPP.Core.Enums
 {
-    public enum ActionTypeEnum
+    public enum ActionType
     {
         Create = 1,
         Update = 2,

@@ -5,11 +5,11 @@ namespace FPP.Core.Criteria.ActivityLog
 {
     public class InsertActivityLogCriteria : BaseNonQueryCommand
     {
-        public required ObjectTypeEnum ObjectTypeId { get; set; }
+        public required ObjectType ObjectTypeId { get; set; }
 
         public required int ObjectId { get; set; }
 
-        public required ActionTypeEnum ActionTypeId { get; set; }
+        public required ActionType ActionTypeId { get; set; }
 
         public required string ChangedData { get; set; }
 

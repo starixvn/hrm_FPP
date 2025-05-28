@@ -1,6 +1,6 @@
 namespace FPP.Core.Enums
 {
-    public enum ObjectTypeEnum
+    public enum ObjectType
     {
         MonthlySalary = 1,
         Invoice = 2

@@ -104,9 +104,9 @@ public class InterInvoiceController(
 
         await activityLogService.LogActivity(new InsertActivityLogCriteria
         {
-            ObjectTypeId = ObjectTypeEnum.Invoice,
+            ObjectTypeId = ObjectType.Invoice,
             ObjectId = criteria.OutputId,
-            ActionTypeId = ActionTypeEnum.Create,
+            ActionTypeId = ActionType.Create,
             CreatedBy = session.UserId,
             ChangedData = JsonHelper.GetStringChanges(null, viewModel),
             SpName = criteria.GetSettingKey(),
@@ -187,9 +187,9 @@ public class InterInvoiceController(
 
         await activityLogService.LogActivity(new InsertActivityLogCriteria
         {
-            ObjectTypeId = ObjectTypeEnum.Invoice,
+            ObjectTypeId = ObjectType.Invoice,
             ObjectId = criteria.InterInvoiceId,
-            ActionTypeId = ActionTypeEnum.Update,
+            ActionTypeId = ActionType.Update,
             CreatedBy = session.UserId,
             ChangedData = JsonHelper.GetStringChanges(oldCriteria, criteria),
             SpName = criteria.GetSettingKey(),
@@ -229,9 +229,9 @@ public class InterInvoiceController(
 
         await activityLogService.LogActivity(new InsertActivityLogCriteria
         {
-            ObjectTypeId = ObjectTypeEnum.Invoice,
+            ObjectTypeId = ObjectType.Invoice,
             ObjectId = criteria.InterInvoiceId,
-            ActionTypeId = ActionTypeEnum.Update,
+            ActionTypeId = ActionType.Update,
             ChangedData = JsonHelper.GetStringChanges(oldCriteria, criteria),
             CreatedBy = session.UserId,
             SpName = criteria.GetSettingKey(),

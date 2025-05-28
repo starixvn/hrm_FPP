@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using FPP.Models.Common;
 
 namespace FPP.Website.ViewModels.InterInvoice

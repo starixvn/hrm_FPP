@@ -6,11 +6,11 @@ public class ActivityLog
 {
     public int Id { get; set; }
 
-    public ObjectTypeEnum ObjectTypeId { get; set; }
+    public ObjectType ObjectTypeId { get; set; }
 
     public int ObjectId { get; set; }
 
-    public ActionTypeEnum ActionTypeId { get; set; }
+    public ActionType ActionTypeId { get; set; }
 
     public required string ChangedData { get; set; }
 
