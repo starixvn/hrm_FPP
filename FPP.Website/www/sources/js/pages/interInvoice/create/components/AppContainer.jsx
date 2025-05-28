@@ -31,7 +31,6 @@ const AppContainer = () => {
     const [billerOptions, setBillerOptions] = useState([]);
     const [currencyOptions, setCurrencyOptions] = useState([]);
     const [isGlobal, setIsGlobal] = useState(false);
-    const [currentEmpUnitId, setCurrentEmpUnitId] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -45,9 +44,7 @@ const AppContainer = () => {
                 setBillerOptions(response.data.units);
                 setCurrencyOptions(response.data.currencies || []);
                 setIsGlobal(response.data.isGlobal);
-                setCurrentEmpUnitId(response.data.currentEmpUnitId);
 
-                // Set default biller if not global and current employee unit exists
                 if (!response.data.isGlobal && response.data.currentEmpUnitId) {
                     form.setFieldsValue({
                         billerUnitId: response.data.currentEmpUnitId,
@@ -97,8 +94,7 @@ const AppContainer = () => {
                     break;
             }
             const response = await axios.post('/InterInvoice/CreateInvoice', formData);
-            message.success('Invoice created successfully');
-            form.resetFields();
+            window.location.href = `/interInvoice/detail?id=${response.data.outputId}`;
         } catch (error) {
             message.error(error.response?.data || 'Failed to create invoice');
         }
@@ -265,7 +261,11 @@ const AppContainer = () => {
                                                 xl={4}
                                                 className="remove-item"
                                             >
-                                                <MinusCircleOutlined onClick={() => remove(name)} />
+                                                {fields.length > 1 && (
+                                                    <MinusCircleOutlined
+                                                        onClick={() => remove(name)}
+                                                    />
+                                                )}
                                             </Col>
                                         </Row>
                                     </div>
@@ -284,7 +284,7 @@ const AppContainer = () => {
                         )}
                     </Form.List>
 
-                    <Divider>Service Date</Divider>
+                    <Divider>Billing Period</Divider>
 
                     <Form.Item
                         name="periodType"
@@ -340,8 +340,8 @@ const AppContainer = () => {
                         <TextArea rows={4} placeholder="Enter any additional information here" />
                     </Form.Item>
 
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" block>
+                    <Form.Item style={{ textAlign: 'right' }}>
+                        <Button type="primary" htmlType="submit">
                             Create Invoice
                         </Button>
                     </Form.Item>

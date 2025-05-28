@@ -1,6 +1,6 @@
 namespace FPP.Models.InterInvoice
 {
-    public class InterInvoice
+    public class InterInvoiceDetail
     {
         public int InterInvoiceId { get; set; }
         public int BillerUnitId { get; set; }
@@ -15,15 +15,20 @@ namespace FPP.Models.InterInvoice
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
         public string Notes { get; set; }
-        public byte Status { get; set; }
+        public int Status { get; set; }
         public int? HandlerId { get; set; }
-        public bool IsHandler { get; set; }
         public string HandlerName { get; set; }
         public int? CreatedById { get; set; }
         public string CreatedByName { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool IsEditting { get; set; }
         public DateTime? EditingStartedAt { get; set; }
+        public int? EditedBy { get; set; }
+        public string EditedByName { get; set; }
         public string RejectionReason { get; set; }
         public List<InterInvoiceItem> Items { get; set; } = new List<InterInvoiceItem>();
+
+        public bool IsCanEdit { get; set; }
+        public bool IsCanConfirmReject { get; set; }
     }
 }

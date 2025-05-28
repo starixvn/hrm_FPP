@@ -23,16 +23,19 @@ public class InterInvoiceController(
         return View();
     }
 
+    [FppPermission(Policy.Read, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public IActionResult Create()
     {
         return View();
     }
 
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public IActionResult Edit(int id)
     {
         return View(id);
     }
 
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public IActionResult Detail(int id)
     {
         return View(id);
@@ -49,19 +52,21 @@ public class InterInvoiceController(
         return Json(result);
     }
 
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> GetPreparedData()
     {
         var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
         var vm = new PreparedDataViewModel() {
             Units = await commonService.GetAllUnitsAsync(),
             Currencies = await commonService.GetAllCurrenciesAsync(),
-            IsGlobal = false,
+            IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host),
             CurrentEmpUnitId = currentEmpUnit.UnitId
         };
         return new JsonResult(vm);
     }
 
     [HttpPost]
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> CreateInvoice([FromBody] CreateInterInvoiceViewModel viewModel)
     {
         if (!ModelState.IsValid)
@@ -87,29 +92,42 @@ public class InterInvoiceController(
         {
             return BadRequest(result.Message);
         }
-
+        result.OutputId = criteria.OutputId;
         return new JsonResult(result);
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetInvoice(int id)
+    [FppPermission(Policy.Read, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    public async Task<IActionResult> GetInvoice(int id, bool isEdit = false)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var criteria = new GetInterInvoiceCriteria
-        {
-            InterInvoiceId = id
-        };
+        var invoice = await interInvoiceService.GetInterInvoiceById(id, isEdit, session.UserId);
+        var currentUserUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
 
-        var invoice = await interInvoiceService.GetInterInvoiceById(id);
-        invoice.IsHandler = invoice.HandlerId == session.UserId;
+        var isMyBuPermission = session.HasPermissionOnFunction(FunctionKey.MyBUInvoice, Policy.Host);
+        var isGlobalPermission = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
+
+        if (isMyBuPermission)
+        {
+            invoice.IsCanConfirmReject = invoice.HandlerId == session.UserId;
+            invoice.IsCanEdit = invoice.BillerUnitId == currentUserUnit.UnitId;
+        }
+
+        if (isGlobalPermission)
+        {
+            invoice.IsCanConfirmReject = true;
+            invoice.IsCanEdit = true;
+        }
+
         return new JsonResult(invoice);
     }
 
     [HttpPut]
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> UpdateInvoice([FromBody] UpdateInterInvoiceViewModel viewModel)
     {
         if (!ModelState.IsValid)
@@ -138,6 +156,7 @@ public class InterInvoiceController(
     }
 
     [HttpPut]
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> UpdateStatus([FromBody] UpdateInterInvoiceStatusViewModel viewModel)
     {
         if (!ModelState.IsValid)

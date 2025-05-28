@@ -1,3 +1,6 @@
+import React from 'react';
+import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from '@ant-design/icons';
+
 export const PeriodType = {
     Monthly: 0,
     RangeDate: 1,
@@ -8,7 +11,6 @@ export const InterInvoiceStatus = {
     ConfirmPending: 0,
     Confirmed: 1,
     Rejected: 2,
-    Adjusting: 3,
 };
 
 export const mapPeriodType = {
@@ -21,5 +23,16 @@ export const mapInterInvoiceStatus = {
     [InterInvoiceStatus.ConfirmPending]: 'Confirm Pending',
     [InterInvoiceStatus.Confirmed]: 'Confirmed',
     [InterInvoiceStatus.Rejected]: 'Rejected',
-    [InterInvoiceStatus.Adjusting]: 'Adjusting',
+};
+
+export const mapColorStatus = {
+    [InterInvoiceStatus.ConfirmPending]: 'processing',
+    [InterInvoiceStatus.Confirmed]: 'success',
+    [InterInvoiceStatus.Rejected]: 'error',
+};
+
+export const mapIconStatus = {
+    [InterInvoiceStatus.ConfirmPending]: <SyncOutlined />,
+    [InterInvoiceStatus.Confirmed]: <CheckCircleOutlined />,
+    [InterInvoiceStatus.Rejected]: <CloseCircleOutlined />,
 };

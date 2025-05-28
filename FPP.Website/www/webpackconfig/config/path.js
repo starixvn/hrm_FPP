@@ -29,6 +29,7 @@ const scriptPaths = {
     interInvoice_create_index: ['./www/sources/js/pages/interInvoice/create/index.jsx'],
     interInvoice_listing_index: ['./www/sources/js/pages/interInvoice/listing/index.jsx'],
     interInvoice_detail_index: ['./www/sources/js/pages/interInvoice/detail/index.jsx'],
+    interInvoice_edit_index: ['./www/sources/js/pages/interInvoice/edit/index.jsx'],
 };
 
 module.exports = {

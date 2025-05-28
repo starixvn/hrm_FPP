@@ -31,6 +31,8 @@ function generateConfig(environment) {
                 pathConfig.scriptPaths.interInvoice_listing_index,
             [`${jsPath}/pages/interInvoice/detail/index`]:
                 pathConfig.scriptPaths.interInvoice_detail_index,
+            [`${jsPath}/pages/interInvoice/edit/index`]:
+                pathConfig.scriptPaths.interInvoice_edit_index,
             /*css*/
             [`${cssPath}/pages/login`]: pathConfig.cssPaths.login,
             [`${cssPath}/pages/error`]: pathConfig.cssPaths.error,

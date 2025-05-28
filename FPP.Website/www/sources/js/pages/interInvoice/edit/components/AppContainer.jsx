@@ -17,7 +17,6 @@ import {
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { PeriodType, mapPeriodType } from '../../components/enum';
 import moment from 'moment';
-import { useParams } from 'react-router-dom';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -25,21 +24,20 @@ const { RangePicker } = DatePicker;
 
 const AppContainer = () => {
     const [form] = Form.useForm();
-    const { id } = useParams();
     const [periodType, setPeriodType] = useState(PeriodType.Monthly);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [payerOptions, setPayerOptions] = useState([]);
     const [billerOptions, setBillerOptions] = useState([]);
     const [currencyOptions, setCurrencyOptions] = useState([]);
-    const [isGlobal, setIsGlobal] = useState(false);
-    const [currentEmpUnitId, setCurrentEmpUnitId] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 // Fetch invoice data
-                const invoiceResponse = await axios.get(`/InterInvoice/GetInvoice/${id}`);
+                const invoiceResponse = await axios.get(
+                    `/InterInvoice/GetInvoice/${window.invoiceId}?isEdit=true`
+                );
                 const invoiceData = invoiceResponse.data;
 
                 // Fetch prepared data
@@ -51,8 +49,6 @@ const AppContainer = () => {
                 );
                 setBillerOptions(preparedResponse.data.units);
                 setCurrencyOptions(preparedResponse.data.currencies || []);
-                setIsGlobal(preparedResponse.data.isGlobal);
-                setCurrentEmpUnitId(preparedResponse.data.currentEmpUnitId);
 
                 // Set form values
                 const formValues = {
@@ -91,9 +87,10 @@ const AppContainer = () => {
                 setLoading(false);
             }
         };
-
-        fetchData();
-    }, [id]);
+        if (window.invoiceId) {
+            fetchData();
+        }
+    }, [window.invoiceId]);
 
     const onFinish = async (values) => {
         if (values.items === undefined || values.items.length === 0) {
@@ -103,11 +100,8 @@ const AppContainer = () => {
 
         try {
             const formData = {
-                id: parseInt(id),
                 ...values,
-                fromDate: null,
-                toDate: null,
-                notes: values.notes,
+                interInvoiceId: parseInt(window.invoiceId),
                 items: values.items.map((item) => ({
                     itemDescription: item.description,
                     amount: item.amount,
@@ -129,6 +123,7 @@ const AppContainer = () => {
                     break;
             }
             const response = await axios.put('/InterInvoice/UpdateInvoice', formData);
+            window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
             message.success('Invoice updated successfully');
         } catch (error) {
             message.error(error.response?.data || 'Failed to update invoice');
@@ -161,7 +156,7 @@ const AppContainer = () => {
 
     return (
         <div className="invoice-container">
-            <Card title="Edit Inter Invoice" className="invoice-form-card">
+            <Card title={`Edit Inter Invoice #${window.invoiceId}`} className="invoice-form-card">
                 <Form form={form} layout="vertical" onFinish={onFinish} className="invoice-form">
                     <Row gutter={24}>
                         <Col span={8}>
@@ -263,10 +258,16 @@ const AppContainer = () => {
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col xs={8} sm={8} md={4} lg={4} xl={3} xxl={2}>
+                                            <Col
+                                                xs={8}
+                                                sm={8}
+                                                md={4}
+                                                lg={4}
+                                                xl={4}
+                                                className="remove-item"
+                                            >
                                                 {fields.length > 1 && (
                                                     <MinusCircleOutlined
-                                                        className="dynamic-delete-button"
                                                         onClick={() => remove(name)}
                                                     />
                                                 )}
@@ -288,11 +289,63 @@ const AppContainer = () => {
                         )}
                     </Form.List>
 
+                    <Divider>Billing Period</Divider>
+
+                    <Form.Item
+                        name="periodType"
+                        label="Billing Period"
+                        initialValue={PeriodType.Monthly}
+                    >
+                        <Select onChange={(value) => setPeriodType(value)}>
+                            <Option value={PeriodType.Monthly}>
+                                {mapPeriodType[PeriodType.Monthly]}
+                            </Option>
+                            <Option value={PeriodType.RangeDate}>
+                                {mapPeriodType[PeriodType.RangeDate]}
+                            </Option>
+                            <Option value={PeriodType.OneTime}>
+                                {mapPeriodType[PeriodType.OneTime]}
+                            </Option>
+                        </Select>
+                    </Form.Item>
+
+                    {periodType === PeriodType.Monthly && (
+                        <Form.Item
+                            hidden
+                            name="monthlyDate"
+                            label="Period Details"
+                            rules={[{ required: true, message: 'Please select month' }]}
+                            initialValue={moment()}
+                        >
+                            <DatePicker picker="month" style={{ width: '100%' }} />
+                        </Form.Item>
+                    )}
+
+                    {periodType === PeriodType.RangeDate && (
+                        <Form.Item
+                            name="rangeDate"
+                            label="Period Details"
+                            rules={[{ required: true, message: 'Please select date range' }]}
+                        >
+                            <RangePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    )}
+
+                    {periodType === PeriodType.OneTime && (
+                        <Form.Item
+                            name="deliveryDate"
+                            label="Delivery Date"
+                            rules={[{ required: true, message: 'Please select delivery date' }]}
+                        >
+                            <DatePicker style={{ width: '100%' }} />
+                        </Form.Item>
+                    )}
+
                     <Form.Item name="notes" label="Notes">
                         <TextArea rows={4} placeholder="Enter any additional notes" />
                     </Form.Item>
 
-                    <Form.Item>
+                    <Form.Item style={{ textAlign: 'right' }}>
                         <Button type="primary" htmlType="submit">
                             Update Invoice
                         </Button>
