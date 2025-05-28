@@ -35,6 +35,7 @@ const AppContainer = () => {
             sorter: (a, b) => a.interInvoiceId - b.interInvoiceId,
             defaultSortOrder: 'descend',
             align: 'left',
+            width: '8%',
         },
         {
             title: 'Biller',
@@ -42,6 +43,7 @@ const AppContainer = () => {
             key: 'billerUnitCode',
             sorter: (a, b) => a.billerUnitCode.localeCompare(b.billerUnitCode),
             align: 'left',
+            width: '10%',
         },
         {
             title: 'Payer',
@@ -49,6 +51,7 @@ const AppContainer = () => {
             key: 'payerUnitCode',
             sorter: (a, b) => a.payerUnitCode.localeCompare(b.payerUnitCode),
             align: 'left',
+            width: '10%',
         },
         {
             title: 'Total Amount',
@@ -57,13 +60,15 @@ const AppContainer = () => {
             sorter: (a, b) => a.totalAmount - b.totalAmount,
             render: (amount) => amount.toLocaleString(),
             align: 'right',
+            width: '7%',
         },
         {
             title: 'Currency',
             dataIndex: 'currency',
             key: 'currency',
-            sorter: (a, b) => a.currency.localeCompare(b.currency),
+            //sorter: (a, b) => a.currency.localeCompare(b.currency),
             align: 'left',
+            width: '6%',
         },
         {
             title: 'Handler',
@@ -71,6 +76,7 @@ const AppContainer = () => {
             key: 'handler',
             sorter: (a, b) => a.handler.localeCompare(b.handler),
             align: 'left',
+            width: '10%',
         },
         {
             title: 'Notes',
@@ -78,6 +84,7 @@ const AppContainer = () => {
             key: 'notes',
             sorter: (a, b) => a.notes.localeCompare(b.notes),
             align: 'left',
+            width: '10%',
         },
         {
             title: 'Period Type',
@@ -86,6 +93,7 @@ const AppContainer = () => {
             sorter: (a, b) => a.periodType - b.periodType,
             render: (periodType) => mapPeriodType[periodType] || periodType,
             align: 'left',
+            width: '8%',
         },
         {
             title: 'Status',
@@ -94,6 +102,7 @@ const AppContainer = () => {
             sorter: (a, b) => a.status - b.status,
             render: (status) => mapInterInvoiceStatus[status] || status,
             align: 'left',
+            width: '10%',
         },
         {
             title: 'Created Date',
@@ -102,7 +111,7 @@ const AppContainer = () => {
             sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
             render: (date) => date,
             align: 'left',
-            width: 160,
+            width: '12%',
         },
         {
             title: 'Created By',
@@ -110,16 +119,35 @@ const AppContainer = () => {
             key: 'createdBy',
             sorter: (a, b) => a.createdBy.localeCompare(b.createdBy),
             align: 'left',
+            width: '8%',
         },
         {
-            title: 'View',
+            title: 'Modified Date',
+            dataIndex: 'modifiedDate',
+            key: 'modifiedDate',
+            sorter: (a, b) => new Date(a.modifiedDate) - new Date(b.modifiedDate),
+            render: (date) => date || '-',
+            align: 'left',
+            width: '12%',
+        },
+        {
+            title: 'Modified By',
+            dataIndex: 'modifiedBy',
+            key: 'modifiedBy',
+            sorter: (a, b) => a.modifiedBy?.localeCompare(b.modifiedBy),
+            render: (text) => text || '-',
+            align: 'left',
+            width: '8%',
+        },
+        {
+            title: 'View Details',
             key: 'view',
             align: 'center',
-            width: 80,
+            width: '8%',
             render: (_, record) => (
                 <Button
                     type="text"
-                    icon={<EyeOutlined />}
+                    icon={<EyeOutlined style={{ color: '#5273a5' }} />}
                     onClick={() => handleView(record.interInvoiceId)}
                 />
             ),

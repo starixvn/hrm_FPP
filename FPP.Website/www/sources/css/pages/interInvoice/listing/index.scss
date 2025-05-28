@@ -1,12 +1,19 @@
 .listing-invoice-container {
     margin-top: 24px;
 
+    .ant-table {
+        .ant-table-cell {
+            padding: 4px !important;
+        }
+    }
+
     .ant-table-thead {
         .ant-table-cell {
             background-color: #5273a5 !important;
             font-weight: 600;
             color: white;
             border-color: #607fac !important;
+            text-align: center !important;
 
             .ant-table-column-sorter {
                 .ant-table-column-sorter-inner {

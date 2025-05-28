@@ -52,7 +52,7 @@ public class InterInvoiceController(
         criteria.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
         criteria.EmpId = session.UserId;
 
-        var result = await baseService.GetDataAsync<InterInvoiceList>(criteria);
+       var result = await baseService.GetDataAsync<InterInvoiceList>(criteria);
         return Json(result);
     }
 

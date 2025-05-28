@@ -7,13 +7,20 @@ public class InterInvoiceList
     public string BillerUnitCode { get; set; } = string.Empty;
     public string PayerUnitId { get; set; } = string.Empty;
     public string PayerUnitCode { get; set; } = string.Empty;
-    private DateTime _createdDate;
-    public DateTime CreatedDate
+    private DateTime? _createdDate;
+    public DateTime? CreatedDate
     {
         get => _createdDate;
-        set => _createdDate = value.AddHours(12);
+        set => _createdDate = value?.AddHours(12);
     }
     public string CreatedBy { get; set; } = string.Empty;
+    private DateTime? _modifiedDate;
+    public DateTime? ModifiedDate
+    {
+        get => _modifiedDate;
+        set => _modifiedDate = value?.AddHours(12);
+    }
+    public string ModifiedBy { get; set; } = string.Empty;
     public string Currency { get; set; } = string.Empty;
     public string Notes { get; set; } = string.Empty;
     public string Handler { get; set; } = string.Empty;
