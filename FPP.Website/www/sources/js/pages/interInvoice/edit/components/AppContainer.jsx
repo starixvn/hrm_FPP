@@ -13,9 +13,10 @@ import {
     Col,
     message,
     Spin,
+    Space,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { PeriodType, mapPeriodType } from '../../components/enum';
+import { InterInvoiceStatus, PeriodType, mapPeriodType } from '../../components/enum';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -32,14 +33,41 @@ const AppContainer = () => {
     const [currencyOptions, setCurrencyOptions] = useState([]);
 
     useEffect(() => {
+        const handleBeforeUnload = async () => {
+            if (window.invoiceId) {
+                try {
+                    await axios.put(`/InterInvoice/UnlockEditing?id=${window.invoiceId}`);
+                } catch (error) {
+                    console.error('Failed to unblock editing:', error);
+                }
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
+
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 // Fetch invoice data
                 const invoiceResponse = await axios.get(
                     `/InterInvoice/GetInvoice/${window.invoiceId}?isEdit=true`
                 );
-                const invoiceData = invoiceResponse.data;
 
+                const invoiceData = invoiceResponse.data;
+                if (invoiceData.interInvoiceId === 0) {
+                    window.location.href = `/Error/AccessDenied`;
+                }
+                if (
+                    invoiceData.status !== InterInvoiceStatus.ConfirmPending ||
+                    (invoiceData.billerUnitId !== window.currentEmpUnitId && !window.isGlobal)
+                ) {
+                    await axios.put(`/InterInvoice/UnlockEditing?id=${window.invoiceId}`);
+                    window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
+                }
                 // Fetch prepared data
                 const preparedResponse = await axios.get('/InterInvoice/GetPreparedData');
                 setPayerOptions(
@@ -83,7 +111,7 @@ const AppContainer = () => {
                 setPeriodType(invoiceData.periodType);
                 setLoading(false);
             } catch (err) {
-                setError('Failed to fetch data');
+                setError(error.response?.data || 'Failed to fetch data');
                 setLoading(false);
             }
         };
@@ -346,9 +374,20 @@ const AppContainer = () => {
                     </Form.Item>
 
                     <Form.Item style={{ textAlign: 'right' }}>
-                        <Button type="primary" htmlType="submit">
-                            Update Invoice
-                        </Button>
+                        <Space>
+                            <Button type="primary" htmlType="submit">
+                                Update Invoice
+                            </Button>
+                            <Button
+                                type="default"
+                                htmlType="submit"
+                                onClick={() => {
+                                    window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                        </Space>
                     </Form.Item>
                 </Form>
             </Card>

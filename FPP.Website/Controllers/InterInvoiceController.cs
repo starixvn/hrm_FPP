@@ -24,19 +24,22 @@ public class InterInvoiceController(
         return View();
     }
 
-    [FppPermission(Policy.Read, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public IActionResult Create()
     {
         return View();
     }
 
     [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
-    public IActionResult Edit(int id)
+    public async Task<IActionResult> Edit(int id)
     {
+        var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
+        ViewBag.CurrentEmpUnitId = currentEmpUnit.UnitId;
+        ViewBag.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
         return View(id);
     }
 
-    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    [FppPermission(Policy.Read, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public IActionResult Detail(int id)
     {
         return View(id);
@@ -106,11 +109,11 @@ public class InterInvoiceController(
             return BadRequest(ModelState);
         }
 
-        var invoice = await interInvoiceService.GetInterInvoiceById(id, isEdit, session.UserId);
-        var currentUserUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
-
         var isMyBuPermission = session.HasPermissionOnFunction(FunctionKey.MyBUInvoice, Policy.Host);
         var isGlobalPermission = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
+
+        var invoice = await interInvoiceService.GetInterInvoiceById(id, session.UserId, isEdit, isGlobalPermission);
+        var currentUserUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
 
         if (isMyBuPermission)
         {
@@ -170,6 +173,29 @@ public class InterInvoiceController(
             InterInvoiceId = viewModel.InterInvoiceId,
             Status = viewModel.Status,
             RejectionReason = viewModel.RejectionReason,
+            ModifiedBy = session.UserId
+        };
+
+        var result = await baseService.ExecuteNonQueryAsync(criteria);
+        if (!result.IsSuccessful)
+        {
+            return BadRequest(result.Message);
+        }
+        return new JsonResult(result);
+    }
+
+    [HttpPut]
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    public async Task<IActionResult> UnlockEditing(int id)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var criteria = new UnlockEditingInvoiceCriteria
+        {
+            InterInvoiceId = id,
             ModifiedBy = session.UserId
         };
 

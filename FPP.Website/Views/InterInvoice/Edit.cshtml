@@ -12,6 +12,8 @@
 
 @section Scripts {
 	<script>
+        window.currentEmpUnitId = @ViewBag.CurrentEmpUnitId;
+        window.isGlobal = @(ViewBag.IsGlobal ? 1 : 0);
         window.invoiceId = @Model;
     </script>
     <environment include="Development">

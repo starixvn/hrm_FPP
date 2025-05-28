@@ -6,9 +6,11 @@ namespace FPP.Core.Criteria.InterInvoice
     {
         public int InterInvoiceId { get; set; }
 
+        public int CurrentEmpId { get; set; }
+
         public bool IsEdit { get; set; }
 
-        public int? EditedBy { get; set; }
+        public bool IsGlobal { get; set; }
 
         public override string GetSettingKey()
         {

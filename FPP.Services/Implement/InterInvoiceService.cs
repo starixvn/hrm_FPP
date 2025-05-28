@@ -7,9 +7,14 @@ namespace FPP.Services.Implement
 {
     public class InterInvoiceService() : IInterInvoiceService
     {
-        public async Task<InterInvoiceDetail> GetInterInvoiceById(int id, bool isEdit, int editedBy)
+        public async Task<InterInvoiceDetail> GetInterInvoiceById(int id, int currentUserId, bool isEdit, bool isGlobal)
         {
-            var criteria = new GetInterInvoiceCriteria() { InterInvoiceId = id, IsEdit = isEdit, EditedBy = editedBy };
+            var criteria = new GetInterInvoiceCriteria() {
+                InterInvoiceId = id,
+                CurrentEmpId = currentUserId,
+                IsEdit = isEdit,
+                IsGlobal = isGlobal
+            };
             using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
             using var multi = await db.QueryMultipleAsync(criteria);
             var invoices = multi.Read<InterInvoiceDetail>().ToList();

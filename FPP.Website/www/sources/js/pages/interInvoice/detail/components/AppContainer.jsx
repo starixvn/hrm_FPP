@@ -29,10 +29,13 @@ const AppContainer = () => {
                 const response = await axios.get(
                     `/InterInvoice/GetInvoice/${window.invoiceId}?isEdit=false`
                 );
+                if (response.data.interInvoiceId === 0) {
+                    window.location.href = `/Error/AccessDenied`;
+                }
                 setInvoiceData(response.data);
                 setLoading(false);
             } catch (err) {
-                setError('Failed to fetch invoice data');
+                setError(error.response?.data || 'Failed to fetch invoice data');
                 setLoading(false);
             }
         };
@@ -257,12 +260,13 @@ const AppContainer = () => {
                             {mapInterInvoiceStatus[invoiceData?.status]}
                         </Tag>
                     </div>
-                    {invoiceData?.status === InterInvoiceStatus.Rejected && (
-                        <div className="header-label">
-                            Reason:{' '}
-                            <span className="header-value">{invoiceData?.rejectionReason}</span>
-                        </div>
-                    )}
+                    {invoiceData?.status === InterInvoiceStatus.Rejected &&
+                        invoiceData?.rejectionReason && (
+                            <div className="header-label">
+                                Reason:{' '}
+                                <span className="header-value">{invoiceData?.rejectionReason}</span>
+                            </div>
+                        )}
                     <div className="header-label">
                         Billing Period:{' '}
                         <span className="header-value">
