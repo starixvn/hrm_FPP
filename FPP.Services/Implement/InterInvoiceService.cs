@@ -9,7 +9,7 @@ namespace FPP.Services.Implement
     {
         public async Task<InterInvoiceDetail> GetInterInvoiceById(int id, int currentUserId, bool isEdit, bool isGlobal)
         {
-            var criteria = new GetInterInvoiceCriteria() {
+            var criteria = new GetInterInvoiceCriteria {
                 InterInvoiceId = id,
                 CurrentEmpId = currentUserId,
                 IsEdit = isEdit,

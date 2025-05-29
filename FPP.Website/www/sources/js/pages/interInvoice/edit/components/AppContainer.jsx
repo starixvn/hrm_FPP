@@ -271,13 +271,13 @@ const AppContainer = () => {
                                     style={{ marginBottom: '8px' }}
                                 >
                                     <Row gutter={16}>
-                                        <Col xs={24} sm={24} md={14} lg={14} xl={12} xxl={8}>
+                                        <Col span={16}>
                                             <span className="ant-form-item-label">
                                                 <span className="required-label">*</span> Item
                                                 Description
                                             </span>
                                         </Col>
-                                        <Col xs={16} sm={16} md={6} lg={6} xl={5} xxl={4}>
+                                        <Col span={6}>
                                             <span className="ant-form-item-label">
                                                 <span className="required-label">*</span> Amount
                                             </span>
@@ -291,7 +291,7 @@ const AppContainer = () => {
                                             align="middle"
                                             className="invoice-item-row"
                                         >
-                                            <Col xs={24} sm={24} md={14} lg={14} xl={12} xxl={8}>
+                                            <Col span={16}>
                                                 <Form.Item
                                                     {...restField}
                                                     name={[name, 'itemDescription']}
@@ -305,7 +305,7 @@ const AppContainer = () => {
                                                     <Input placeholder="Item Description" />
                                                 </Form.Item>
                                             </Col>
-                                            <Col xs={16} sm={16} md={6} lg={6} xl={5} xxl={4}>
+                                            <Col span={6}>
                                                 <Form.Item
                                                     {...restField}
                                                     name={[name, 'amount']}
@@ -319,12 +319,6 @@ const AppContainer = () => {
                                                     <InputNumber
                                                         style={{ width: '100%' }}
                                                         placeholder="Amount"
-                                                        // formatter={(value) =>
-                                                        //     `${value}`.replace(
-                                                        //         /\B(?=(\d{3})+(?!\d))/g,
-                                                        //         ','
-                                                        //     )
-                                                        // }
                                                         formatter={(value) => {
                                                             if (!value) return '';
                                                             const num = parseFloat(value);
@@ -341,14 +335,7 @@ const AppContainer = () => {
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col
-                                                xs={8}
-                                                sm={8}
-                                                md={4}
-                                                lg={4}
-                                                xl={4}
-                                                className="remove-item"
-                                            >
+                                            <Col span={2} className="remove-item">
                                                 {fields.length > 1 && (
                                                     <MinusCircleOutlined
                                                         onClick={() => remove(name)}

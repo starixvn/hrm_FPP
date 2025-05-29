@@ -306,22 +306,24 @@ const AppContainer = () => {
                             </Tag>
                         </div>
                         {invoiceData?.updateStatusByName && (
-                            <div className="header-label">
-                                {mapInterInvoiceStatus[invoiceData?.status]}
-                                {' by: '}
-                                <span className="header-value">
-                                    {invoiceData?.updateStatusByName}
-                                </span>
-                            </div>
-                        )}
-                        {invoiceData?.updateStatusAt && (
-                            <div className="header-label">
-                                {mapInterInvoiceStatus[invoiceData?.status]}
-                                {' at: '}
-                                <span className="header-value">
-                                    {CommonFunctions.formatDateTime(invoiceData?.updateStatusAt)}
-                                </span>
-                            </div>
+                            <>
+                                <div className="header-label">
+                                    {mapInterInvoiceStatus[invoiceData?.status]}
+                                    {' by: '}
+                                    <span className="header-value">
+                                        {invoiceData?.updateStatusByName}
+                                    </span>
+                                </div>
+                                <div className="header-label">
+                                    {mapInterInvoiceStatus[invoiceData?.status]}
+                                    {' at: '}
+                                    <span className="header-value">
+                                        {CommonFunctions.formatDateTime(
+                                            invoiceData?.updateStatusAt
+                                        )}
+                                    </span>
+                                </div>
+                            </>
                         )}
                         {invoiceData?.status === InterInvoiceStatus.Rejected &&
                             invoiceData?.rejectionReason && (
