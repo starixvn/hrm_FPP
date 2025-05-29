@@ -8,14 +8,14 @@
 
     .invoice-form {
         .ant-form-item {
-            margin-bottom: 24px;
+            margin-bottom: 12px;
         }
 
         .invoice-item {
             background-color: #fafafa;
-            padding: 16px;
+            padding: 12px;
             border-radius: 4px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
 
             .ant-form-item {
                 margin-bottom: 0;
@@ -34,18 +34,18 @@
         }
 
         .invoice-total-amount {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 600;
             color: #22455a;
             text-align: left;
-            padding: 12px;
+            padding: 8px 16px;
             background-color: #f5faff;
             border-radius: 4px;
-            margin-top: 16px;
+            margin-top: 8px;
         }
 
         .ant-divider {
-            margin: 32px 0 24px;
+            margin: 16px 0 24px;
         }
 
         .ant-btn-dashed {
