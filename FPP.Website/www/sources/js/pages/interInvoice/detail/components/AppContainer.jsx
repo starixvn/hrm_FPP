@@ -185,7 +185,7 @@ const AppContainer = () => {
     };
 
     const renderActionButtons = () => {
-        if (invoiceData.status != InterInvoiceStatus.ConfirmPending) {
+        if (invoiceData.status != InterInvoiceStatus.Pending) {
             return;
         } else if (invoiceData.isEditing) {
             return renderIsEditingButton();

@@ -63,7 +63,7 @@ const AppContainer = () => {
                     window.location.href = `/Error/AccessDenied`;
                 }
                 if (
-                    invoiceData.status !== InterInvoiceStatus.ConfirmPending ||
+                    invoiceData.status !== InterInvoiceStatus.Pending ||
                     (invoiceData.billerUnitId !== window.currentEmpUnitId && !window.isGlobal)
                 ) {
                     await axios.put(`/InterInvoice/UnlockEditing?id=${window.invoiceId}`);
