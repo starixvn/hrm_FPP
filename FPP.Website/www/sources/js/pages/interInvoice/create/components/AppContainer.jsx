@@ -43,9 +43,15 @@ const AppContainer = () => {
                 setCurrencyOptions(response.data.currencies || []);
                 setIsGlobal(response.data.isGlobal);
 
-                if (!response.data.isGlobal && response.data.currentEmpUnitId) {
+                if (response.data.currentEmpUnitId) {
                     form.setFieldsValue({
                         billerUnitId: response.data.currentEmpUnitId,
+                    });
+                }
+
+                if (response.data.currencies && response.data.currencies.length > 0) {
+                    form.setFieldsValue({
+                        currencyId: response.data.currencies[0].id,
                     });
                 }
 
