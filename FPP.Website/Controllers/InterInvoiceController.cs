@@ -24,7 +24,8 @@ public class InterInvoiceController(
 {
     public IActionResult Index()
     {
-        ViewBag.IsHost = session.HasPermissionOnFunction(FunctionKey.InterInvoice, Policy.Host);
+        ViewBag.IsHost = session.HasPermissionOnFunction(FunctionKey.MyBUInvoice, Policy.Host) ||
+                         session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
         return View();
     }
 

@@ -165,7 +165,7 @@ const AppContainer = () => {
                     <Table.Summary.Cell index={1} align="right">
                         {totalAmount.toLocaleString()}
                     </Table.Summary.Cell>
-                    <Table.Summary.Cell index={2} colSpan={9} />
+                    <Table.Summary.Cell index={2} colSpan={11} />
                 </Table.Summary.Row>
             </Table.Summary>
         );

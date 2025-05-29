@@ -8,7 +8,7 @@ export const PeriodType = {
 };
 
 export const InterInvoiceStatus = {
-    ConfirmPending: 0,
+    Pending: 0,
     Confirmed: 1,
     Rejected: 2,
 };
@@ -20,19 +20,19 @@ export const mapPeriodType = {
 };
 
 export const mapInterInvoiceStatus = {
-    [InterInvoiceStatus.ConfirmPending]: 'Confirm Pending',
+    [InterInvoiceStatus.Pending]: 'Pending',
     [InterInvoiceStatus.Confirmed]: 'Confirmed',
     [InterInvoiceStatus.Rejected]: 'Rejected',
 };
 
 export const mapColorStatus = {
-    [InterInvoiceStatus.ConfirmPending]: 'processing',
+    [InterInvoiceStatus.Pending]: 'processing',
     [InterInvoiceStatus.Confirmed]: 'success',
     [InterInvoiceStatus.Rejected]: 'error',
 };
 
 export const mapIconStatus = {
-    [InterInvoiceStatus.ConfirmPending]: <SyncOutlined />,
+    [InterInvoiceStatus.Pending]: <SyncOutlined />,
     [InterInvoiceStatus.Confirmed]: <CheckCircleOutlined />,
     [InterInvoiceStatus.Rejected]: <CloseCircleOutlined />,
 };
