@@ -15,7 +15,7 @@ import {
     Spin,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { PeriodType, mapPeriodType } from '../../components/enum';
+import { PeriodType, formatCurrency, mapPeriodType } from '../../components/enum';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -31,6 +31,7 @@ const AppContainer = () => {
     const [billerOptions, setBillerOptions] = useState([]);
     const [currencyOptions, setCurrencyOptions] = useState([]);
     const [isGlobal, setIsGlobal] = useState(false);
+    const [totalAmount, setTotalAmount] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -127,7 +128,19 @@ const AppContainer = () => {
     return (
         <div className="invoice-container">
             <Card title="Create Inter Invoice" className="invoice-form-card">
-                <Form form={form} layout="vertical" onFinish={onFinish} className="invoice-form">
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={onFinish}
+                    onValuesChange={(changedValues, allValues) => {
+                        const items = allValues.items || [];
+                        const total = items
+                            .filter((item) => item && item.amount !== undefined)
+                            .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+                        setTotalAmount(total);
+                    }}
+                    className="invoice-form"
+                >
                     <Row gutter={24}>
                         <Col span={8}>
                             <Form.Item
@@ -279,6 +292,14 @@ const AppContainer = () => {
                                     >
                                         Add Item
                                     </Button>
+                                </Form.Item>
+                                <Form.Item>
+                                    <div className="invoice-total-amount">
+                                        Total Amount: {formatCurrency(totalAmount)}{' '}
+                                        {currencyOptions.find(
+                                            (c) => c.id === form.getFieldValue('currencyId')
+                                        )?.symbol || ''}
+                                    </div>
                                 </Form.Item>
                             </>
                         )}

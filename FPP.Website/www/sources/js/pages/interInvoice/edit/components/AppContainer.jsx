@@ -16,7 +16,12 @@ import {
     Space,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { InterInvoiceStatus, PeriodType, mapPeriodType } from '../../components/enum';
+import {
+    InterInvoiceStatus,
+    PeriodType,
+    formatCurrency,
+    mapPeriodType,
+} from '../../components/enum';
 import moment from 'moment';
 import dayjs from 'dayjs';
 
@@ -32,6 +37,7 @@ const AppContainer = () => {
     const [payerOptions, setPayerOptions] = useState([]);
     const [billerOptions, setBillerOptions] = useState([]);
     const [currencyOptions, setCurrencyOptions] = useState([]);
+    const [totalAmount, setTotalAmount] = useState(0);
 
     useEffect(() => {
         const handleBeforeUnload = async () => {
@@ -91,6 +97,13 @@ const AppContainer = () => {
                         amount: item.amount,
                     })),
                 };
+
+                // Calculate initial total amount
+                const initialTotal = invoiceData.items.reduce(
+                    (sum, item) => sum + (Number(item.amount) || 0),
+                    0
+                );
+                setTotalAmount(initialTotal);
 
                 // Set date based on period type
                 switch (invoiceData.periodType) {
@@ -186,7 +199,19 @@ const AppContainer = () => {
     return (
         <div className="invoice-container">
             <Card title={`Edit Inter Invoice #${window.invoiceId}`} className="invoice-form-card">
-                <Form form={form} layout="vertical" onFinish={onFinish} className="invoice-form">
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={onFinish}
+                    onValuesChange={(changedValues, allValues) => {
+                        const items = allValues.items || [];
+                        const total = items
+                            .filter((item) => item && item.amount !== undefined)
+                            .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+                        setTotalAmount(total);
+                    }}
+                    className="invoice-form"
+                >
                     <Row gutter={24}>
                         <Col span={8}>
                             <Form.Item
@@ -282,8 +307,9 @@ const AppContainer = () => {
                                                             )
                                                         }
                                                         parser={(value) =>
-                                                            value.replace(/\$\s?|(,*)/g, '')
+                                                            value.replace(/[^\d]/g, '')
                                                         }
+                                                        controls={false}
                                                     />
                                                 </Form.Item>
                                             </Col>
@@ -313,6 +339,14 @@ const AppContainer = () => {
                                     >
                                         Add Item
                                     </Button>
+                                </Form.Item>
+                                <Form.Item>
+                                    <div className="invoice-total-amount">
+                                        Total Amount: {formatCurrency(totalAmount)}{' '}
+                                        {currencyOptions.find(
+                                            (c) => c.id === form.getFieldValue('currencyId')
+                                        )?.symbol || ''}
+                                    </div>
                                 </Form.Item>
                             </>
                         )}

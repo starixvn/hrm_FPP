@@ -30,9 +30,11 @@ namespace FPP.Models.InterInvoice
         public DateTime? EditingStartedAt { get; set; }
         public int? EditedBy { get; set; }
         public string EditedByName { get; set; }
+        public int? UpdateStatusById { get; set; }
+        public string UpdateStatusByName { get; set; }
+        public DateTime? UpdateStatusAt { get; set; }
         public string RejectionReason { get; set; }
         public List<InterInvoiceItem> Items { get; set; } = new List<InterInvoiceItem>();
-
         public bool IsCanEdit { get; set; }
         public bool IsCanConfirmReject { get; set; }
     }

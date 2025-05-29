@@ -32,6 +32,17 @@
             }
         }
 
+        .invoice-total-amount {
+            font-size: 18px;
+            font-weight: 600;
+            color: #22455a;
+            text-align: right;
+            padding: 12px;
+            background-color: #f5faff;
+            border-radius: 4px;
+            margin-top: 16px;
+        }
+
         .ant-divider {
             margin: 32px 0 24px;
         }

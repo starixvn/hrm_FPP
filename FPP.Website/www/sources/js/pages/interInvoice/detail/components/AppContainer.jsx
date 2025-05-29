@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Card, Button, message, Spin, Typography, Modal, Tag, Input } from 'antd';
+import { Card, Button, message, Spin, Modal, Tag, Input } from 'antd';
 import axios from 'axios';
 import {
     mapPeriodType,
@@ -9,8 +9,10 @@ import {
     mapInterInvoiceStatus,
     mapIconStatus,
     mapColorStatus,
+    formatDate,
+    formatDateTime,
+    formatCurrency,
 } from '../../components/enum';
-import moment from 'moment';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 const AppContainer = () => {
@@ -78,25 +80,17 @@ const AppContainer = () => {
         setIsEditModalVisible(false);
     };
 
-    const formatDate = (date) => {
-        return date ? moment(date).format('DD/MM/YYYY') : '-';
-    };
-
-    const formatCurrency = (amount) => {
-        return amount ? amount.toLocaleString() : '0';
-    };
-
     const renderPeriodTimeRange = () => {
         if (!invoiceData?.periodType === PeriodType.Monthly) {
             return;
         } else if (invoiceData?.periodType === PeriodType.RangeDate) {
             return (
-                <div className="header-value">
-                    {formatDate(invoiceData?.fromDate)} - {formatDate(invoiceData?.toDate)}
-                </div>
+                <span className="header-value">
+                    - {formatDate(invoiceData?.fromDate)} - {formatDate(invoiceData?.toDate)}
+                </span>
             );
         } else if (invoiceData?.periodType === PeriodType.OneTime) {
-            return <div className="header-value">{formatDate(invoiceData?.fromDate)}</div>;
+            return <span className="header-value">- {formatDate(invoiceData?.fromDate)}</span>;
         }
     };
 
@@ -238,14 +232,23 @@ const AppContainer = () => {
                         </span>
                     </div>
                     <div className="header-label">
+                        Billing Period:{' '}
+                        <span className="header-value">
+                            {mapPeriodType[invoiceData?.periodType]} {renderPeriodTimeRange()}
+                        </span>
+                    </div>
+                    <div className="header-label">
                         Handler: <span className="header-value">{invoiceData?.handlerName}</span>
                     </div>
                     <div className="header-label">
-                        Creator: <span className="header-value">{invoiceData?.createdByName}</span>
+                        Created By:{' '}
+                        <span className="header-value">{invoiceData?.createdByName}</span>
                     </div>
                     <div className="header-label">
                         Created At:{' '}
-                        <span className="header-value">{formatDate(invoiceData?.createdAt)}</span>
+                        <span className="header-value">
+                            {formatDateTime(invoiceData?.createdAt)}
+                        </span>
                     </div>
                 </div>
                 <div className="invoice-header-col invoice-header-info">
@@ -258,6 +261,22 @@ const AppContainer = () => {
                             {mapInterInvoiceStatus[invoiceData?.status]}
                         </Tag>
                     </div>
+                    {invoiceData?.updateStatusByName && (
+                        <div className="header-label">
+                            {mapInterInvoiceStatus[invoiceData?.status]}
+                            {' by: '}
+                            <span className="header-value">{invoiceData?.updateStatusByName}</span>
+                        </div>
+                    )}
+                    {invoiceData?.updateStatusAt && (
+                        <div className="header-label">
+                            {mapInterInvoiceStatus[invoiceData?.status]}
+                            {' at: '}
+                            <span className="header-value">
+                                {formatDateTime(invoiceData?.updateStatusAt)}
+                            </span>
+                        </div>
+                    )}
                     {invoiceData?.status === InterInvoiceStatus.Rejected &&
                         invoiceData?.rejectionReason && (
                             <div className="header-label">
@@ -265,13 +284,6 @@ const AppContainer = () => {
                                 <span className="header-value">{invoiceData?.rejectionReason}</span>
                             </div>
                         )}
-                    <div className="header-label">
-                        Billing Period:{' '}
-                        <span className="header-value">
-                            {mapPeriodType[invoiceData?.periodType]}
-                        </span>
-                    </div>
-                    {renderPeriodTimeRange()}
                 </div>
             </div>
             {invoiceData?.notes && (
