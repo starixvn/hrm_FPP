@@ -125,7 +125,7 @@ const AppContainer = () => {
 
     const renderIsEditingButton = () => {
         return (
-            <Button type="primary" className="editing-btn" disabled={!invoiceData.isCanEdit}>
+            <Button type="primary" className="editing-btn" disabled>
                 <ExclamationCircleOutlined />
                 Invoice Adjusting by {invoiceData.editedByName}
             </Button>
