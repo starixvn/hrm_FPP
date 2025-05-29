@@ -186,9 +186,6 @@ public class InterInvoiceController(
             ItemListJson = JsonConvert.SerializeObject(oldInvoice.Items)
         };
 
-        var test = JsonHelper.GetChanges(oldCriteria, criteria);
-        var get = JsonHelper.GetStringChanges(oldCriteria, criteria);
-
         await activityLogService.LogActivity(new InsertActivityLogCriteria
         {
             ObjectTypeId = ObjectType.Invoice,

@@ -261,6 +261,24 @@ const AppContainer = () => {
                     <Form.List name="items">
                         {(fields, { add, remove }) => (
                             <>
+                                <div
+                                    className="invoice-item-labels"
+                                    style={{ marginBottom: '8px' }}
+                                >
+                                    <Row gutter={16}>
+                                        <Col xs={24} sm={24} md={14} lg={14} xl={12} xxl={8}>
+                                            <span className="ant-form-item-label">
+                                                <span className="required-label">*</span> Item
+                                                Description
+                                            </span>
+                                        </Col>
+                                        <Col xs={16} sm={16} md={6} lg={6} xl={5} xxl={4}>
+                                            <span className="ant-form-item-label">
+                                                <span className="required-label">*</span> Amount
+                                            </span>
+                                        </Col>
+                                    </Row>
+                                </div>
                                 {fields.map(({ key, name, ...restField }) => (
                                     <div key={key} className="invoice-item">
                                         <Row
@@ -303,9 +321,11 @@ const AppContainer = () => {
                                                             )
                                                         }
                                                         parser={(value) =>
-                                                            value.replace(/[^\d]/g, '')
+                                                            value.replace(/[^\d.]/g, '')
                                                         }
                                                         controls={false}
+                                                        step={0.01}
+                                                        precision={2}
                                                     />
                                                 </Form.Item>
                                             </Col>
