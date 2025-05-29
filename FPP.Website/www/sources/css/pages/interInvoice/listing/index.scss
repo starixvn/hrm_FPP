@@ -39,4 +39,14 @@
         align-items: flex-end;
         height: 100%;
     }
+
+    .status-confirmed {
+        color: #52c41a;
+        font-weight: 500;
+    }
+
+    .status-rejected {
+        color: #ff4d4f;
+        font-weight: 500;
+    }
 }

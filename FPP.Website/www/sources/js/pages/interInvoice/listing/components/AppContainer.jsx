@@ -76,7 +76,7 @@ const AppContainer = () => {
             key: 'handler',
             sorter: (a, b) => a.handler.localeCompare(b.handler),
             align: 'left',
-            width: '10%',
+            width: '8%',
         },
         {
             title: 'Notes',
@@ -84,7 +84,7 @@ const AppContainer = () => {
             key: 'notes',
             sorter: (a, b) => a.notes.localeCompare(b.notes),
             align: 'left',
-            width: '10%',
+            width: '12%',
         },
         {
             title: 'Period Type',
@@ -94,15 +94,6 @@ const AppContainer = () => {
             render: (periodType) => mapPeriodType[periodType] || periodType,
             align: 'left',
             width: '8%',
-        },
-        {
-            title: 'Status',
-            dataIndex: 'status',
-            key: 'status',
-            sorter: (a, b) => a.status - b.status,
-            render: (status) => mapInterInvoiceStatus[status] || status,
-            align: 'left',
-            width: '10%',
         },
         {
             title: 'Created Date',
@@ -136,6 +127,18 @@ const AppContainer = () => {
             key: 'modifiedBy',
             sorter: (a, b) => a.modifiedBy?.localeCompare(b.modifiedBy),
             render: (text) => text || '-',
+            align: 'left',
+            width: '8%',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            sorter: (a, b) => a.status - b.status,
+            render: (status) => {
+                const statusText = mapInterInvoiceStatus[status] || status;
+                return <span className={`status-${statusText.toLowerCase()}`}>{statusText}</span>;
+            },
             align: 'left',
             width: '8%',
         },
