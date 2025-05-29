@@ -402,7 +402,6 @@ const AppContainer = () => {
 
                     {periodType === PeriodType.Monthly && (
                         <Form.Item
-                            hidden
                             name="monthlyDate"
                             label="Period Details"
                             rules={[{ required: true, message: 'Please select month' }]}

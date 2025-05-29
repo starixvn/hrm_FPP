@@ -32,7 +32,12 @@ namespace FPP.Models.InterInvoice
         public string EditedByName { get; set; }
         public int? UpdateStatusById { get; set; }
         public string UpdateStatusByName { get; set; }
-        public DateTime? UpdateStatusAt { get; set; }
+        private DateTime _UpdateStatusAt;
+        public DateTime UpdateStatusAt
+        {
+            get => _UpdateStatusAt;
+            set => _UpdateStatusAt = value.AddHours(12);
+        }
         public string RejectionReason { get; set; }
         public List<InterInvoiceItem> Items { get; set; } = new List<InterInvoiceItem>();
         public bool IsCanEdit { get; set; }
