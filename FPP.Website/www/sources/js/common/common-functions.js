@@ -9,6 +9,10 @@ export default class CommonFunctions {
         return date ? moment(date).format('DD/MM/YYYY') : '-';
     }
 
+    static formatMonth(date) {
+        return date ? moment(date).format('MM/YYYY') : '-';
+    }
+
     static formatDateTime(date) {
         return date ? moment(date).format('DD/MM/YYYY HH:mm') : '-';
     }

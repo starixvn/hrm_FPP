@@ -1,31 +1,29 @@
 .invoice-container {
     max-width: 900px;
-    margin: 24px auto 0;
+    margin: 5px auto 0;
     background: #fff;
     font-family: 'Segoe UI', Arial, sans-serif;
     color: #222;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    padding: 32px 32px 24px 32px;
+    padding: 20px;
 
     .invoice-header-row {
         display: flex;
         justify-content: space-between;
-        gap: 16px;
 
         .invoice-header-col {
             flex: 1;
             min-width: 0;
 
             .header-label {
-                font-size: 15px;
+                font-size: 14px;
                 color: #888;
                 font-weight: 500;
-                margin-bottom: 2px;
             }
 
             .header-value {
-                font-size: 16px;
+                font-size: 15px;
                 font-weight: 600;
                 color: #222;
                 margin-bottom: 2px;
@@ -64,9 +62,9 @@
         font-size: 20px;
         font-weight: 700;
         letter-spacing: 2px;
-        padding: 12px 0;
+        padding: 4px 0;
         border-radius: 4px;
-        margin: 32px 0;
+        margin: 12px 0;
     }
 
     .invoice-table-wrapper {

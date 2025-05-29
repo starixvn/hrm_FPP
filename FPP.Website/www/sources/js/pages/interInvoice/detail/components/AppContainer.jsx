@@ -101,8 +101,12 @@ const AppContainer = () => {
     };
 
     const renderPeriodTimeRange = () => {
-        if (!invoiceData?.periodType === PeriodType.Monthly) {
-            return;
+        if (invoiceData?.periodType === PeriodType.Monthly) {
+            return (
+                <span className="header-value">
+                    - {CommonFunctions.formatMonth(invoiceData?.fromDate)}
+                </span>
+            );
         } else if (invoiceData?.periodType === PeriodType.RangeDate) {
             return (
                 <span className="header-value">
@@ -276,25 +280,20 @@ const AppContainer = () => {
                             <span className="header-value">{invoiceData?.handlerName}</span>
                         </div>
                         <div className="header-label">
-                            Created By:{' '}
-                            <span className="header-value">{invoiceData?.createdByName}</span>
-                        </div>
-                        <div className="header-label">
-                            Created At:{' '}
+                            Creator:{' '}
                             <span className="header-value">
+                                {invoiceData?.createdByName} -{' '}
                                 {CommonFunctions.formatDateTime(invoiceData?.createdAt)}
                             </span>
                         </div>
-                        <div className="header-label">
-                            Modified By:{' '}
-                            <span className="header-value">{invoiceData?.modifiedBy}</span>
-                        </div>
-                        <div className="header-label">
-                            Modified At:{' '}
-                            <span className="header-value">
-                                {CommonFunctions.formatDateTime(invoiceData?.modifiedAt)}
-                            </span>
-                        </div>
+                        {invoiceData?.modifiedBy && (
+                            <div className="header-label">
+                                Modifier:{' '}
+                                <span className="header-value">
+                                    {invoiceData?.modifiedBy} - {invoiceData?.modifiedAt}
+                                </span>
+                            </div>
+                        )}
                     </div>
                     <div className="invoice-header-col invoice-header-info">
                         <div className="header-label">
