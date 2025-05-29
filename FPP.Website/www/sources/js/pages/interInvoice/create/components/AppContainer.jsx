@@ -15,7 +15,8 @@ import {
     Spin,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { PeriodType, formatCurrency, mapPeriodType } from '../../components/enum';
+import { PeriodType, mapPeriodType } from '../../components/enum';
+import CommonFunctions from '../../../../common/common-functions';
 import moment from 'moment';
 
 const { Option } = Select;
@@ -37,11 +38,7 @@ const AppContainer = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/InterInvoice/GetPreparedData');
-                setPayerOptions(
-                    response.data.units.filter(
-                        (unit) => unit.picEmpId != null && unit.picEmpId > 0
-                    ) || []
-                );
+                setPayerOptions(response.data.units);
                 setBillerOptions(response.data.units);
                 setCurrencyOptions(response.data.currencies || []);
                 setIsGlobal(response.data.isGlobal);
@@ -178,6 +175,14 @@ const AppContainer = () => {
                                     ({ getFieldValue }) => ({
                                         validator(_, value) {
                                             if (!value || getFieldValue('billerUnitId') !== value) {
+                                                const selectedPayer = payerOptions.find(
+                                                    (p) => p.unitId === value
+                                                );
+                                                if (!selectedPayer?.picEmpId) {
+                                                    return Promise.reject(
+                                                        new Error('This BU does not have a PIC')
+                                                    );
+                                                }
                                                 return Promise.resolve();
                                             }
                                             return Promise.reject(
@@ -295,7 +300,7 @@ const AppContainer = () => {
                                 </Form.Item>
                                 <Form.Item>
                                     <div className="invoice-total-amount">
-                                        Total Amount: {formatCurrency(totalAmount)}{' '}
+                                        Total Amount: {CommonFunctions.formatCurrency(totalAmount)}{' '}
                                         {currencyOptions.find(
                                             (c) => c.id === form.getFieldValue('currencyId')
                                         )?.symbol || ''}
@@ -362,6 +367,12 @@ const AppContainer = () => {
                     </Form.Item>
 
                     <Form.Item style={{ textAlign: 'right' }}>
+                        <Button
+                            style={{ marginRight: '8px' }}
+                            onClick={() => (window.location.href = '/interInvoice/index')}
+                        >
+                            Cancel
+                        </Button>
                         <Button type="primary" htmlType="submit">
                             Create Invoice
                         </Button>

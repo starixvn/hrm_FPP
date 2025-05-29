@@ -16,12 +16,8 @@ import {
     Space,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import {
-    InterInvoiceStatus,
-    PeriodType,
-    formatCurrency,
-    mapPeriodType,
-} from '../../components/enum';
+import { InterInvoiceStatus, PeriodType, mapPeriodType } from '../../components/enum';
+import CommonFunctions from '../../../../common/common-functions';
 import moment from 'moment';
 import dayjs from 'dayjs';
 
@@ -342,7 +338,7 @@ const AppContainer = () => {
                                 </Form.Item>
                                 <Form.Item>
                                     <div className="invoice-total-amount">
-                                        Total Amount: {formatCurrency(totalAmount)}{' '}
+                                        Total Amount: {CommonFunctions.formatCurrency(totalAmount)}{' '}
                                         {currencyOptions.find(
                                             (c) => c.id === form.getFieldValue('currencyId')
                                         )?.symbol || ''}

@@ -186,6 +186,9 @@ public class InterInvoiceController(
             ItemListJson = JsonConvert.SerializeObject(oldInvoice.Items)
         };
 
+        var test = JsonHelper.GetChanges(oldCriteria, criteria);
+        var get = JsonHelper.GetStringChanges(oldCriteria, criteria);
+
         await activityLogService.LogActivity(new InsertActivityLogCriteria
         {
             ObjectTypeId = ObjectType.Invoice,
@@ -261,5 +264,19 @@ public class InterInvoiceController(
             return BadRequest(result.Message);
         }
         return new JsonResult(result);
+    }
+
+
+    [HttpGet]
+    [FppPermission(Policy.Read, FunctionKey.InterInvoice)]
+    public async Task<IActionResult> GetActivityLog(int id)
+    {
+        var criteria = new GetActivityLogCriteria
+        {
+            ObjectTypeId = ObjectType.Invoice,
+            ObjectId = id
+        };
+        var activityLogs = await activityLogService.GetLogActivity(criteria);
+        return new JsonResult(activityLogs);
     }
 }

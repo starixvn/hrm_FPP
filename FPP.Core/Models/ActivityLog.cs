@@ -18,5 +18,20 @@ public class ActivityLog
 
     public int? CreatedBy { get; set; }
 
+    public string? CreatedByName { get; set; }
+
     public DateTime CreatedDate { get; set; }
+}
+
+public class ActivityLogModel
+{
+    public string? ObjectTypeName { get; set; }
+
+    public string? ActionTypeName { get; set; }
+
+    public string? CreatedByName { get; set; }
+
+    public DateTime CreatedDate { get; set; }
+
+    public List<FieldChange>? ChangedItems { get; set; }
 }

@@ -37,15 +37,3 @@ export const mapIconStatus = {
     [InterInvoiceStatus.Confirmed]: <CheckCircleOutlined />,
     [InterInvoiceStatus.Rejected]: <CloseCircleOutlined />,
 };
-
-export const formatCurrency = (amount) => {
-    return amount ? amount.toLocaleString() : '0';
-};
-
-export const formatDate = (date) => {
-    return date ? moment(date).format('DD/MM/YYYY') : '-';
-};
-
-export const formatDateTime = (date) => {
-    return date ? moment(date).format('DD/MM/YYYY HH:mm') : '-';
-};

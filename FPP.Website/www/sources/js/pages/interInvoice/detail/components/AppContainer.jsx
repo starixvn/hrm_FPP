@@ -9,11 +9,10 @@ import {
     mapInterInvoiceStatus,
     mapIconStatus,
     mapColorStatus,
-    formatDate,
-    formatDateTime,
-    formatCurrency,
 } from '../../components/enum';
+import CommonFunctions from '../../../../common/common-functions';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import ActivityLogModal from '../../../../common/components/ActivityLogModal';
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(true);
@@ -22,6 +21,8 @@ const AppContainer = () => {
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
     const [isApproveModalVisible, setIsApproveModalVisible] = useState(false);
     const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
+    const [isActivityLogVisible, setIsActivityLogVisible] = useState(false);
+    const [activityLogs, setActivityLogs] = useState([]);
     const [rejectionReason, setRejectionReason] = useState('');
 
     useEffect(() => {
@@ -44,6 +45,20 @@ const AppContainer = () => {
             fetchData();
         }
     }, [window.invoiceId]);
+
+    const fetchActivityLogs = async () => {
+        try {
+            const response = await axios.get(`/InterInvoice/GetActivityLog/${window.invoiceId}`);
+            setActivityLogs(response.data);
+        } catch (error) {
+            message.error('Failed to fetch activity logs');
+        }
+    };
+
+    const handleShowActivityLog = () => {
+        setIsActivityLogVisible(true);
+        fetchActivityLogs();
+    };
 
     const handleApprove = async () => {
         try {
@@ -86,11 +101,16 @@ const AppContainer = () => {
         } else if (invoiceData?.periodType === PeriodType.RangeDate) {
             return (
                 <span className="header-value">
-                    - {formatDate(invoiceData?.fromDate)} - {formatDate(invoiceData?.toDate)}
+                    - {CommonFunctions.formatDate(invoiceData?.fromDate)} -{' '}
+                    {CommonFunctions.formatDate(invoiceData?.toDate)}
                 </span>
             );
         } else if (invoiceData?.periodType === PeriodType.OneTime) {
-            return <span className="header-value">- {formatDate(invoiceData?.fromDate)}</span>;
+            return (
+                <span className="header-value">
+                    - {CommonFunctions.formatDate(invoiceData?.fromDate)}
+                </span>
+            );
         }
     };
 
@@ -178,13 +198,28 @@ const AppContainer = () => {
         );
     };
 
+    const renderActivityLogModal = () => {
+        return (
+            <ActivityLogModal
+                isVisible={isActivityLogVisible}
+                onClose={() => setIsActivityLogVisible(false)}
+                activityLogs={activityLogs}
+            />
+        );
+    };
+
     const renderActionButtons = () => {
         if (invoiceData.status != InterInvoiceStatus.Pending) {
-            return;
+            return <Button onClick={handleShowActivityLog}>View Activity Log</Button>;
         } else if (invoiceData.isEditing) {
             return renderIsEditingButton();
         } else if (invoiceData.isCanConfirmReject || invoiceData.isCanEdit) {
-            return renderOthersButtons();
+            return (
+                <>
+                    {renderOthersButtons()}
+                    {/* <Button onClick={handleShowActivityLog}>View Activity Log</Button> */}
+                </>
+            );
         }
     };
 
@@ -247,7 +282,7 @@ const AppContainer = () => {
                     <div className="header-label">
                         Created At:{' '}
                         <span className="header-value">
-                            {formatDateTime(invoiceData?.createdAt)}
+                            {CommonFunctions.formatDateTime(invoiceData?.createdAt)}
                         </span>
                     </div>
                 </div>
@@ -273,7 +308,7 @@ const AppContainer = () => {
                             {mapInterInvoiceStatus[invoiceData?.status]}
                             {' at: '}
                             <span className="header-value">
-                                {formatDateTime(invoiceData?.updateStatusAt)}
+                                {CommonFunctions.formatDateTime(invoiceData?.updateStatusAt)}
                             </span>
                         </div>
                     )}
@@ -295,20 +330,20 @@ const AppContainer = () => {
             <div className="invoice-table-wrapper">
                 <div className="invoice-table-header">
                     <div className="col-desc">DESCRIPTION</div>
-                    <div className="col-price">PRICE</div>
+                    <div className="col-price">AMOUNT</div>
                 </div>
                 {invoiceData?.items?.map((item, idx) => (
                     <div className="invoice-table-row" key={idx}>
                         <div className="col-desc">{item.itemDescription}</div>
                         <div className="col-price">
-                            {formatCurrency(item.amount)} {invoiceData?.currency}
+                            {CommonFunctions.formatCurrency(item.amount)} {invoiceData?.currency}
                         </div>
                     </div>
                 ))}
                 <div className="invoice-table-footer">
                     <div className="col-desc subtotal-label">TOTAL AMOUNT</div>
                     <div className="col-price subtotal-value">
-                        {formatCurrency(
+                        {CommonFunctions.formatCurrency(
                             invoiceData?.items?.reduce((sum, i) => sum + (i.amount || 0), 0)
                         )}{' '}
                         {invoiceData?.currency}
@@ -316,6 +351,7 @@ const AppContainer = () => {
                 </div>
             </div>
             <div className="invoice-action-row">{renderActionButtons()}</div>
+            {renderActivityLogModal()}
         </div>
     );
 };
