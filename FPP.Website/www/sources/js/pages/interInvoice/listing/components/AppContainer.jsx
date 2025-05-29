@@ -4,6 +4,7 @@ import { fetchInvoices } from '../helper/service';
 import Filter from './Filter';
 import { mapInterInvoiceStatus, mapPeriodType } from '../../components/enum';
 import { EyeOutlined } from '@ant-design/icons';
+import CommonFunctions from '../../../../common/common-functions';
 
 const { Title } = Typography;
 
@@ -86,6 +87,22 @@ const AppContainer = () => {
             render: (periodType) => mapPeriodType[periodType] || periodType,
             align: 'left',
             width: '8%',
+        },
+        {
+            title: 'Period',
+            dataIndex: 'fromDate',
+            key: 'period',
+            sorter: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
+            render: (_, record) => {
+                if (!record.fromDate || !record.toDate) {
+                    return '-';
+                }
+                const fromDate = CommonFunctions.formatDate(record.fromDate);
+                const toDate = CommonFunctions.formatDate(record.toDate);
+                return fromDate === toDate ? fromDate : `${fromDate} - ${toDate}`;
+            },
+            align: 'left',
+            width: '12%',
         },
         {
             title: 'Created Date',

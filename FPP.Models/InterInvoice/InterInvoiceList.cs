@@ -27,4 +27,6 @@ public class InterInvoiceList
     public decimal TotalAmount { get; set; }
     public int Status { get; set; }
     public int PeriodType { get; set; }
+    public DateTime FromDate { get; set; }
+    public DateTime ToDate { get; set; }
 }
