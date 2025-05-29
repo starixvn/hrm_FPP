@@ -405,7 +405,6 @@ const AppContainer = () => {
                             name="monthlyDate"
                             label="Period Details"
                             rules={[{ required: true, message: 'Please select month' }]}
-                            initialValue={moment()}
                         >
                             <DatePicker picker="month" style={{ width: '100%' }} />
                         </Form.Item>
