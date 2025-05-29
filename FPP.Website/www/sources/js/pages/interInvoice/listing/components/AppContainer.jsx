@@ -60,7 +60,7 @@ const AppContainer = () => {
             sorter: (a, b) => a.totalAmount - b.totalAmount,
             render: (amount) => amount.toLocaleString(),
             align: 'right',
-            width: '7%',
+            width: '8%',
         },
         {
             title: 'Currency',
@@ -68,7 +68,7 @@ const AppContainer = () => {
             key: 'currency',
             //sorter: (a, b) => a.currency.localeCompare(b.currency),
             align: 'left',
-            width: '6%',
+            width: '5%',
         },
         {
             title: 'Handler',
@@ -77,14 +77,6 @@ const AppContainer = () => {
             sorter: (a, b) => a.handler.localeCompare(b.handler),
             align: 'left',
             width: '8%',
-        },
-        {
-            title: 'Notes',
-            dataIndex: 'notes',
-            key: 'notes',
-            sorter: (a, b) => a.notes.localeCompare(b.notes),
-            align: 'left',
-            width: '12%',
         },
         {
             title: 'Period Type',
@@ -113,24 +105,6 @@ const AppContainer = () => {
             width: '8%',
         },
         {
-            title: 'Modified Date',
-            dataIndex: 'modifiedDate',
-            key: 'modifiedDate',
-            sorter: (a, b) => new Date(a.modifiedDate) - new Date(b.modifiedDate),
-            render: (date) => date || '-',
-            align: 'left',
-            width: '12%',
-        },
-        {
-            title: 'Modified By',
-            dataIndex: 'modifiedBy',
-            key: 'modifiedBy',
-            sorter: (a, b) => a.modifiedBy?.localeCompare(b.modifiedBy),
-            render: (text) => text || '-',
-            align: 'left',
-            width: '8%',
-        },
-        {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
@@ -143,10 +117,10 @@ const AppContainer = () => {
             width: '8%',
         },
         {
-            title: 'View Details',
+            title: '',
             key: 'view',
             align: 'center',
-            width: '8%',
+            width: '3%',
             render: (_, record) => (
                 <Button
                     type="text"

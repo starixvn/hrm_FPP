@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import { Card, Button, message, Spin, Modal, Tag, Input } from 'antd';
+import { Card, Button, message, Spin, Modal, Tag, Input, Typography } from 'antd';
 import axios from 'axios';
 import {
     mapPeriodType,
@@ -13,6 +13,8 @@ import {
 import CommonFunctions from '../../../../common/common-functions';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import ActivityLogModal from '../../../../common/components/ActivityLogModal';
+
+const { Title } = Typography;
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(true);
@@ -93,6 +95,28 @@ const AppContainer = () => {
     const handleEdit = () => {
         window.location.href = `/interInvoice/edit?id=${invoiceData.interInvoiceId}`;
         setIsEditModalVisible(false);
+    };
+
+    const handleBack = () => {
+        window.location.href = '/interInvoice/index';
+    };
+
+    const renderTitle = () => {
+        return (
+            <Title level={4} style={{ margin: 0 }}>
+                <span
+                    onClick={handleBack}
+                    style={{
+                        cursor: 'pointer',
+                        color: '#5273a5',
+                    }}
+                >
+                    Inter Invoice
+                </span>
+                {' >> '}
+                Detail
+            </Title>
+        );
     };
 
     const renderPeriodTimeRange = () => {
@@ -225,8 +249,8 @@ const AppContainer = () => {
 
     if (loading) {
         return (
-            <div className="invoice-container">
-                <Card className="invoice-form-card">
+            <div className="listing-invoice-container">
+                <Card title={renderTitle()} className="report-card">
                     <div style={{ textAlign: 'center', padding: '50px 0' }}>
                         <Spin size="large" />
                         <div style={{ marginTop: '20px', fontSize: '16px', color: '#666' }}>
@@ -240,8 +264,8 @@ const AppContainer = () => {
 
     if (error) {
         return (
-            <div className="invoice-container">
-                <Card className="invoice-form-card">
+            <div className="listing-invoice-container">
+                <Card title={renderTitle()} className="report-card">
                     <div style={{ textAlign: 'center', padding: '50px 0', color: '#ff4d4f' }}>
                         <div style={{ fontSize: '16px' }}>{error}</div>
                     </div>
@@ -251,106 +275,119 @@ const AppContainer = () => {
     }
 
     return (
-        <div className="invoice-container">
-            <div className="invoice-header-row">
-                <div className="invoice-header-col">
-                    <div className="header-label">
-                        BILLER:{' '}
-                        <span className="header-value">
-                            {invoiceData?.billerGroupUnitId} - {invoiceData?.billerName}
-                        </span>
-                    </div>
-                    <div className="header-label">
-                        PAYER:{' '}
-                        <span className="header-value">
-                            {invoiceData?.payerGroupUnitId} - {invoiceData?.payerName}
-                        </span>
-                    </div>
-                    <div className="header-label">
-                        Billing Period:{' '}
-                        <span className="header-value">
-                            {mapPeriodType[invoiceData?.periodType]} {renderPeriodTimeRange()}
-                        </span>
-                    </div>
-                    <div className="header-label">
-                        Handler: <span className="header-value">{invoiceData?.handlerName}</span>
-                    </div>
-                    <div className="header-label">
-                        Created By:{' '}
-                        <span className="header-value">{invoiceData?.createdByName}</span>
-                    </div>
-                    <div className="header-label">
-                        Created At:{' '}
-                        <span className="header-value">
-                            {CommonFunctions.formatDateTime(invoiceData?.createdAt)}
-                        </span>
-                    </div>
-                </div>
-                <div className="invoice-header-col invoice-header-info">
-                    <div className="header-label">
-                        <Tag
-                            className="status-tag"
-                            icon={mapIconStatus[invoiceData?.status]}
-                            color={mapColorStatus[invoiceData?.status]}
-                        >
-                            {mapInterInvoiceStatus[invoiceData?.status]}
-                        </Tag>
-                    </div>
-                    {invoiceData?.updateStatusByName && (
-                        <div className="header-label">
-                            {mapInterInvoiceStatus[invoiceData?.status]}
-                            {' by: '}
-                            <span className="header-value">{invoiceData?.updateStatusByName}</span>
-                        </div>
-                    )}
-                    {invoiceData?.updateStatusAt && (
-                        <div className="header-label">
-                            {mapInterInvoiceStatus[invoiceData?.status]}
-                            {' at: '}
-                            <span className="header-value">
-                                {CommonFunctions.formatDateTime(invoiceData?.updateStatusAt)}
-                            </span>
-                        </div>
-                    )}
-                    {invoiceData?.status === InterInvoiceStatus.Rejected &&
-                        invoiceData?.rejectionReason && (
+        <div className="listing-invoice-container">
+            <Card title={renderTitle()} className="report-card">
+                <div className="invoice-container">
+                    <div className="invoice-header-row">
+                        <div className="invoice-header-col">
                             <div className="header-label">
-                                Reason:{' '}
-                                <span className="header-value">{invoiceData?.rejectionReason}</span>
+                                BILLER:{' '}
+                                <span className="header-value">
+                                    {invoiceData?.billerGroupUnitId} - {invoiceData?.billerName}
+                                </span>
                             </div>
-                        )}
-                </div>
-            </div>
-            {invoiceData?.notes && (
-                <div className="invoice-notes-section">
-                    Notes: <span className="invoice-notes-value">{invoiceData?.notes}</span>
-                </div>
-            )}
-            <div className="invoice-title">INVOICE #{invoiceData?.interInvoiceId}</div>
-            <div className="invoice-table-wrapper">
-                <div className="invoice-table-header">
-                    <div className="col-desc">DESCRIPTION</div>
-                    <div className="col-price">AMOUNT</div>
-                </div>
-                {invoiceData?.items?.map((item, idx) => (
-                    <div className="invoice-table-row" key={idx}>
-                        <div className="col-desc">{item.itemDescription}</div>
-                        <div className="col-price">
-                            {CommonFunctions.formatCurrency(item.amount)} {invoiceData?.currency}
+                            <div className="header-label">
+                                PAYER:{' '}
+                                <span className="header-value">
+                                    {invoiceData?.payerGroupUnitId} - {invoiceData?.payerName}
+                                </span>
+                            </div>
+                            <div className="header-label">
+                                Billing Period:{' '}
+                                <span className="header-value">
+                                    {mapPeriodType[invoiceData?.periodType]}{' '}
+                                    {renderPeriodTimeRange()}
+                                </span>
+                            </div>
+                            <div className="header-label">
+                                Handler:{' '}
+                                <span className="header-value">{invoiceData?.handlerName}</span>
+                            </div>
+                            <div className="header-label">
+                                Created By:{' '}
+                                <span className="header-value">{invoiceData?.createdByName}</span>
+                            </div>
+                            <div className="header-label">
+                                Created At:{' '}
+                                <span className="header-value">
+                                    {CommonFunctions.formatDateTime(invoiceData?.createdAt)}
+                                </span>
+                            </div>
+                        </div>
+                        <div className="invoice-header-col invoice-header-info">
+                            <div className="header-label">
+                                <Tag
+                                    className="status-tag"
+                                    icon={mapIconStatus[invoiceData?.status]}
+                                    color={mapColorStatus[invoiceData?.status]}
+                                >
+                                    {mapInterInvoiceStatus[invoiceData?.status]}
+                                </Tag>
+                            </div>
+                            {invoiceData?.updateStatusByName && (
+                                <div className="header-label">
+                                    {mapInterInvoiceStatus[invoiceData?.status]}
+                                    {' by: '}
+                                    <span className="header-value">
+                                        {invoiceData?.updateStatusByName}
+                                    </span>
+                                </div>
+                            )}
+                            {invoiceData?.updateStatusAt && (
+                                <div className="header-label">
+                                    {mapInterInvoiceStatus[invoiceData?.status]}
+                                    {' at: '}
+                                    <span className="header-value">
+                                        {CommonFunctions.formatDateTime(
+                                            invoiceData?.updateStatusAt
+                                        )}
+                                    </span>
+                                </div>
+                            )}
+                            {invoiceData?.status === InterInvoiceStatus.Rejected &&
+                                invoiceData?.rejectionReason && (
+                                    <div className="header-label">
+                                        Reason:{' '}
+                                        <span className="header-value">
+                                            {invoiceData?.rejectionReason}
+                                        </span>
+                                    </div>
+                                )}
                         </div>
                     </div>
-                ))}
-                <div className="invoice-table-footer">
-                    <div className="col-desc subtotal-label">TOTAL AMOUNT</div>
-                    <div className="col-price subtotal-value">
-                        {CommonFunctions.formatCurrency(
-                            invoiceData?.items?.reduce((sum, i) => sum + (i.amount || 0), 0)
-                        )}{' '}
-                        {invoiceData?.currency}
+                    {invoiceData?.notes && (
+                        <div className="invoice-notes-section">
+                            Notes: <span className="invoice-notes-value">{invoiceData?.notes}</span>
+                        </div>
+                    )}
+                    <div className="invoice-title">INVOICE #{invoiceData?.interInvoiceId}</div>
+                    <div className="invoice-table-wrapper">
+                        <div className="invoice-table-header">
+                            <div className="col-desc">DESCRIPTION</div>
+                            <div className="col-price">AMOUNT</div>
+                        </div>
+                        {invoiceData?.items?.map((item, idx) => (
+                            <div className="invoice-table-row" key={idx}>
+                                <div className="col-desc">{item.itemDescription}</div>
+                                <div className="col-price">
+                                    {CommonFunctions.formatCurrency(item.amount)}{' '}
+                                    {invoiceData?.currency}
+                                </div>
+                            </div>
+                        ))}
+                        <div className="invoice-table-footer">
+                            <div className="col-desc subtotal-label">TOTAL AMOUNT</div>
+                            <div className="col-price subtotal-value">
+                                {CommonFunctions.formatCurrency(
+                                    invoiceData?.items?.reduce((sum, i) => sum + (i.amount || 0), 0)
+                                )}{' '}
+                                {invoiceData?.currency}
+                            </div>
+                        </div>
                     </div>
+                    <div className="invoice-action-row">{renderActionButtons()}</div>
                 </div>
-            </div>
-            <div className="invoice-action-row">{renderActionButtons()}</div>
+            </Card>
             {renderActivityLogModal()}
         </div>
     );
