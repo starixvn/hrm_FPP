@@ -92,6 +92,7 @@ const AppContainer = () => {
                     break;
             }
             const response = await axios.post('/InterInvoice/CreateInvoice', formData);
+            form.resetFields();
             window.location.href = `/interInvoice/detail?id=${response.data.outputId}`;
         } catch (error) {
             message.error(error.response?.data || 'Failed to create invoice');
@@ -129,6 +130,11 @@ const AppContainer = () => {
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                        }
+                    }}
                     onValuesChange={(changedValues, allValues) => {
                         const items = allValues.items || [];
                         const total = items
@@ -276,12 +282,19 @@ const AppContainer = () => {
                                                     <InputNumber
                                                         style={{ width: '100%' }}
                                                         placeholder="Amount"
-                                                        formatter={(value) =>
-                                                            `${value}`.replace(
-                                                                /\B(?=(\d{3})+(?!\d))/g,
-                                                                ','
-                                                            )
-                                                        }
+                                                        // formatter={(value) =>
+                                                        //     `${value}`.replace(
+                                                        //         /\B(?=(\d{3})+(?!\d))/g,
+                                                        //         ','
+                                                        //     )
+                                                        // }
+                                                        formatter={(value) => {
+                                                            if (!value) return '';
+                                                            const num = parseFloat(value);
+                                                            return Number.isInteger(num)
+                                                                ? num.toString()
+                                                                : num.toFixed(2);
+                                                        }}
                                                         parser={(value) =>
                                                             value.replace(/[^\d.]/g, '')
                                                         }
