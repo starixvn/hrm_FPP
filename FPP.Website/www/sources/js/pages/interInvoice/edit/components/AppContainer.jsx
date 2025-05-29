@@ -16,7 +16,12 @@ import {
     Space,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { InterInvoiceStatus, PeriodType, mapPeriodType } from '../../components/enum';
+import {
+    mapPeriodType,
+    PeriodType,
+    InterInvoiceStatus,
+    mapInterInvoiceStatus,
+} from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
 import moment from 'moment';
 import dayjs from 'dayjs';

@@ -6,14 +6,14 @@ export default class CommonFunctions {
     }
 
     static formatDate(date) {
-        return date ? moment(date).format('DD/MM/YYYY') : '-';
+        return date ? moment(date).format('DD MMM, YYYY') : '-';
     }
 
     static formatMonth(date) {
-        return date ? moment(date).format('MM/YYYY') : '-';
+        return date ? moment(date).format('MMM, YYYY') : '-';
     }
 
     static formatDateTime(date) {
-        return date ? moment(date).format('DD/MM/YYYY HH:mm') : '-';
+        return date ? moment(date).format('DD MMM, YYYY HH:mm') : '-';
     }
 }

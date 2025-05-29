@@ -9,11 +9,12 @@ import {
     mapInterInvoiceStatus,
     mapIconStatus,
     mapColorStatus,
-} from '../../components/enum';
+} from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import ActivityLogModal from '../../../../common/components/ActivityLogModal';
 import PageContainer from '../../../common/components/PageContainer';
+import { formatPeriod, formatAmount, formatCreator, formatModifier } from '../../helper/format';
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(true);
@@ -101,26 +102,12 @@ const AppContainer = () => {
     };
 
     const renderPeriodTimeRange = () => {
-        if (invoiceData?.periodType === PeriodType.Monthly) {
-            return (
-                <span className="header-value">
-                    - {CommonFunctions.formatMonth(invoiceData?.fromDate)}
-                </span>
-            );
-        } else if (invoiceData?.periodType === PeriodType.RangeDate) {
-            return (
-                <span className="header-value">
-                    - {CommonFunctions.formatDate(invoiceData?.fromDate)} -{' '}
-                    {CommonFunctions.formatDate(invoiceData?.toDate)}
-                </span>
-            );
-        } else if (invoiceData?.periodType === PeriodType.OneTime) {
-            return (
-                <span className="header-value">
-                    - {CommonFunctions.formatDate(invoiceData?.fromDate)}
-                </span>
-            );
-        }
+        return (
+            <span className="header-value">
+                -{' '}
+                {formatPeriod(invoiceData?.periodType, invoiceData?.fromDate, invoiceData?.toDate)}
+            </span>
+        );
     };
 
     const renderIsEditingButton = () => {
@@ -282,15 +269,17 @@ const AppContainer = () => {
                         <div className="header-label">
                             Creator:{' '}
                             <span className="header-value">
-                                {invoiceData?.createdByName} -{' '}
-                                {CommonFunctions.formatDateTime(invoiceData?.createdAt)}
+                                {formatModifier(invoiceData?.createdByName, invoiceData?.createdAt)}
                             </span>
                         </div>
                         {invoiceData?.modifiedBy && (
                             <div className="header-label">
                                 Modifier:{' '}
                                 <span className="header-value">
-                                    {invoiceData?.modifiedBy} - {invoiceData?.modifiedAt}
+                                    {formatModifier(
+                                        invoiceData?.modifiedBy,
+                                        invoiceData?.modifiedAt
+                                    )}
                                 </span>
                             </div>
                         )}
@@ -351,18 +340,17 @@ const AppContainer = () => {
                         <div className="invoice-table-row" key={idx}>
                             <div className="col-desc">{item.itemDescription}</div>
                             <div className="col-price">
-                                {CommonFunctions.formatCurrency(item.amount)}{' '}
-                                {invoiceData?.currency}
+                                {formatAmount(item.amount, invoiceData?.currency)}
                             </div>
                         </div>
                     ))}
                     <div className="invoice-table-footer">
                         <div className="col-desc subtotal-label">TOTAL AMOUNT</div>
                         <div className="col-price subtotal-value">
-                            {CommonFunctions.formatCurrency(
-                                invoiceData?.items?.reduce((sum, i) => sum + (i.amount || 0), 0)
-                            )}{' '}
-                            {invoiceData?.currency}
+                            {formatAmount(
+                                invoiceData?.items?.reduce((sum, i) => sum + (i.amount || 0), 0),
+                                invoiceData?.currency
+                            )}
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,12 @@ import {
     Spin,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { PeriodType, mapPeriodType } from '../../components/enum';
+import {
+    mapPeriodType,
+    PeriodType,
+    InterInvoiceStatus,
+    mapInterInvoiceStatus,
+} from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
 import moment from 'moment';
 

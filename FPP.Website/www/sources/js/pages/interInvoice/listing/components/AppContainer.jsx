@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Card, Typography, Button } from 'antd';
-import { fetchInvoices } from '../helper/service';
+import { fetchInvoices } from '../../helper/service';
 import Filter from './Filter';
-import { mapInterInvoiceStatus, mapPeriodType } from '../../components/enum';
+import { mapInterInvoiceStatus, mapPeriodType } from '../../helper/enum';
 import { EyeOutlined } from '@ant-design/icons';
 import CommonFunctions from '../../../../common/common-functions';
+import { formatPeriod, formatAmount } from '../../helper/format';
 
 const { Title } = Typography;
 
@@ -36,7 +37,7 @@ const AppContainer = () => {
             sorter: (a, b) => a.interInvoiceId - b.interInvoiceId,
             defaultSortOrder: 'descend',
             align: 'left',
-            width: '8%',
+            width: '6%',
         },
         {
             title: 'Biller',
@@ -44,7 +45,7 @@ const AppContainer = () => {
             key: 'billerUnitCode',
             sorter: (a, b) => a.billerUnitCode.localeCompare(b.billerUnitCode),
             align: 'left',
-            width: '10%',
+            width: '7%',
         },
         {
             title: 'Payer',
@@ -52,22 +53,21 @@ const AppContainer = () => {
             key: 'payerUnitCode',
             sorter: (a, b) => a.payerUnitCode.localeCompare(b.payerUnitCode),
             align: 'left',
-            width: '10%',
+            width: '7%',
         },
         {
             title: 'Total Amount',
             dataIndex: 'totalAmount',
             key: 'totalAmount',
             sorter: (a, b) => a.totalAmount - b.totalAmount,
-            render: (amount) => amount.toLocaleString(),
+            render: (amount) => formatAmount(amount),
             align: 'right',
-            width: '8%',
+            width: '11%',
         },
         {
             title: 'Currency',
             dataIndex: 'currency',
             key: 'currency',
-            //sorter: (a, b) => a.currency.localeCompare(b.currency),
             align: 'left',
             width: '5%',
         },
@@ -93,23 +93,16 @@ const AppContainer = () => {
             dataIndex: 'fromDate',
             key: 'period',
             sorter: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
-            render: (_, record) => {
-                if (!record.fromDate || !record.toDate) {
-                    return '-';
-                }
-                const fromDate = CommonFunctions.formatDate(record.fromDate);
-                const toDate = CommonFunctions.formatDate(record.toDate);
-                return fromDate === toDate ? fromDate : `${fromDate} - ${toDate}`;
-            },
+            render: (_, record) => formatPeriod(record.periodType, record.fromDate, record.toDate),
             align: 'left',
-            width: '12%',
+            width: '16%',
         },
         {
             title: 'Created Date',
             dataIndex: 'createdDate',
             key: 'createdDate',
             sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
-            render: (date) => date,
+            render: (date) => CommonFunctions.formatDateTime(date),
             align: 'left',
             width: '12%',
         },

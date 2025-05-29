@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Select, Button } from 'antd';
-import { fetchBuList } from '../helper/service';
+import { fetchBuList } from '../../helper/service';
 
 const { Option } = Select;
 
