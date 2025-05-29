@@ -234,7 +234,8 @@ const AppContainer = () => {
 
     const renderActionButtons = () => {
         if (invoiceData.status != InterInvoiceStatus.Pending) {
-            return <Button onClick={handleShowActivityLog}>View Activity Log</Button>;
+            return;
+            // return <Button onClick={handleShowActivityLog}>View Activity Log</Button>;
         } else if (invoiceData.isEditing) {
             return renderIsEditingButton();
         } else if (invoiceData.isCanConfirmReject || invoiceData.isCanEdit) {
