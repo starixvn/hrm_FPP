@@ -191,7 +191,9 @@ public class MinIOService : IMinIOService, IDisposable
     protected virtual void Dispose(bool disposing)
     {
         if (disposed)
+        {
             return;
+        }
 
         if (disposing)
         {
