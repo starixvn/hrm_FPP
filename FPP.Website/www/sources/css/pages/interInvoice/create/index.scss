@@ -6,6 +6,27 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
 
+    .loading-container {
+        text-align: center;
+        padding: 50px 0;
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+    }
+
+    .error-container {
+        text-align: center;
+        padding: 50px 0;
+        color: #ff4d4f;
+
+        .error-text {
+            font-size: 16px;
+        }
+    }
+
     .invoice-form {
         .ant-form-item {
             margin-bottom: 12px;
@@ -69,6 +90,14 @@
             .remove-item {
                 margin-top: 6px;
             }
+        }
+
+        .invoice-item-labels {
+            margin-bottom: 8px;
+        }
+
+        .cancel-button {
+            margin-right: 8px;
         }
     }
 

@@ -2,6 +2,28 @@ import * as React from 'react';
 import { Modal, Timeline, Tag } from 'antd';
 import CommonFunctions from '../common-functions';
 
+const formatValue = (value) => {
+    if (value === null || value === undefined) return 'N/A';
+    if (typeof value === 'object') {
+        if (Array.isArray(value)) {
+            return value
+                .map((item) => {
+                    if (typeof item === 'object') {
+                        return Object.entries(item)
+                            .map(([key, val]) => `${key}: ${val}`)
+                            .join(', ');
+                    }
+                    return item;
+                })
+                .join('; ');
+        }
+        return Object.entries(value)
+            .map(([key, val]) => `${key}: ${val}`)
+            .join(', ');
+    }
+    return value.toString();
+};
+
 const ActivityLogModal = ({ isVisible, onClose, activityLogs }) => {
     return (
         <Modal
@@ -10,15 +32,18 @@ const ActivityLogModal = ({ isVisible, onClose, activityLogs }) => {
             onCancel={onClose}
             footer={null}
             width={800}
-            bodyStyle={{
-                maxHeight: 'calc(100vh - 200px)',
-                overflow: 'auto',
-                padding: '24px',
+            styles={{
+                body: {
+                    maxHeight: 'calc(100vh - 200px)',
+                    overflow: 'auto',
+                    padding: '24px',
+                },
             }}
         >
             <Timeline
                 items={[...activityLogs]
                     .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
+                    .filter((log) => log.changedItems && log.changedItems.length > 0)
                     .map((log) => ({
                         children: (
                             <div>
@@ -44,18 +69,18 @@ const ActivityLogModal = ({ isVisible, onClose, activityLogs }) => {
                                                 }}
                                             >
                                                 <div>
-                                                    <strong>{item.field}:</strong>{' '}
+                                                    <span>{item.field}:</span>{' '}
                                                     <span
                                                         style={{
                                                             textDecoration: 'line-through',
                                                             color: '#999',
                                                         }}
                                                     >
-                                                        {item.oldValue || 'N/A'}
+                                                        {formatValue(item.oldValue)}
                                                     </span>
                                                     {' → '}
                                                     <span style={{ color: '#52c41a' }}>
-                                                        {item.newValue || 'N/A'}
+                                                        {formatValue(item.newValue)}
                                                     </span>
                                                 </div>
                                             </div>

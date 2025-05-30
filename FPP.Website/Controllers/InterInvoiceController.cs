@@ -109,7 +109,7 @@ public class InterInvoiceController(
             ObjectId = criteria.OutputId,
             ActionTypeId = ActionType.Create,
             CreatedBy = session.UserId,
-            ChangedData = JsonHelper.GetStringChanges(null, viewModel),
+            ChangedData = JsonHelper.GetStringChanges(null, criteria),
             SpName = criteria.GetSettingKey(),
         });
         return new JsonResult(result);

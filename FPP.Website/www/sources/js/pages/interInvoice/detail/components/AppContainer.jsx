@@ -185,7 +185,7 @@ const AppContainer = () => {
                                 value={rejectionReason}
                                 onChange={(e) => setRejectionReason(e.target.value)}
                                 rows={4}
-                                style={{ marginTop: '16px' }}
+                                className="rejection-reason-textarea"
                             />
                         </Modal>
                     </>
@@ -207,35 +207,27 @@ const AppContainer = () => {
     const renderActionButtons = () => {
         if (invoiceData.status != InterInvoiceStatus.Pending) {
             return;
-            // return <Button onClick={handleShowActivityLog}>View Activity Log</Button>;
         } else if (invoiceData.isEditing) {
             return renderIsEditingButton();
         } else if (invoiceData.isCanConfirmReject || invoiceData.isCanEdit) {
-            return (
-                <>
-                    {renderOthersButtons()}
-                    {/* <Button onClick={handleShowActivityLog}>View Activity Log</Button> */}
-                </>
-            );
+            return renderOthersButtons();
         }
     };
 
     const renderContent = () => {
         if (loading) {
             return (
-                <div style={{ textAlign: 'center', padding: '50px 0' }}>
+                <div className="loading-container">
                     <Spin size="large" />
-                    <div style={{ marginTop: '20px', fontSize: '16px', color: '#666' }}>
-                        Loading invoice data...
-                    </div>
+                    <div className="loading-text">Loading invoice data...</div>
                 </div>
             );
         }
 
         if (error) {
             return (
-                <div style={{ textAlign: 'center', padding: '50px 0', color: '#ff4d4f' }}>
-                    <div style={{ fontSize: '16px' }}>{error}</div>
+                <div className="error-container">
+                    <div className="error-text">{error}</div>
                 </div>
             );
         }
@@ -354,7 +346,10 @@ const AppContainer = () => {
                         </div>
                     </div>
                 </div>
-                <div className="invoice-action-row">{renderActionButtons()}</div>
+                <div className="invoice-action-row">
+                    {renderActionButtons()}
+                    <Button onClick={handleShowActivityLog}>View Activity Log</Button>
+                </div>
             </div>
         );
     };

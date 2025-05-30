@@ -17,7 +17,10 @@ public class ActivityLogService(IBaseService baseService) : IActivityLogService
 {
     public async Task LogActivity(InsertActivityLogCriteria criteria)
     {
-        await baseService.ExecuteNonQueryAsync(criteria);
+        if (criteria.ChangedData.Any())
+        {
+            await baseService.ExecuteNonQueryAsync(criteria);
+        }
     }
 
     public async Task<IEnumerable<ActivityLogModel>> GetLogActivity(GetActivityLogCriteria criteria)
@@ -41,9 +44,16 @@ public class ActivityLogService(IBaseService baseService) : IActivityLogService
             return null;
         }
 
-        return objectTypeId == ObjectType.Invoice
-            ? [.. changes.Select(item => { SerializeChangedValue(item); return item; })]
-            : changes;
+        if (objectTypeId == ObjectType.Invoice)
+        {
+            return changes.Select(item =>
+            {
+                SerializeChangedValue(item);
+                return item;
+            }).ToList();
+        }
+
+        return changes;
     }
 
     private static void SerializeChangedValue(FieldChange change)
@@ -53,13 +63,19 @@ public class ActivityLogService(IBaseService baseService) : IActivityLogService
             change.OldValue = ((InterInvoiceStatus)Convert.ToInt32(change.OldValue)).GetDescription();
             change.NewValue = ((InterInvoiceStatus)Convert.ToInt32(change.NewValue)).GetDescription();
         }
-        else if (change.Field == "ItemListJson")
+        if (change.Field == "ItemListJson")
         {
             change.Field = "ItemList";
             var oldItems = JsonConvert.DeserializeObject<List<InterInvoiceItem>>(change.OldValue?.ToString() ?? "[]");
             var newItems = JsonConvert.DeserializeObject<List<InterInvoiceItem>>(change.NewValue?.ToString() ?? "[]");
-            change.OldValue = oldItems is { Count: > 0 } ? string.Join(", ", oldItems.Select(i => $"{i.ItemDescription}: {i.Amount}")) : "";
-            change.NewValue = newItems is { Count: > 0 } ? string.Join(", ", newItems.Select(i => $"{i.ItemDescription}: {i.Amount}")) : "";
+
+            change.OldValue = oldItems is { Count: > 0 }
+                ? string.Join(", ", oldItems.Select(i => $"{i.ItemDescription}: {i.Amount}"))
+                : "";
+
+            change.NewValue = newItems is { Count: > 0 }
+                ? string.Join(", ", newItems.Select(i => $"{i.ItemDescription}: {i.Amount}"))
+                : "";
         }
     }
 }

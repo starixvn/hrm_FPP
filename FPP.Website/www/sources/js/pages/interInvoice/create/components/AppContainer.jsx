@@ -115,11 +115,9 @@ const AppContainer = () => {
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
-                    <div style={{ textAlign: 'center', padding: '50px 0' }}>
+                    <div className="loading-container">
                         <Spin size="large" />
-                        <div style={{ marginTop: '20px', fontSize: '16px', color: '#666' }}>
-                            Loading invoice data...
-                        </div>
+                        <div className="loading-text">Loading invoice data...</div>
                     </div>
                 </Card>
             </div>
@@ -128,8 +126,8 @@ const AppContainer = () => {
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
-                    <div style={{ textAlign: 'center', padding: '50px 0', color: '#ff4d4f' }}>
-                        <div style={{ fontSize: '16px' }}>{error}</div>
+                    <div className="error-container">
+                        <div className="error-text">{error}</div>
                     </div>
                 </Card>
             </div>
@@ -241,10 +239,7 @@ const AppContainer = () => {
                     <Form.List name="items" initialValue={[{ itemDescription: '', amount: null }]}>
                         {(fields, { add, remove }) => (
                             <>
-                                <div
-                                    className="invoice-item-labels"
-                                    style={{ marginBottom: '8px' }}
-                                >
+                                <div className="invoice-item-labels">
                                     <Row gutter={16}>
                                         <Col span={16}>
                                             <span className="ant-form-item-label">
@@ -398,7 +393,7 @@ const AppContainer = () => {
 
                     <Form.Item style={{ textAlign: 'right' }}>
                         <Button
-                            style={{ marginRight: '8px' }}
+                            className="cancel-button"
                             onClick={() => (window.location.href = '/interInvoice/index')}
                         >
                             Cancel

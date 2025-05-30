@@ -8,6 +8,31 @@
     border-radius: 8px;
     padding: 20px;
 
+    .loading-container {
+        text-align: center;
+        padding: 50px 0;
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+    }
+
+    .error-container {
+        text-align: center;
+        padding: 50px 0;
+        color: #ff4d4f;
+
+        .error-text {
+            font-size: 16px;
+        }
+    }
+
+    .rejection-reason-textarea {
+        margin-top: 16px;
+    }
+
     .invoice-header-row {
         display: flex;
         justify-content: space-between;
@@ -203,6 +228,7 @@
 
         &:hover {
             color: #5273a5;
+
             &::before {
                 opacity: 1;
             }
