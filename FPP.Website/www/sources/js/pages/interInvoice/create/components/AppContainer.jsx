@@ -104,6 +104,7 @@ const AppContainer = () => {
             }
             const response = await axios.post('/InterInvoice/CreateInvoice', formData);
             form.resetFields();
+            setTotalAmount(0);
             window.location.href = `/interInvoice/detail?id=${response.data.outputId}`;
         } catch (error) {
             message.error(error.response?.data || 'Failed to create invoice');
