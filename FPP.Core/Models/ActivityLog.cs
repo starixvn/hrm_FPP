@@ -1,3 +1,4 @@
+using FPP.Core.Constants;
 using FPP.Core.Enums;
 
 namespace FPP.Core.Models;
@@ -31,7 +32,12 @@ public class ActivityLogModel
 
     public string? CreatedByName { get; set; }
 
-    public DateTime CreatedDate { get; set; }
+    private DateTime _CreatedDate;
+    public DateTime CreatedDate
+    {
+        get => _CreatedDate;
+        set => _CreatedDate = value.AddHours(TimeZoneConstants.TimeZoneOffset);
+    }
 
     public List<FieldChange>? ChangedItems { get; set; }
 }
