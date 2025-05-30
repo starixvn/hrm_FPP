@@ -20,7 +20,7 @@ namespace FPP.Services.Implement
 
         public async Task<Unit> GetUnitByEmpIdAsync(int empId)
         {
-            return await baseService.GetDataEntityAsync<Unit>(new GetUnitByEmpIdCriteria() { EmpId = empId });
+            return await baseService.GetDataEntityAsync<Unit>(new GetUnitByEmpIdCriteria { EmpId = empId });
         }
     }
 }

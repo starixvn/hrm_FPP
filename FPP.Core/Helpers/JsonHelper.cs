@@ -17,21 +17,12 @@ public static class JsonHelper
 
         foreach (var prop in props)
         {
-            // Skip CreatedBy and ModifiedBy fields
-            if (SkippedFields.Contains(prop.Name)) {
+            if (SkippedFields.Contains(prop.Name))
+            {
                 continue;
             }
 
-            object oldVal;
-            if (oldObj == null)
-            {
-                oldVal = "";
-            }
-            else
-            {
-                oldVal = prop.GetValue(oldObj) ?? "";
-            }
-
+            var oldVal = oldObj == null ? "" : prop.GetValue(oldObj) ?? "";
             var newVal = prop.GetValue(newObj) ?? "";
 
             if (!Equals(oldVal, newVal))

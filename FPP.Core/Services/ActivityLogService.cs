@@ -36,17 +36,14 @@ public class ActivityLogService(IBaseService baseService) : IActivityLogService
     private List<FieldChange>? HandleObjectTypeChanges(ObjectType objectTypeId, string changedData)
     {
         var changes = JsonConvert.DeserializeObject<List<FieldChange>>(changedData);
-        if (changes == null) return null;
-
-        return objectTypeId switch
+        if (changes == null)
         {
-            ObjectType.Invoice => [.. changes.Select(item =>
-            {
-                SerializeChangedValue(item);
-                return item;
-            })],
-            _ => changes
-        };
+            return null;
+        }
+
+        return objectTypeId == ObjectType.Invoice
+            ? [.. changes.Select(item => { SerializeChangedValue(item); return item; })]
+            : changes;
     }
 
     private static void SerializeChangedValue(FieldChange change)

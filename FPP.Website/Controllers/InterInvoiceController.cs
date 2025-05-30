@@ -65,7 +65,7 @@ public class InterInvoiceController(
     public async Task<IActionResult> GetPreparedData()
     {
         var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
-        var vm = new PreparedDataViewModel() {
+        var vm = new PreparedDataViewModel {
             Units = await commonService.GetAllUnitsAsync(),
             Currencies = await commonService.GetAllCurrenciesAsync(),
             IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host),
