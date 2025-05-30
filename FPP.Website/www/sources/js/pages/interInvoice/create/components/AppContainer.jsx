@@ -90,8 +90,8 @@ const AppContainer = () => {
 
             switch (values.periodType) {
                 case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.format('YYYY-MM-DD');
-                    formData.toDate = values.monthlyDate.format('YYYY-MM-DD');
+                    formData.fromDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
+                    formData.toDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
                     break;
                 case PeriodType.RangeDate:
                     formData.fromDate = values.rangeDate[0].format('YYYY-MM-DD');
