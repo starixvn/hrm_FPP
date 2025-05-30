@@ -36,7 +36,9 @@ namespace FPP.Core.Helpers
         public static string FormatDateTime(DateTime? date)
         {
             if (!date.HasValue)
+            {
                 return string.Empty;
+            }
 
             return date.Value.ToString("MMM dd yyyy HH:mm", FormatProvider);
         }
@@ -44,7 +46,9 @@ namespace FPP.Core.Helpers
         public static string FormatDate(DateTime? date)
         {
             if (!date.HasValue)
+            {
                 return string.Empty;
+            }
 
             return date.Value.ToString("MMM dd yyyy", FormatProvider);
         }

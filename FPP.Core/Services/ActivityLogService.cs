@@ -48,20 +48,18 @@ public class ActivityLogService(IBaseService baseService) : IActivityLogService
 
     private static void SerializeChangedValue(FieldChange change)
     {
-        switch (change.Field)
+        if (change.Field == "Status")
         {
-            case "Status":
-                change.OldValue = ((InterInvoiceStatus)Convert.ToInt32(change.OldValue)).GetDescription();
-                change.NewValue = ((InterInvoiceStatus)Convert.ToInt32(change.NewValue)).GetDescription();
-                break;
-
-            case "ItemListJson":
-                change.Field = "ItemList";
-                var oldItems = JsonConvert.DeserializeObject<List<InterInvoiceItem>>(change.OldValue?.ToString() ?? "[]");
-                var newItems = JsonConvert.DeserializeObject<List<InterInvoiceItem>>(change.NewValue?.ToString() ?? "[]");
-                change.OldValue = oldItems is { Count: > 0 } ? string.Join(", ", oldItems.Select(i => $"{i.ItemDescription}: {i.Amount}")) : "";
-                change.NewValue = newItems is { Count: > 0 } ? string.Join(", ", newItems.Select(i => $"{i.ItemDescription}: {i.Amount}")) : "";
-                break;
+            change.OldValue = ((InterInvoiceStatus)Convert.ToInt32(change.OldValue)).GetDescription();
+            change.NewValue = ((InterInvoiceStatus)Convert.ToInt32(change.NewValue)).GetDescription();
+        }
+        else if (change.Field == "ItemListJson")
+        {
+            change.Field = "ItemList";
+            var oldItems = JsonConvert.DeserializeObject<List<InterInvoiceItem>>(change.OldValue?.ToString() ?? "[]");
+            var newItems = JsonConvert.DeserializeObject<List<InterInvoiceItem>>(change.NewValue?.ToString() ?? "[]");
+            change.OldValue = oldItems is { Count: > 0 } ? string.Join(", ", oldItems.Select(i => $"{i.ItemDescription}: {i.Amount}")) : "";
+            change.NewValue = newItems is { Count: > 0 } ? string.Join(", ", newItems.Select(i => $"{i.ItemDescription}: {i.Amount}")) : "";
         }
     }
 }
