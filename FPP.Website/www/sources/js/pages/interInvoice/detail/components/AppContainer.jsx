@@ -348,7 +348,7 @@ const AppContainer = () => {
                 </div>
                 <div className="invoice-action-row">
                     {renderActionButtons()}
-                    <Button onClick={handleShowActivityLog}>View Activity Log</Button>
+                    {/* <Button onClick={handleShowActivityLog}>View Activity Log</Button> */}
                 </div>
             </div>
         );
