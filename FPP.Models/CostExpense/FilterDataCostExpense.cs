@@ -1,4 +1,6 @@
-﻿namespace FPP.Models.CostExpense
+﻿using FPP.Models.Common;
+
+namespace FPP.Models.CostExpense
 {
     public class FilterDataCostExpense
     {

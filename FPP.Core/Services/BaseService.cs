@@ -1,4 +1,4 @@
-﻿namespace FPP.Core.Services;
+namespace FPP.Core.Services;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,0 +1,15 @@
+using Fanex.Data.Repository;
+
+namespace FPP.Core.Criteria.InterCharging;
+
+public class GetInterInvoiceListCriteria : CriteriaBase
+{
+    public int? BillerUnitId { get; set; }
+    public int? PayerUnitId { get; set; }
+    public bool? IsGlobal { get; set; }
+    public int? EmpId { get; set; }
+
+    public override string GetSettingKey() => "InterInvoice_GetList";
+
+    public override bool IsValid() => true;
+}

@@ -25,6 +25,14 @@ function generateConfig(environment) {
                 pathConfig.scriptPaths.interCharging_upload_index,
             [`${jsPath}/pages/interCharging/report/index`]:
                 pathConfig.scriptPaths.interCharging_report_index,
+            [`${jsPath}/pages/interInvoice/create/index`]:
+                pathConfig.scriptPaths.interInvoice_create_index,
+            [`${jsPath}/pages/interInvoice/listing/index`]:
+                pathConfig.scriptPaths.interInvoice_listing_index,
+            [`${jsPath}/pages/interInvoice/detail/index`]:
+                pathConfig.scriptPaths.interInvoice_detail_index,
+            [`${jsPath}/pages/interInvoice/edit/index`]:
+                pathConfig.scriptPaths.interInvoice_edit_index,
             /*css*/
             [`${cssPath}/pages/login`]: pathConfig.cssPaths.login,
             [`${cssPath}/pages/error`]: pathConfig.cssPaths.error,
@@ -37,6 +45,12 @@ function generateConfig(environment) {
                 pathConfig.cssPaths.interCharging_upload_index,
             [`${cssPath}/pages/interCharging/report/index`]:
                 pathConfig.cssPaths.interCharging_report_index,
+            [`${cssPath}/pages/interInvoice/create/index`]:
+                pathConfig.cssPaths.interInvoice_create_index,
+            [`${cssPath}/pages/interInvoice/listing/index`]:
+                pathConfig.cssPaths.interInvoice_listing_index,
+            [`${cssPath}/pages/interInvoice/detail/index`]:
+                pathConfig.cssPaths.interInvoice_detail_index,
         },
         output: {
             path: pathConfig.projectRoot,

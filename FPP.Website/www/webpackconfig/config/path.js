@@ -11,6 +11,9 @@ const cssPaths = {
     costExpense_report_index: ['./www/sources/css/pages/costExpense/report/index.scss'],
     interCharging_upload_index: ['./www/sources/css/pages/interCharging/upload/index.scss'],
     interCharging_report_index: ['./www/sources/css/pages/interCharging/report/index.scss'],
+    interInvoice_create_index: ['./www/sources/css/pages/interInvoice/create/index.scss'],
+    interInvoice_listing_index: ['./www/sources/css/pages/interInvoice/listing/index.scss'],
+    interInvoice_detail_index: ['./www/sources/css/pages/interInvoice/detail/index.scss'],
 };
 
 const scriptPaths = {
@@ -23,6 +26,10 @@ const scriptPaths = {
     costExpense_report_index: ['./www/sources/js/pages/costExpense/report/index.jsx'],
     interCharging_upload_index: ['./www/sources/js/pages/interCharging/upload/index.jsx'],
     interCharging_report_index: ['./www/sources/js/pages/interCharging/report/index.jsx'],
+    interInvoice_create_index: ['./www/sources/js/pages/interInvoice/create/index.jsx'],
+    interInvoice_listing_index: ['./www/sources/js/pages/interInvoice/listing/index.jsx'],
+    interInvoice_detail_index: ['./www/sources/js/pages/interInvoice/detail/index.jsx'],
+    interInvoice_edit_index: ['./www/sources/js/pages/interInvoice/edit/index.jsx'],
 };
 
 module.exports = {

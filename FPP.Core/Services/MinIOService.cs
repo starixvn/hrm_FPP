@@ -24,11 +24,12 @@ public interface IMinIOService
     Task<bool> IsFileExistsAsync(string bucketName, string filePath);
 }
 
-public class MinIOService : IMinIOService
+public class MinIOService : IMinIOService, IDisposable
 {
     private readonly AmazonS3Client client;
     private readonly AmazonStorageConfig s3Config;
     private readonly ILogger logger;
+    private bool disposed;
 
     public MinIOService(AmazonStorageConfig s3Config, ILogger logger)
     {
@@ -179,5 +180,31 @@ public class MinIOService : IMinIOService
         }
 
         return filename.StartsWith('/') ? filename[1..] : filename;
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposed)
+        {
+            return;
+        }
+
+        if (disposing)
+        {
+            client?.Dispose();
+        }
+
+        disposed = true;
+    }
+
+    ~MinIOService()
+    {
+        Dispose(false);
     }
 }

@@ -1,4 +1,4 @@
-﻿using FPP.Core.Models;
+using FPP.Core.Models;
 
 namespace FPP.Core.Criteria.CostExpense;
 
@@ -25,5 +25,5 @@ public class TermItem
 
     public decimal Amount { get; set; }
 
-    public DateTime Month { get; set; }
+    public DateTimeOffset Month { get; set; }
 }

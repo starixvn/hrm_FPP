@@ -15,4 +15,24 @@
 	<Function Name="Category">
 		<Setting Key="Category_GetAll" SpName="Category_GetAll" DbName="bodb_FPP" Plain="0" />
 	</Function>
+	<Function Name="InterInvoice">
+		<Setting Key="InterInvoice_Create" SpName="InterInvoice_Create" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="InterInvoice_GetById" SpName="InterInvoice_GetById" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="InterInvoice_Update" SpName="InterInvoice_Update" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="InterInvoice_UpdateStatus" SpName="InterInvoice_UpdateStatus" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="InterInvoice_GetList" SpName="InterInvoice_GetList" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="InterInvoice_UnlockEditing" SpName="InterInvoice_UnlockEditing" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="BU_GetList" SpName="BU_GetList" DbName="bodb_FPP" Plain="0" />
+	</Function>
+	<Function Name="Currency">
+		<Setting Key="Currency_GetAll" SpName="Currency_GetAll" DbName="bodb_FPP" Plain="0" />
+	</Function>
+	<Function Name="Unit">
+		<Setting Key="Unit_GetAll" SpName="Unit_GetAll" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="Unit_GetUnitByEmpId" SpName="Unit_GetUnitByEmpId" DbName="bodb_FPP" Plain="0" />
+	</Function>
+	<Function Name="ActivityLog">
+		<Setting Key="ActivityLog_Insert" SpName="ActivityLog_Insert" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="ActivityLog_Get" SpName="ActivityLog_Get" DbName="bodb_FPP" Plain="0" />
+	</Function>
 </Functions>

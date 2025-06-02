@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -16,5 +16,14 @@
         <PackageReference Include="Fanex.Logging.Sentry.RavenClient" Version="2.0.2" />
         <PackageReference Include="Fanex.Caching.Redis" Version="2.2.8" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Criteria\InterInvoice\" />
+      <Folder Include="Criteria\Common\" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\FPP.Models\FPP.Models.csproj" />
+    </ItemGroup>
+
 
 </Project>

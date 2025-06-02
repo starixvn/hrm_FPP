@@ -1,0 +1,110 @@
+.invoice-container {
+    margin: 24px auto;
+    max-width: 900px;
+
+    .invoice-form-card {
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .loading-container {
+        text-align: center;
+        padding: 50px 0;
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #666;
+        }
+    }
+
+    .error-container {
+        text-align: center;
+        padding: 50px 0;
+        color: #ff4d4f;
+
+        .error-text {
+            font-size: 16px;
+        }
+    }
+
+    .invoice-form {
+        .ant-form-item {
+            margin-bottom: 12px;
+        }
+
+        .invoice-item {
+            background-color: #fafafa;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+
+            .ant-form-item {
+                margin-bottom: 0;
+            }
+
+            .anticon-minus-circle {
+                color: #ff4d4f;
+                font-size: 18px;
+                cursor: pointer;
+                transition: all 0.3s;
+
+                &:hover {
+                    color: #ff7875;
+                }
+            }
+        }
+
+        .invoice-total-amount {
+            font-size: 17px;
+            font-weight: 600;
+            color: #22455a;
+            text-align: left;
+            padding: 8px 16px;
+            background-color: #f5faff;
+            border-radius: 4px;
+            margin-top: 8px;
+        }
+
+        .ant-divider {
+            margin: 16px 0 24px;
+        }
+
+        .ant-btn-dashed {
+            border-style: dashed;
+            border-color: #d9d9d9;
+            color: #595959;
+
+            &:hover {
+                border-color: #40a9ff;
+                color: #40a9ff;
+            }
+        }
+
+        .ant-input-number {
+            width: 100%;
+        }
+
+        .invoice-item-row {
+            align-items: start;
+
+            .remove-item {
+                margin-top: 6px;
+            }
+        }
+
+        .invoice-item-labels {
+            margin-bottom: 8px;
+        }
+
+        .cancel-button {
+            margin-right: 8px;
+        }
+    }
+
+    .required-label {
+        color: #ff4d4f;
+        font-size: 14px;
+        font-family: SimSun, sans-serif;
+        line-height: 1;
+    }
+}
