@@ -39,7 +39,7 @@ public class InterInvoiceController(
     public async Task<IActionResult> Edit(int id)
     {
         var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
-        ViewBag.CurrentEmpUnitId = currentEmpUnit.UnitId;
+        ViewBag.CurrentEmpUnitId = currentEmpUnit?.UnitId ?? 0;
         ViewBag.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
         return View(id);
     }
@@ -69,7 +69,7 @@ public class InterInvoiceController(
             Units = await commonService.GetAllUnitsAsync(),
             Currencies = await commonService.GetAllCurrenciesAsync(),
             IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host),
-            CurrentEmpUnitId = currentEmpUnit.UnitId
+            CurrentEmpUnitId = currentEmpUnit?.UnitId ?? 0
         };
         return new JsonResult(vm);
     }
