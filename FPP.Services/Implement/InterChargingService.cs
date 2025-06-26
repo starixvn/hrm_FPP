@@ -107,7 +107,13 @@ namespace FPP.Services.Implement
             var monthCell = worksheet.Cells[PeriodMonthRow, PeriodMonthCol].Value;
             var date = DateTimeHelper.ParseExcelDate(monthCell);
 
-            return date;
+            if (date.HasValue)
+            {
+                // Return the first day of the month
+                return new DateTime(date.Value.Year, date.Value.Month, 1);
+            }
+
+            return null;
         }
 
         private decimal GetExcelTotal(ExcelWorksheet worksheet)

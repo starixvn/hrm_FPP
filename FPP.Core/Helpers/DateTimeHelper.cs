@@ -8,7 +8,7 @@ namespace FPP.Core.Helpers
 
         public static string FormatMonth(DateTime date)
         {
-            return date.ToString("MMM yyyy", FormatProvider);
+            return date.ToString("MMM yyyy");
         }
 
         public static DateTime? ParseExcelDate(object? value)
@@ -24,8 +24,8 @@ namespace FPP.Core.Helpers
             }
 
             var stringValue = value.ToString();
-            if (DateTime.TryParse(stringValue, FormatProvider, DateTimeStyles.None, out var date) ||
-                DateTime.TryParseExact(stringValue, "MMM dd yyyy", FormatProvider, DateTimeStyles.None, out date))
+            if (DateTime.TryParse(stringValue, out var date) ||
+                DateTime.TryParseExact(stringValue, "MMM dd yyyy", null, System.Globalization.DateTimeStyles.None, out date))
             {
                 return date;
             }
