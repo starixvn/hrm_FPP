@@ -25,5 +25,5 @@ public class TermItem
 
     public decimal Amount { get; set; }
 
-    public DateTimeOffset Month { get; set; }
+    public DateTime Month { get; set; }
 }
