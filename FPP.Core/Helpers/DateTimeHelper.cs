@@ -39,7 +39,7 @@ namespace FPP.Core.Helpers
             if (date.HasValue)
             {
                 var d = date.Value;
-                return new DateTime(d.Year, d.Month, 1, 0, 0, 0, d.Kind);
+                return d.AddDays(1 - d.Day).Date;
             }
             return null;
         }
