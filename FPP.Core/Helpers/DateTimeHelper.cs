@@ -24,9 +24,10 @@ namespace FPP.Core.Helpers
             }
 
             var stringValue = value.ToString();
-            if (DateTime.TryParse(stringValue, out var date) ||
-                DateTime.TryParseExact(stringValue, "MMM dd yyyy", null, System.Globalization.DateTimeStyles.None, out date))
+            if (DateTime.TryParse(stringValue, FormatProvider, DateTimeStyles.None, out var date) ||
+                DateTime.TryParseExact(stringValue, "MMM dd yyyy", FormatProvider, DateTimeStyles.None, out date))
             {
+
                 return date;
             }
 
@@ -37,11 +38,9 @@ namespace FPP.Core.Helpers
         {
             if (date.HasValue)
             {
-#pragma warning disable S6562
-                return new DateTime(date.Value.Year, date.Value.Month, 1);
-#pragma warning restore S6562
+                var d = date.Value;
+                return new DateTime(d.Year, d.Month, 1, 0, 0, 0, d.Kind);
             }
-
             return null;
         }
 
