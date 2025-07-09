@@ -24,12 +24,23 @@ namespace FPP.Core.Helpers
             }
 
             var stringValue = value.ToString();
-            if (DateTime.TryParse(stringValue, out var date) ||
-                DateTime.TryParseExact(stringValue, "MMM dd yyyy", null, System.Globalization.DateTimeStyles.None, out date))
+            if (DateTime.TryParse(stringValue, FormatProvider, DateTimeStyles.None, out var date) ||
+                DateTime.TryParseExact(stringValue, "MMM dd yyyy", FormatProvider, DateTimeStyles.None, out date))
             {
+
                 return date;
             }
 
+            return null;
+        }
+
+        public static DateTime? GetMonthStart(DateTime? date)
+        {
+            if (date.HasValue)
+            {
+                var d = date.Value;
+                return d.AddDays(1 - d.Day).Date;
+            }
             return null;
         }
 
