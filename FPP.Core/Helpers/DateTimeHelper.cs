@@ -33,6 +33,18 @@ namespace FPP.Core.Helpers
             return null;
         }
 
+        public static DateTime? GetMonthStart(DateTime? date)
+        {
+            if (date.HasValue)
+            {
+#pragma warning disable S6562
+                return new DateTime(date.Value.Year, date.Value.Month, 1);
+#pragma warning restore S6562
+            }
+
+            return null;
+        }
+
         public static string FormatDateTime(DateTime? date)
         {
             if (!date.HasValue)

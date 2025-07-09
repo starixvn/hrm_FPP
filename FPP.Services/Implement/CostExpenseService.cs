@@ -143,7 +143,7 @@ namespace FPP.Services.Implement
                     result.Add(new TermItem
                     {
                         TermName = cellText,
-                        Month = new DateTime(monthInfo.Month.Year, monthInfo.Month.Month, 1),
+                        Month = DateTimeHelper.GetMonthStart(monthInfo.Month) ?? monthInfo.Month,
                         Amount = amount
                     });
                 }
