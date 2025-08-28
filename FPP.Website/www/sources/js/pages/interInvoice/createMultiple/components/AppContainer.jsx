@@ -21,6 +21,8 @@ const { Option } = Select;
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 const AppContainer = () => {
     const [form] = Form.useForm();
     const [periodType, setPeriodType] = useState(PeriodType.Monthly);
@@ -126,16 +128,16 @@ const AppContainer = () => {
 
             switch (values.periodType) {
                 case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
-                    formData.toDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
+                    formData.fromDate = values.monthlyDate.startOf('month').format(DATE_FORMAT);
+                    formData.toDate = values.monthlyDate.startOf('month').format(DATE_FORMAT);
                     break;
                 case PeriodType.RangeDate:
-                    formData.fromDate = values.rangeDate[0].format('YYYY-MM-DD');
-                    formData.toDate = values.rangeDate[1].format('YYYY-MM-DD');
+                    formData.fromDate = values.rangeDate[0].format(DATE_FORMAT);
+                    formData.toDate = values.rangeDate[1].format(DATE_FORMAT);
                     break;
                 case PeriodType.OneTime:
-                    formData.fromDate = values.deliveryDate.format('YYYY-MM-DD');
-                    formData.toDate = values.deliveryDate.format('YYYY-MM-DD');
+                    formData.fromDate = values.deliveryDate.format(DATE_FORMAT);
+                    formData.toDate = values.deliveryDate.format(DATE_FORMAT);
                     break;
             }
             await axios.post('/InterInvoice/CreateMultipleInvoice', formData);
@@ -229,7 +231,7 @@ const AppContainer = () => {
                     <Divider>BU Details</Divider>
 
                     <Form.List name="items" initialValue={[]}>
-                        {(fields, { add, remove }) => (
+                        {fields => (
                             <>
                                 <div className="invoice-item-labels">
                                     <Row gutter={16}>
@@ -286,7 +288,9 @@ const AppContainer = () => {
                                                         style={{ width: '100%' }}
                                                         placeholder="Amount"
                                                         formatter={value => {
-                                                            if (!value) return '';
+                                                            if (!value) {
+                                                                return '';
+                                                            }
                                                             const num = parseFloat(value);
                                                             return Number.isInteger(num)
                                                                 ? num.toString()
