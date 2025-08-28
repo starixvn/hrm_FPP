@@ -1,6 +1,5 @@
 import React from 'react';
 import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined } from '@ant-design/icons';
-import moment from 'moment';
 
 export const PeriodType = {
     Monthly: 0,

@@ -383,12 +383,6 @@ const AppContainer = () => {
                             <Option value={PeriodType.Monthly}>
                                 {mapPeriodType[PeriodType.Monthly]}
                             </Option>
-                            <Option value={PeriodType.RangeDate}>
-                                {mapPeriodType[PeriodType.RangeDate]}
-                            </Option>
-                            <Option value={PeriodType.OneTime}>
-                                {mapPeriodType[PeriodType.OneTime]}
-                            </Option>
                         </Select>
                     </Form.Item>
 
