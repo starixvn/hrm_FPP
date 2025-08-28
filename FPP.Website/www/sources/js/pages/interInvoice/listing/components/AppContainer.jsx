@@ -25,7 +25,7 @@ const AppContainer = () => {
         loadInvoices();
     }, []);
 
-    const handleView = (id) => {
+    const handleView = id => {
         window.location.href = `/interInvoice/detail/${id}`;
     };
 
@@ -60,7 +60,7 @@ const AppContainer = () => {
             dataIndex: 'totalAmount',
             key: 'totalAmount',
             sorter: (a, b) => a.totalAmount - b.totalAmount,
-            render: (amount) => formatAmount(amount),
+            render: amount => formatAmount(amount),
             align: 'right',
             width: '11%',
         },
@@ -84,7 +84,7 @@ const AppContainer = () => {
             dataIndex: 'periodType',
             key: 'periodType',
             sorter: (a, b) => a.periodType - b.periodType,
-            render: (periodType) => mapPeriodType[periodType] || periodType,
+            render: periodType => mapPeriodType[periodType] || periodType,
             align: 'left',
             width: '8%',
         },
@@ -102,7 +102,7 @@ const AppContainer = () => {
             dataIndex: 'createdDate',
             key: 'createdDate',
             sorter: (a, b) => new Date(a.createdDate) - new Date(b.createdDate),
-            render: (date) => CommonFunctions.formatDateTime(date),
+            render: date => CommonFunctions.formatDateTime(date),
             align: 'left',
             width: '12%',
         },
@@ -119,7 +119,7 @@ const AppContainer = () => {
             dataIndex: 'status',
             key: 'status',
             sorter: (a, b) => a.status - b.status,
-            render: (status) => {
+            render: status => {
                 const statusText = mapInterInvoiceStatus[status] || status;
                 return <span className={`status-${statusText.toLowerCase()}`}>{statusText}</span>;
             },
@@ -141,7 +141,7 @@ const AppContainer = () => {
         },
     ];
 
-    const renderSummaryRow = (pageData) => {
+    const renderSummaryRow = pageData => {
         const totalAmount = pageData.reduce((sum, record) => sum + record.totalAmount, 0);
         return (
             <Table.Summary fixed>

@@ -63,7 +63,7 @@ const AppContainer = () => {
                 <div className="filter-option">
                     <div className="filter-label">BU</div>
                     <Select placeholder="Select BU" onChange={setGroupUnitId} value={groupUnitId}>
-                        {filterData?.units?.map((unit) => (
+                        {filterData?.units?.map(unit => (
                             <Option key={unit.groupUnitId} value={unit.groupUnitId}>
                                 {unit.groupUnitId} - {unit.code}
                             </Option>
@@ -89,7 +89,7 @@ const AppContainer = () => {
                         value={categoryId}
                         allowClear
                     >
-                        {filterData?.categories?.map((category) => (
+                        {filterData?.categories?.map(category => (
                             <Option key={category.categoryId} value={category.categoryId}>
                                 {category.name}
                             </Option>
@@ -120,7 +120,7 @@ const AppContainer = () => {
             },
         ];
 
-        const monthColumns = months.map((month) => ({
+        const monthColumns = months.map(month => ({
             title: month,
             dataIndex: month,
             key: month,
@@ -198,7 +198,7 @@ const AppContainer = () => {
 
     const tableData = useMemo(() => {
         return dataSource
-            .filter((item) => !item.isSeparator)
+            .filter(item => !item.isSeparator)
             .concat(calculateGrandTotals())
             .filter(Boolean);
     }, [dataSource]);

@@ -183,7 +183,7 @@ const AppContainer = () => {
                             <Input.TextArea
                                 placeholder="Please enter rejection reason"
                                 value={rejectionReason}
-                                onChange={(e) => setRejectionReason(e.target.value)}
+                                onChange={e => setRejectionReason(e.target.value)}
                                 rows={4}
                                 className="rejection-reason-textarea"
                             />

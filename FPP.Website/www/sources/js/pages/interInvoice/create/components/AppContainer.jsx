@@ -70,7 +70,7 @@ const AppContainer = () => {
         fetchData();
     }, []);
 
-    const onFinish = async (values) => {
+    const onFinish = async values => {
         if (values.items === undefined || values.items.length === 0) {
             message.error('Please add at least one item');
             return;

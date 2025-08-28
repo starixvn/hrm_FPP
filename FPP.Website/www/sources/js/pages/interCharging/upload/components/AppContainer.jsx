@@ -9,7 +9,7 @@ const BUCost = ({ isHost }) => {
     const [refreshKey, setRefreshKey] = useState(0);
 
     const handleUploadSuccess = () => {
-        setRefreshKey((prev) => prev + 1);
+        setRefreshKey(prev => prev + 1);
     };
 
     return (

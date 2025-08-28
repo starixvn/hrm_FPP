@@ -2,12 +2,12 @@ import * as React from 'react';
 import { Modal, Timeline, Tag } from 'antd';
 import CommonFunctions from '../common-functions';
 
-const formatValue = (value) => {
+const formatValue = value => {
     if (value === null || value === undefined) return 'N/A';
     if (typeof value === 'object') {
         if (Array.isArray(value)) {
             return value
-                .map((item) => {
+                .map(item => {
                     if (typeof item === 'object') {
                         return Object.entries(item)
                             .map(([key, val]) => `${key}: ${val}`)
@@ -43,8 +43,8 @@ const ActivityLogModal = ({ isVisible, onClose, activityLogs }) => {
             <Timeline
                 items={[...activityLogs]
                     .sort((a, b) => new Date(b.createdDate) - new Date(a.createdDate))
-                    .filter((log) => log.changedItems && log.changedItems.length > 0)
-                    .map((log) => ({
+                    .filter(log => log.changedItems && log.changedItems.length > 0)
+                    .map(log => ({
                         children: (
                             <div>
                                 <div>

@@ -83,7 +83,7 @@ const UploadHistoryTable = ({ refetchData }) => {
             columns={columns}
             dataSource={data}
             loading={loading}
-            rowKey={(record) => `${record.buId}-${record.createdDate}`}
+            rowKey={record => `${record.buId}-${record.createdDate}`}
             pagination={{ pageSize: 10 }}
             size="small"
             bordered

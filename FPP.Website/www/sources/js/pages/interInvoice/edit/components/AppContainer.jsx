@@ -79,9 +79,8 @@ const AppContainer = () => {
                 // Fetch prepared data
                 const preparedResponse = await axios.get('/InterInvoice/GetPreparedData');
                 setPayerOptions(
-                    preparedResponse.data.units.filter(
-                        (unit) => unit.picEmpId != null && unit.picEmpId > 0
-                    ) || []
+                    preparedResponse.data.units.filter(unit => unit.picEmpId != null && unit.picEmpId > 0)
+                    || []
                 );
                 setBillerOptions(preparedResponse.data.units);
                 setCurrencyOptions(preparedResponse.data.currencies || []);
@@ -93,7 +92,7 @@ const AppContainer = () => {
                     currencyId: invoiceData.currencyId,
                     periodType: invoiceData.periodType,
                     notes: invoiceData.notes,
-                    items: invoiceData.items.map((item) => ({
+                    items: invoiceData.items.map(item => ({
                         itemDescription: item.itemDescription,
                         amount: item.amount,
                     })),
@@ -212,7 +211,7 @@ const AppContainer = () => {
                     onValuesChange={(changedValues, allValues) => {
                         const items = allValues.items || [];
                         const total = items
-                            .filter((item) => item && item.amount !== undefined)
+                            .filter(item => item && item.amount !== undefined)
                             .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
                         setTotalAmount(total);
                     }}
@@ -226,7 +225,7 @@ const AppContainer = () => {
                                 rules={[{ required: true, message: 'Please select biller' }]}
                             >
                                 <Select placeholder="Select Biller" disabled={true}>
-                                    {billerOptions.map((biller) => (
+                                    {billerOptions.map(biller => (
                                         <Option key={biller.unitId} value={biller.unitId}>
                                             {biller.groupUnitId} - {biller.code}
                                         </Option>
@@ -241,7 +240,7 @@ const AppContainer = () => {
                                 rules={[{ required: true, message: 'Please select payer' }]}
                             >
                                 <Select placeholder="Select Payer" disabled={true}>
-                                    {payerOptions.map((payer) => (
+                                    {payerOptions.map(payer => (
                                         <Option key={payer.unitId} value={payer.unitId}>
                                             {payer.groupUnitId} - {payer.code}
                                         </Option>
@@ -256,7 +255,7 @@ const AppContainer = () => {
                                 rules={[{ required: true, message: 'Please select currency' }]}
                             >
                                 <Select placeholder="Select Currency">
-                                    {currencyOptions.map((currency) => (
+                                    {currencyOptions.map(currency => (
                                         <Option key={currency.id} value={currency.id}>
                                             {currency.name} - {currency.symbol}
                                         </Option>

@@ -56,8 +56,8 @@ const AppContainer = () => {
                 <div className="filter-option">
                     <div className="filter-label">BU</div>
                     <Select placeholder="Select BU" onChange={setGroupUnitId} value={groupUnitId}>
-                        {unitData?.map((unit) => (
-                            <Option key={unit.groupUnitId} value={unit.groupUnitId}>
+                        {unitData?.map(unit => (
+                            <Option key={unit.unitId} value={unit.unitId}>
                                 {unit.groupUnitId} - {unit.code}
                             </Option>
                         ))}
@@ -98,7 +98,7 @@ const AppContainer = () => {
                 dataIndex: 'month',
                 key: 'month',
                 width: 120,
-                render: (text) => moment(text).format('MMM YYYY'),
+                render: text => moment(text).format('MMM YYYY'),
             },
             {
                 title: 'Remark',
@@ -138,7 +138,7 @@ const AppContainer = () => {
                             pagination={false}
                             scroll={{ x: 'max-content', y: 'calc(100vh - 324px)' }}
                             bordered
-                            rowKey={(record) => record.chargedGroupUnitId}
+                            rowKey={record => record.chargedGroupUnitId}
                         />
                     </Spin>
                 </Card>
