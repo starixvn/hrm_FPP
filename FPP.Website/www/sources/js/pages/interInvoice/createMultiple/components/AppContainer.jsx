@@ -14,15 +14,8 @@ import {
     message,
     Spin,
 } from 'antd';
-import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import {
-    mapPeriodType,
-    PeriodType,
-    InterInvoiceStatus,
-    mapInterInvoiceStatus,
-} from '../../helper/enum';
+import { mapPeriodType, PeriodType } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
-import moment from 'moment';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -145,7 +138,7 @@ const AppContainer = () => {
                     formData.toDate = values.deliveryDate.format('YYYY-MM-DD');
                     break;
             }
-            const response = await axios.post('/InterInvoice/CreateMultipleInvoice', formData);
+            await axios.post('/InterInvoice/CreateMultipleInvoice', formData);
             message.success(`Successfully created ${validItems.length} invoices`);
             form.resetFields();
             setTotalAmount(0);
@@ -154,7 +147,7 @@ const AppContainer = () => {
         }
     };
 
-    if (loading)
+    if (loading) {
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -165,7 +158,8 @@ const AppContainer = () => {
                 </Card>
             </div>
         );
-    if (error)
+    }
+    if (error) {
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -175,6 +169,7 @@ const AppContainer = () => {
                 </Card>
             </div>
         );
+    }
 
     return (
         <div className="invoice-container">
@@ -188,7 +183,7 @@ const AppContainer = () => {
                             e.preventDefault();
                         }
                     }}
-                    onValuesChange={(changedValues, allValues) => {
+                    onValuesChange={(_, allValues) => {
                         const items = allValues.items || [];
                         const total = items
                             .filter(item => item && item.amount !== undefined)
