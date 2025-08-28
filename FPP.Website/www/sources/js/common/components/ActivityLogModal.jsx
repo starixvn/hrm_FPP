@@ -1,9 +1,11 @@
-import * as React from 'react';
+import React from 'react';
 import { Modal, Timeline, Tag } from 'antd';
 import CommonFunctions from '../common-functions';
 
 const formatValue = value => {
-    if (value === null || value === undefined) return 'N/A';
+    if (value === null || value === undefined) {
+        return 'N/A'
+    };
     if (typeof value === 'object') {
         if (Array.isArray(value)) {
             return value

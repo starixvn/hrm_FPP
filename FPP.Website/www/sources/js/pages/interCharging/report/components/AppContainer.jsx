@@ -25,7 +25,7 @@ const AppContainer = () => {
             });
             setInterChargingData(response.data);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.info('Error fetching data:', error);
         } finally {
             setLoading(false);
         }
@@ -36,7 +36,7 @@ const AppContainer = () => {
             const response = await axios.get(`/InterCharging/GetUnits`);
             setUnitData(response.data);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.info('Error fetching data:', error);
         }
     };
 
@@ -112,7 +112,7 @@ const AppContainer = () => {
                 key: 'amount',
                 width: 120,
                 align: 'right',
-                render: (text) => (
+                render: text => (
                     <span style={{ color: Number(text) < 0 ? 'red' : 'green' }}>
                         {Number(text).toLocaleString('en-US')}
                     </span>

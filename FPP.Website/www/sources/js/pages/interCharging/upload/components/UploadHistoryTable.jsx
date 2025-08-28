@@ -13,7 +13,7 @@ const UploadHistoryTable = ({ refetchData }) => {
             setData(response.data);
         } catch (error) {
             message.error('Failed to fetch upload history');
-            console.error('Error fetching data:', error);
+            console.info('Error fetching data:', error);
         } finally {
             setLoading(false);
         }
@@ -45,7 +45,7 @@ const UploadHistoryTable = ({ refetchData }) => {
             dataIndex: 'month',
             key: 'month',
             align: 'center',
-            render: (text) =>
+            render: text =>
                 new Date(text).toLocaleString('default', { month: 'long', year: 'numeric' }),
         },
         {
@@ -73,7 +73,7 @@ const UploadHistoryTable = ({ refetchData }) => {
             dataIndex: 'createdDate',
             key: 'createdDate',
             align: 'center',
-            render: (text) => new Date(text).toLocaleString(),
+            render: text => new Date(text).toLocaleString(),
         },
     ];
 

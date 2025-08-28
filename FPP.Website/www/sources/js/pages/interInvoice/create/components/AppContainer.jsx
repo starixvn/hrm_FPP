@@ -18,11 +18,9 @@ import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import {
     mapPeriodType,
     PeriodType,
-    InterInvoiceStatus,
-    mapInterInvoiceStatus,
 } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
-import moment from 'moment';
+import { DateTimeFormat } from '../../../../common/constants';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -82,7 +80,7 @@ const AppContainer = () => {
                 fromDate: null,
                 toDate: null,
                 notes: values.notes,
-                items: values.items.map((item) => ({
+                items: values.items.map(item => ({
                     itemDescription: item.itemDescription,
                     amount: item.amount,
                 })),
@@ -90,16 +88,16 @@ const AppContainer = () => {
 
             switch (values.periodType) {
                 case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
-                    formData.toDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
+                    formData.fromDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
+                    formData.toDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
                     break;
                 case PeriodType.RangeDate:
-                    formData.fromDate = values.rangeDate[0].format('YYYY-MM-DD');
-                    formData.toDate = values.rangeDate[1].format('YYYY-MM-DD');
+                    formData.fromDate = values.rangeDate[0].format(DateTimeFormat.YYYY_MM_DD);
+                    formData.toDate = values.rangeDate[1].format(DateTimeFormat.YYYY_MM_DD);
                     break;
                 case PeriodType.OneTime:
-                    formData.fromDate = values.deliveryDate.format('YYYY-MM-DD');
-                    formData.toDate = values.deliveryDate.format('YYYY-MM-DD');
+                    formData.fromDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
+                    formData.toDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
                     break;
             }
             const response = await axios.post('/InterInvoice/CreateInvoice', formData);
@@ -111,7 +109,7 @@ const AppContainer = () => {
         }
     };
 
-    if (loading)
+    if (loading){
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -122,7 +120,8 @@ const AppContainer = () => {
                 </Card>
             </div>
         );
-    if (error)
+    }
+    if (error){
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -132,6 +131,7 @@ const AppContainer = () => {
                 </Card>
             </div>
         );
+    }
 
     return (
         <div className="invoice-container">
@@ -140,15 +140,15 @@ const AppContainer = () => {
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
-                    onKeyDown={(e) => {
+                    onKeyDown={e => {
                         if (e.key === 'Enter') {
                             e.preventDefault();
                         }
                     }}
-                    onValuesChange={(changedValues, allValues) => {
+                    onValuesChange={(_changedValues, allValues) => {
                         const items = allValues.items || [];
                         const total = items
-                            .filter((item) => item && item.amount !== undefined)
+                            .filter(item => item && item.amount !== undefined)
                             .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
                         setTotalAmount(total);
                     }}
@@ -174,7 +174,7 @@ const AppContainer = () => {
                                 ]}
                             >
                                 <Select placeholder="Select Biller" disabled={!isGlobal}>
-                                    {billerOptions.map((biller) => (
+                                    {billerOptions.map(biller => (
                                         <Option key={biller.unitId} value={biller.unitId}>
                                             {biller.groupUnitId} - {biller.code}
                                         </Option>
@@ -192,7 +192,7 @@ const AppContainer = () => {
                                         validator(_, value) {
                                             if (!value || getFieldValue('billerUnitId') !== value) {
                                                 const selectedPayer = payerOptions.find(
-                                                    (p) => p.unitId === value
+                                                    p => p.unitId === value
                                                 );
                                                 if (!selectedPayer?.picEmpId) {
                                                     return Promise.reject(
@@ -209,7 +209,7 @@ const AppContainer = () => {
                                 ]}
                             >
                                 <Select placeholder="Select Payer">
-                                    {payerOptions.map((payer) => (
+                                    {payerOptions.map(payer => (
                                         <Option key={payer.unitId} value={payer.unitId}>
                                             {payer.groupUnitId} - {payer.code}
                                         </Option>
@@ -224,7 +224,7 @@ const AppContainer = () => {
                                 rules={[{ required: true, message: 'Please select currency' }]}
                             >
                                 <Select placeholder="Select Currency">
-                                    {currencyOptions.map((currency) => (
+                                    {currencyOptions.map(currency => (
                                         <Option key={currency.id} value={currency.id}>
                                             {currency.name} - {currency.symbol}
                                         </Option>
@@ -289,14 +289,16 @@ const AppContainer = () => {
                                                     <InputNumber
                                                         style={{ width: '100%' }}
                                                         placeholder="Amount"
-                                                        formatter={(value) => {
-                                                            if (!value) return '';
+                                                        formatter={value => {
+                                                            if (!value) {
+                                                                return '';
+                                                            }
                                                             const num = parseFloat(value);
                                                             return Number.isInteger(num)
                                                                 ? num.toString()
                                                                 : num.toFixed(2);
                                                         }}
-                                                        parser={(value) =>
+                                                        parser={value =>
                                                             value.replace(/[^\d.]/g, '')
                                                         }
                                                         controls={false}
@@ -329,7 +331,7 @@ const AppContainer = () => {
                                     <div className="invoice-total-amount">
                                         Total Amount: {CommonFunctions.formatCurrency(totalAmount)}{' '}
                                         {currencyOptions.find(
-                                            (c) => c.id === form.getFieldValue('currencyId')
+                                            c => c.id === form.getFieldValue('currencyId')
                                         )?.symbol || ''}
                                     </div>
                                 </Form.Item>
@@ -344,7 +346,7 @@ const AppContainer = () => {
                         label="Billing Period"
                         initialValue={PeriodType.Monthly}
                     >
-                        <Select onChange={(value) => setPeriodType(value)}>
+                        <Select onChange={value => setPeriodType(value)}>
                             <Option value={PeriodType.Monthly}>
                                 {mapPeriodType[PeriodType.Monthly]}
                             </Option>

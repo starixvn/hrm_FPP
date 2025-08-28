@@ -25,7 +25,7 @@ const AppContainer = () => {
             });
             setCostExpenseData(response.data);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.info('Error fetching data:', error);
         } finally {
             setLoading(false);
         }
@@ -36,7 +36,7 @@ const AppContainer = () => {
             const response = await axios.get(`/CostExpense/GetFilterData`);
             setFilterData(response.data);
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.info('Error fetching data:', error);
         }
     };
 
@@ -140,11 +140,13 @@ const AppContainer = () => {
     }, [months]);
 
     const dataSource = useMemo(() => {
-        if (!costExpenseData.length) return [];
+        if (!costExpenseData.length) {
+            return []
+        };
 
         const flatData = [];
 
-        costExpenseData.forEach((category, categoryIndex) => {
+        costExpenseData.forEach((category) => {
             if (category.details && category.details.length) {
                 category.details.forEach((term, termIndex) => {
                     const termRow = {
@@ -153,7 +155,7 @@ const AppContainer = () => {
                         isCategory: false,
                     };
 
-                    months.forEach((month) => {
+                    months.forEach(month => {
                         termRow[month] = term.monthlyAmounts[month];
                     });
 
@@ -167,7 +169,7 @@ const AppContainer = () => {
                 isCategory: true,
             };
 
-            months.forEach((month) => {
+            months.forEach(month => {
                 categoryRow[month] = category.monthlyTotalAmounts[month];
             });
 
@@ -178,7 +180,9 @@ const AppContainer = () => {
     }, [costExpenseData, months]);
 
     const calculateGrandTotals = () => {
-        if (!costExpenseData.length) return null;
+        if (!costExpenseData.length) {
+            return null;
+        };
 
         const totalsRow = {
             key: 'grand_total',
@@ -186,7 +190,7 @@ const AppContainer = () => {
             isGrandTotal: true,
         };
 
-        months.forEach((month) => {
+        months.forEach(month => {
             totalsRow[month] = costExpenseData.reduce(
                 (sum, category) => sum + (Number(category.monthlyTotalAmounts[month]) || 0),
                 0
@@ -203,7 +207,7 @@ const AppContainer = () => {
             .filter(Boolean);
     }, [dataSource]);
 
-    const getRowClassName = (record) => {
+    const getRowClassName = record => {
         if (record.isGrandTotal) {
             return 'grand-total-row';
         } else if (record.isCategory) {
@@ -227,7 +231,7 @@ const AppContainer = () => {
                             scroll={{ x: 'max-content', y: 'calc(100vh - 324px)' }}
                             bordered
                             rowClassName={getRowClassName}
-                            onRow={(record) => {
+                            onRow={record => {
                                 if (record?.isSeparator) {
                                     return {
                                         className: 'separator-row',
