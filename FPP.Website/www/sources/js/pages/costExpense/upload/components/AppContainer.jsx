@@ -5,11 +5,11 @@ import { Card, Typography } from 'antd';
 
 const { Title } = Typography;
 
-const BUCost = ({ isHost }) => {
+const AppContainer = ({ isHost }) => {
     const [refreshKey, setRefreshKey] = useState(0);
 
     const handleUploadSuccess = () => {
-        setRefreshKey((prev) => prev + 1);
+        setRefreshKey(prev => prev + 1);
     };
 
     return (
@@ -32,4 +32,4 @@ const BUCost = ({ isHost }) => {
     );
 };
 
-export default BUCost;
+export default AppContainer;

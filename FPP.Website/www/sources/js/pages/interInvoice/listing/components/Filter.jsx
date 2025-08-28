@@ -17,7 +17,7 @@ const Filter = ({ onFilter, isHost }) => {
         loadBuList();
     }, []);
 
-    const handleFilter = (values) => {
+    const handleFilter = values => {
         const params = {
             billerUnitId: values.billerUnitId === 'all' ? undefined : values.billerUnitId,
             payerUnitId: values.payerUnitId === 'all' ? undefined : values.payerUnitId,
@@ -36,7 +36,7 @@ const Filter = ({ onFilter, isHost }) => {
                     <Form.Item name="billerUnitId" label="Biller" initialValue="all">
                         <Select
                             placeholder="Select Biller"
-                            onChange={(value) =>
+                            onChange={value =>
                                 handleFilter({
                                     ...form.getFieldsValue(),
                                     billerUnitId: value,
@@ -44,7 +44,7 @@ const Filter = ({ onFilter, isHost }) => {
                             }
                         >
                             <Option value="all">All</Option>
-                            {buList.map((bu) => (
+                            {buList.map(bu => (
                                 <Option key={bu.groupUnitId} value={bu.unitId}>
                                     {bu.groupUnitId} - {bu.code}
                                 </Option>
@@ -56,7 +56,7 @@ const Filter = ({ onFilter, isHost }) => {
                     <Form.Item name="payerUnitId" label="Payer" initialValue="all">
                         <Select
                             placeholder="Select Payer"
-                            onChange={(value) =>
+                            onChange={value =>
                                 handleFilter({
                                     ...form.getFieldsValue(),
                                     payerUnitId: value,
@@ -64,7 +64,7 @@ const Filter = ({ onFilter, isHost }) => {
                             }
                         >
                             <Option value="all">All</Option>
-                            {buList.map((bu) => (
+                            {buList.map(bu => (
                                 <Option key={bu.groupUnitId} value={bu.unitId}>
                                     {bu.groupUnitId} - {bu.code}
                                 </Option>

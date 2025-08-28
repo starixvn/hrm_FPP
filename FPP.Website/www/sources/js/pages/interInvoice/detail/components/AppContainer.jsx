@@ -1,10 +1,8 @@
-import * as React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, message, Spin, Modal, Tag, Input } from 'antd';
 import axios from 'axios';
 import {
     mapPeriodType,
-    PeriodType,
     InterInvoiceStatus,
     mapInterInvoiceStatus,
     mapIconStatus,
@@ -14,7 +12,7 @@ import CommonFunctions from '../../../../common/common-functions';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import ActivityLogModal from '../../../../common/components/ActivityLogModal';
 import PageContainer from '../../../common/components/PageContainer';
-import { formatPeriod, formatAmount, formatCreator, formatModifier } from '../../helper/format';
+import { formatPeriod, formatAmount, formatModifier } from '../../helper/format';
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(true);
@@ -47,20 +45,6 @@ const AppContainer = () => {
             fetchData();
         }
     }, [window.invoiceId]);
-
-    const fetchActivityLogs = async () => {
-        try {
-            const response = await axios.get(`/InterInvoice/GetActivityLog/${window.invoiceId}`);
-            setActivityLogs(response.data);
-        } catch (error) {
-            message.error('Failed to fetch activity logs');
-        }
-    };
-
-    const handleShowActivityLog = () => {
-        setIsActivityLogVisible(true);
-        fetchActivityLogs();
-    };
 
     const handleApprove = async () => {
         try {
@@ -183,7 +167,7 @@ const AppContainer = () => {
                             <Input.TextArea
                                 placeholder="Please enter rejection reason"
                                 value={rejectionReason}
-                                onChange={(e) => setRejectionReason(e.target.value)}
+                                onChange={e => setRejectionReason(e.target.value)}
                                 rows={4}
                                 className="rejection-reason-textarea"
                             />
@@ -205,13 +189,16 @@ const AppContainer = () => {
     };
 
     const renderActionButtons = () => {
-        if (invoiceData.status != InterInvoiceStatus.Pending) {
-            return;
-        } else if (invoiceData.isEditing) {
+        if (invoiceData.status !== InterInvoiceStatus.Pending) {
+            return null;
+        }
+        if (invoiceData.isEditing) {
             return renderIsEditingButton();
-        } else if (invoiceData.isCanConfirmReject || invoiceData.isCanEdit) {
+        }
+        if (invoiceData.isCanConfirmReject || invoiceData.isCanEdit) {
             return renderOthersButtons();
         }
+        return null;
     };
 
     const renderContent = () => {

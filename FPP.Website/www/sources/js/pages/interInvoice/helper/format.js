@@ -21,7 +21,7 @@ export const formatPeriod = (periodType, fromDate, toDate) => {
     return '-';
 };
 
-export const formatAmount = (amount) => {
+export const formatAmount = amount => {
     if (!amount) {
         return '0';
     }

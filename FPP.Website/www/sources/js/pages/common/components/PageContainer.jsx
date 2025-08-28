@@ -11,11 +11,11 @@ const PageContainer = ({
     children,
     className = '',
     cardClassName = 'report-card',
-    loading = false,
-    error = null,
 }) => {
     const renderTitle = () => {
-        if (!title) return null;
+        if (!title) {
+            return null;
+        } ;
 
         return (
             <Title level={4} style={{ margin: 0 }}>

@@ -20,11 +20,10 @@ import {
     mapPeriodType,
     PeriodType,
     InterInvoiceStatus,
-    mapInterInvoiceStatus,
 } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
-import moment from 'moment';
 import dayjs from 'dayjs';
+import { DateTimeFormat } from '../../../../common/constants';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -46,7 +45,7 @@ const AppContainer = () => {
                 try {
                     await axios.put(`/InterInvoice/UnlockEditing?id=${window.invoiceId}`);
                 } catch (error) {
-                    console.error('Failed to unblock editing:', error);
+                    console.info('Failed to unblock editing:', error);
                 }
             }
         };
@@ -79,9 +78,8 @@ const AppContainer = () => {
                 // Fetch prepared data
                 const preparedResponse = await axios.get('/InterInvoice/GetPreparedData');
                 setPayerOptions(
-                    preparedResponse.data.units.filter(
-                        (unit) => unit.picEmpId != null && unit.picEmpId > 0
-                    ) || []
+                    preparedResponse.data.units.filter(unit => unit.picEmpId != null && unit.picEmpId > 0)
+                    || []
                 );
                 setBillerOptions(preparedResponse.data.units);
                 setCurrencyOptions(preparedResponse.data.currencies || []);
@@ -93,7 +91,7 @@ const AppContainer = () => {
                     currencyId: invoiceData.currencyId,
                     periodType: invoiceData.periodType,
                     notes: invoiceData.notes,
-                    items: invoiceData.items.map((item) => ({
+                    items: invoiceData.items.map(item => ({
                         itemDescription: item.itemDescription,
                         amount: item.amount,
                     })),
@@ -125,7 +123,7 @@ const AppContainer = () => {
                 setPeriodType(invoiceData.periodType);
                 setLoading(false);
             } catch (err) {
-                setError(error.response?.data || 'Failed to fetch data');
+                setError(error.response?.data);
                 setLoading(false);
             }
         };
@@ -134,7 +132,7 @@ const AppContainer = () => {
         }
     }, [window.invoiceId]);
 
-    const onFinish = async (values) => {
+    const onFinish = async values => {
         if (values.items === undefined || values.items.length === 0) {
             message.error('Please add at least one item');
             return;
@@ -143,8 +141,8 @@ const AppContainer = () => {
         try {
             const formData = {
                 ...values,
-                interInvoiceId: parseInt(window.invoiceId),
-                items: values.items.map((item) => ({
+                interInvoiceId: parseInt(window.invoiceId, 10),
+                items: values.items.map(item => ({
                     interInvoiceId: window.invoiceId,
                     itemDescription: item.itemDescription,
                     amount: item.amount.toFixed(2),
@@ -153,19 +151,18 @@ const AppContainer = () => {
 
             switch (values.periodType) {
                 case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
-                    formData.toDate = values.monthlyDate.startOf('month').format('YYYY-MM-DD');
+                    formData.fromDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
+                    formData.toDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
                     break;
                 case PeriodType.RangeDate:
-                    formData.fromDate = values.rangeDate[0].format('YYYY-MM-DD');
-                    formData.toDate = values.rangeDate[1].format('YYYY-MM-DD');
+                    formData.fromDate = values.rangeDate[0].format(DateTimeFormat.YYYY_MM_DD);
+                    formData.toDate = values.rangeDate[1].format(DateTimeFormat.YYYY_MM_DD);
                     break;
                 case PeriodType.OneTime:
-                    formData.fromDate = values.deliveryDate.format('YYYY-MM-DD');
-                    formData.toDate = values.deliveryDate.format('YYYY-MM-DD');
+                    formData.fromDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
+                    formData.toDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
                     break;
             }
-            const response = await axios.put('/InterInvoice/UpdateInvoice', formData);
             window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
             message.success('Invoice updated successfully');
         } catch (error) {
@@ -173,7 +170,7 @@ const AppContainer = () => {
         }
     };
 
-    if (loading)
+    if (loading){
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -186,7 +183,8 @@ const AppContainer = () => {
                 </Card>
             </div>
         );
-    if (error)
+    }
+    if (error){
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -196,6 +194,7 @@ const AppContainer = () => {
                 </Card>
             </div>
         );
+    }
 
     return (
         <div className="invoice-container">
@@ -204,15 +203,15 @@ const AppContainer = () => {
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
-                    onKeyDown={(e) => {
+                    onKeyDown={e => {
                         if (e.key === 'Enter') {
                             e.preventDefault();
                         }
                     }}
-                    onValuesChange={(changedValues, allValues) => {
+                    onValuesChange={(_changedValues, allValues) => {
                         const items = allValues.items || [];
                         const total = items
-                            .filter((item) => item && item.amount !== undefined)
+                            .filter(item => item && item.amount !== undefined)
                             .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
                         setTotalAmount(total);
                     }}
@@ -226,7 +225,7 @@ const AppContainer = () => {
                                 rules={[{ required: true, message: 'Please select biller' }]}
                             >
                                 <Select placeholder="Select Biller" disabled={true}>
-                                    {billerOptions.map((biller) => (
+                                    {billerOptions.map(biller => (
                                         <Option key={biller.unitId} value={biller.unitId}>
                                             {biller.groupUnitId} - {biller.code}
                                         </Option>
@@ -241,7 +240,7 @@ const AppContainer = () => {
                                 rules={[{ required: true, message: 'Please select payer' }]}
                             >
                                 <Select placeholder="Select Payer" disabled={true}>
-                                    {payerOptions.map((payer) => (
+                                    {payerOptions.map(payer => (
                                         <Option key={payer.unitId} value={payer.unitId}>
                                             {payer.groupUnitId} - {payer.code}
                                         </Option>
@@ -256,7 +255,7 @@ const AppContainer = () => {
                                 rules={[{ required: true, message: 'Please select currency' }]}
                             >
                                 <Select placeholder="Select Currency">
-                                    {currencyOptions.map((currency) => (
+                                    {currencyOptions.map(currency => (
                                         <Option key={currency.id} value={currency.id}>
                                             {currency.name} - {currency.symbol}
                                         </Option>
@@ -324,14 +323,16 @@ const AppContainer = () => {
                                                     <InputNumber
                                                         style={{ width: '100%' }}
                                                         placeholder="Amount"
-                                                        formatter={(value) => {
-                                                            if (!value) return '';
+                                                        formatter={value => {
+                                                            if (!value) {
+                                                                return '';
+                                                            }
                                                             const num = parseFloat(value);
                                                             return Number.isInteger(num)
                                                                 ? num.toString()
                                                                 : num.toFixed(2);
                                                         }}
-                                                        parser={(value) =>
+                                                        parser={value =>
                                                             value.replace(/[^\d.]/g, '')
                                                         }
                                                         controls={false}
@@ -364,7 +365,7 @@ const AppContainer = () => {
                                     <div className="invoice-total-amount">
                                         Total Amount: {CommonFunctions.formatCurrency(totalAmount)}{' '}
                                         {currencyOptions.find(
-                                            (c) => c.id === form.getFieldValue('currencyId')
+                                            c => c.id === form.getFieldValue('currencyId')
                                         )?.symbol || ''}
                                     </div>
                                 </Form.Item>
@@ -379,15 +380,9 @@ const AppContainer = () => {
                         label="Billing Period"
                         initialValue={PeriodType.Monthly}
                     >
-                        <Select onChange={(value) => setPeriodType(value)}>
+                        <Select onChange={value => setPeriodType(value)}>
                             <Option value={PeriodType.Monthly}>
                                 {mapPeriodType[PeriodType.Monthly]}
-                            </Option>
-                            <Option value={PeriodType.RangeDate}>
-                                {mapPeriodType[PeriodType.RangeDate]}
-                            </Option>
-                            <Option value={PeriodType.OneTime}>
-                                {mapPeriodType[PeriodType.OneTime]}
                             </Option>
                         </Select>
                     </Form.Item>

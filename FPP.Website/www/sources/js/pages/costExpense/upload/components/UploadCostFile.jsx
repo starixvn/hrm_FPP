@@ -56,7 +56,7 @@ const UploadCostFile = ({ onUploadSuccess }) => {
         onRemove: () => {
             setFileList([]);
         },
-        beforeUpload: (file) => {
+        beforeUpload: file => {
             const isExcel =
                 file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
                 file.type === 'application/vnd.ms-excel';
