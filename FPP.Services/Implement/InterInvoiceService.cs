@@ -5,7 +5,7 @@ using FPP.Services.Interfaces;
 
 namespace FPP.Services.Implement
 {
-    public class InterInvoiceService() : IInterInvoiceService
+    public class InterInvoiceService : IInterInvoiceService
     {
         public async Task<InterInvoiceDetail> GetInterInvoiceById(int id, int currentUserId, bool isEdit, bool isGlobal)
         {

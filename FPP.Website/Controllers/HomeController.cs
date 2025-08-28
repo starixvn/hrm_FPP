@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FPP.Website.Controllers;
 
 [FppAuthorize]
-public class HomeController() : Controller
+public class HomeController : Controller
 {
     public IActionResult Index()
     {

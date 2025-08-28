@@ -1,4 +1,6 @@
 @using GO.UserControl.Client.Core.Models
+@using System.Globalization
+@using System.Linq
 @model IList<MenuItem>
 
 @{
@@ -22,15 +24,8 @@
                 @foreach (var item in Model)
                 {
                     var classActive = url == item.URL ? "active" : "";
-                    var iconClass = "bi-upload";
-                    foreach (var icon in iconMap)
-                    {
-                        if (item.URL.ToLower().Contains(icon.Key))
-                        {
-                            iconClass = icon.Value;
-                            break;
-                        }
-                    }
+                    var iconClass = iconMap.FirstOrDefault(icon => 
+                        item.URL.ToLower(CultureInfo.InvariantCulture).Contains(icon.Key)).Value ?? "bi-upload";
                     <a class="nav-link @classActive" href="@item.URL">
                         <i class="bi @iconClass me-2"></i> @item.MenuItemName
                     </a>
