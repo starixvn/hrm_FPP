@@ -27,6 +27,9 @@ const scriptPaths = {
     interCharging_upload_index: ['./www/sources/js/pages/interCharging/upload/index.jsx'],
     interCharging_report_index: ['./www/sources/js/pages/interCharging/report/index.jsx'],
     interInvoice_create_index: ['./www/sources/js/pages/interInvoice/create/index.jsx'],
+    interInvoice_create_multiple_index: [
+        './www/sources/js/pages/interInvoice/createMultiple/index.jsx',
+    ],
     interInvoice_listing_index: ['./www/sources/js/pages/interInvoice/listing/index.jsx'],
     interInvoice_detail_index: ['./www/sources/js/pages/interInvoice/detail/index.jsx'],
     interInvoice_edit_index: ['./www/sources/js/pages/interInvoice/edit/index.jsx'],

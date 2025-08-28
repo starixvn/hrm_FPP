@@ -36,6 +36,12 @@ public class InterInvoiceController(
     }
 
     [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    public IActionResult CreateMultiple()
+    {
+        return View();
+    }
+
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> Edit(int id)
     {
         var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);

@@ -27,6 +27,8 @@ function generateConfig(environment) {
                 pathConfig.scriptPaths.interCharging_report_index,
             [`${jsPath}/pages/interInvoice/create/index`]:
                 pathConfig.scriptPaths.interInvoice_create_index,
+            [`${jsPath}/pages/interInvoice/createMultiple/index`]:
+                pathConfig.scriptPaths.interInvoice_create_multiple_index,
             [`${jsPath}/pages/interInvoice/listing/index`]:
                 pathConfig.scriptPaths.interInvoice_listing_index,
             [`${jsPath}/pages/interInvoice/detail/index`]:
