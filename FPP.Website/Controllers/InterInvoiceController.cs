@@ -117,7 +117,7 @@ public class InterInvoiceController(
     }
 
     [HttpPost]
-    //[FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> CreateMultipleInvoice([FromBody] CreateInterInvoiceViewModel viewModel)
     {
         if (!ModelState.IsValid)
