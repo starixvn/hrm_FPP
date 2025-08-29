@@ -15,10 +15,7 @@ import {
     Spin,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import {
-    mapPeriodType,
-    PeriodType,
-} from '../../helper/enum';
+import { mapPeriodType, PeriodType } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
 import { DateTimeFormat } from '../../../../common/constants';
 
@@ -37,6 +34,13 @@ const AppContainer = () => {
     const [isGlobal, setIsGlobal] = useState(false);
     const [totalAmount, setTotalAmount] = useState(0);
 
+    const getIsMultiple = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('isMultiple') === '1';
+    };
+
+    const isMultiple = getIsMultiple();
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -45,6 +49,19 @@ const AppContainer = () => {
                 setBillerOptions(response.data.units);
                 setCurrencyOptions(response.data.currencies || []);
                 setIsGlobal(response.data.isGlobal);
+
+                if (isMultiple) {
+                    const initialItems = response.data.units.map(payer => ({
+                        payerUnitId: payer.unitId,
+                        itemDescription: '',
+                        amount: null,
+                    }));
+                    form.setFieldsValue({ items: initialItems });
+                } else {
+                    form.setFieldsValue({
+                        items: [{ itemDescription: '', amount: null }],
+                    });
+                }
 
                 if (response.data.currentEmpUnitId) {
                     form.setFieldsValue({
@@ -66,50 +83,99 @@ const AppContainer = () => {
         };
 
         fetchData();
-    }, []);
+    }, [isMultiple]);
 
     const onFinish = async values => {
-        if (values.items === undefined || values.items.length === 0) {
-            message.error('Please add at least one item');
-            return;
+        const formData = {
+            ...values,
+            fromDate: null,
+            toDate: null,
+            notes: values.notes,
+        };
+
+        switch (values.periodType) {
+            case PeriodType.Monthly:
+                formData.fromDate = values.monthlyDate
+                    .startOf('month')
+                    .format(DateTimeFormat.YYYY_MM_DD);
+                formData.toDate = values.monthlyDate
+                    .startOf('month')
+                    .format(DateTimeFormat.YYYY_MM_DD);
+                break;
+            case PeriodType.RangeDate:
+                formData.fromDate = values.rangeDate[0].format(DateTimeFormat.YYYY_MM_DD);
+                formData.toDate = values.rangeDate[1].format(DateTimeFormat.YYYY_MM_DD);
+                break;
+            case PeriodType.OneTime:
+                formData.fromDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
+                formData.toDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
+                break;
         }
+        if (isMultiple) {
+            const validItems = values.items.filter(
+                item => item.itemDescription && item.amount !== null
+            );
 
-        try {
-            const formData = {
-                ...values,
-                fromDate: null,
-                toDate: null,
-                notes: values.notes,
-                items: values.items.map(item => ({
-                    itemDescription: item.itemDescription,
-                    amount: item.amount,
-                })),
-            };
+            const invalidItems = values.items.filter(
+                item =>
+                    (item.itemDescription && !item.amount) ||
+                    (!item.itemDescription && item.amount !== null)
+            );
 
-            switch (values.periodType) {
-                case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
-                    formData.toDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
-                    break;
-                case PeriodType.RangeDate:
-                    formData.fromDate = values.rangeDate[0].format(DateTimeFormat.YYYY_MM_DD);
-                    formData.toDate = values.rangeDate[1].format(DateTimeFormat.YYYY_MM_DD);
-                    break;
-                case PeriodType.OneTime:
-                    formData.fromDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
-                    formData.toDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
-                    break;
+            if (invalidItems.length > 0) {
+                const invalidDetails = invalidItems.map(item => {
+                    const payer = payerOptions.find(p => p.unitId === item.payerUnitId);
+                    const unitName = payer
+                        ? `${payer.groupUnitId} - ${payer.code}`
+                        : `Unit ID: ${item.payerUnitId}`;
+
+                    if (item.itemDescription && !item.amount) {
+                        return `${unitName} (missing amount)`;
+                    } else if (!item.itemDescription && item.amount !== null) {
+                        return `${unitName} (missing description)`;
+                    }
+                    return unitName;
+                });
+
+                message.error(`Missing information: ${invalidDetails.join(', ')}.`);
+                return;
             }
-            const response = await axios.post('/InterInvoice/CreateInvoice', formData);
-            form.resetFields();
-            setTotalAmount(0);
-            window.location.href = `/interInvoice/detail?id=${response.data.outputId}`;
-        } catch (error) {
-            message.error(error.response?.data || 'Failed to create invoice');
+
+            if (validItems.length === 0) {
+                message.error('Please fill in at least one description and amount');
+                return;
+            }
+
+            formData.items = validItems.map(item => ({
+                payerUnitId: item.payerUnitId,
+                itemDescription: item.itemDescription,
+                amount: item.amount,
+            }));
+
+            try {
+                await axios.post('/InterInvoice/CreateMultipleInvoice', formData);
+                message.success(`Successfully created ${validItems.length} invoices`);
+            } catch (error) {
+                message.error(error.response?.data || 'Failed to create invoice');
+            }
+        } else {
+            if (values.items === undefined || values.items.length === 0) {
+                message.error('Please add at least one item');
+                return;
+            }
+
+            try {
+                const response = await axios.post('/InterInvoice/CreateInvoice', formData);
+                window.location.href = `/interInvoice/detail?id=${response.data.outputId}`;
+            } catch (error) {
+                message.error(error.response?.data || 'Failed to create invoice');
+            }
         }
+        form.resetFields();
+        setTotalAmount(0);
     };
 
-    if (loading){
+    if (loading) {
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -121,7 +187,7 @@ const AppContainer = () => {
             </div>
         );
     }
-    if (error){
+    if (error) {
         return (
             <div className="invoice-container">
                 <Card className="invoice-form-card">
@@ -133,9 +199,11 @@ const AppContainer = () => {
         );
     }
 
+    const cardTitle = isMultiple ? 'Create Multiple Inter Invoice' : 'Create Inter Invoice';
+
     return (
         <div className="invoice-container">
-            <Card title="Create Inter Invoice" className="invoice-form-card">
+            <Card title={cardTitle} className="invoice-form-card">
                 <Form
                     form={form}
                     layout="vertical"
@@ -155,22 +223,31 @@ const AppContainer = () => {
                     className="invoice-form"
                 >
                     <Row gutter={24}>
-                        <Col span={8}>
+                        <Col span={isMultiple ? 12 : 8}>
                             <Form.Item
                                 name="billerUnitId"
                                 label="Biller"
                                 rules={[
                                     { required: true, message: 'Please select biller' },
-                                    ({ getFieldValue }) => ({
-                                        validator(_, value) {
-                                            if (!value || getFieldValue('payerUnitId') !== value) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(
-                                                new Error('Biller and Payer cannot be the same')
-                                            );
-                                        },
-                                    }),
+                                    ...(isMultiple
+                                        ? []
+                                        : [
+                                              ({ getFieldValue }) => ({
+                                                  validator(_, value) {
+                                                      if (
+                                                          !value ||
+                                                          getFieldValue('payerUnitId') !== value
+                                                      ) {
+                                                          return Promise.resolve();
+                                                      }
+                                                      return Promise.reject(
+                                                          new Error(
+                                                              'Biller and Payer cannot be the same'
+                                                          )
+                                                      );
+                                                  },
+                                              }),
+                                          ]),
                                 ]}
                             >
                                 <Select placeholder="Select Biller" disabled={!isGlobal}>
@@ -182,42 +259,47 @@ const AppContainer = () => {
                                 </Select>
                             </Form.Item>
                         </Col>
-                        <Col span={8}>
-                            <Form.Item
-                                name="payerUnitId"
-                                label="Payer"
-                                rules={[
-                                    { required: true, message: 'Please select payer' },
-                                    ({ getFieldValue }) => ({
-                                        validator(_, value) {
-                                            if (!value || getFieldValue('billerUnitId') !== value) {
-                                                const selectedPayer = payerOptions.find(
-                                                    p => p.unitId === value
-                                                );
-                                                if (!selectedPayer?.picEmpId) {
-                                                    return Promise.reject(
-                                                        new Error('This BU does not have a PIC')
+                        {!isMultiple && (
+                            <Col span={8}>
+                                <Form.Item
+                                    name="payerUnitId"
+                                    label="Payer"
+                                    rules={[
+                                        { required: true, message: 'Please select payer' },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (
+                                                    !value ||
+                                                    getFieldValue('billerUnitId') !== value
+                                                ) {
+                                                    const selectedPayer = payerOptions.find(
+                                                        p => p.unitId === value
                                                     );
+                                                    if (!selectedPayer?.picEmpId) {
+                                                        return Promise.reject(
+                                                            new Error('This BU does not have a PIC')
+                                                        );
+                                                    }
+                                                    return Promise.resolve();
                                                 }
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(
-                                                new Error('Biller and Payer cannot be the same')
-                                            );
-                                        },
-                                    }),
-                                ]}
-                            >
-                                <Select placeholder="Select Payer">
-                                    {payerOptions.map(payer => (
-                                        <Option key={payer.unitId} value={payer.unitId}>
-                                            {payer.groupUnitId} - {payer.code}
-                                        </Option>
-                                    ))}
-                                </Select>
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
+                                                return Promise.reject(
+                                                    new Error('Biller and Payer cannot be the same')
+                                                );
+                                            },
+                                        }),
+                                    ]}
+                                >
+                                    <Select placeholder="Select Payer">
+                                        {payerOptions.map(payer => (
+                                            <Option key={payer.unitId} value={payer.unitId}>
+                                                {payer.groupUnitId} - {payer.code}
+                                            </Option>
+                                        ))}
+                                    </Select>
+                                </Form.Item>
+                            </Col>
+                        )}
+                        <Col span={isMultiple ? 12 : 8}>
                             <Form.Item
                                 name="currencyId"
                                 label="Currency"
@@ -226,7 +308,9 @@ const AppContainer = () => {
                                 <Select placeholder="Select Currency">
                                     {currencyOptions.map(currency => (
                                         <Option key={currency.id} value={currency.id}>
-                                            {currency.name} - {currency.symbol}
+                                            {isMultiple
+                                                ? currency.name
+                                                : `${currency.name} - ${currency.symbol}`}
                                         </Option>
                                     ))}
                                 </Select>
@@ -234,17 +318,25 @@ const AppContainer = () => {
                         </Col>
                     </Row>
 
-                    <Divider>Service Details</Divider>
+                    <Divider>{isMultiple ? 'BU Details' : 'Service Details'}</Divider>
 
-                    <Form.List name="items" initialValue={[{ itemDescription: '', amount: null }]}>
+                    <Form.List
+                        name="items"
+                        initialValue={isMultiple ? [] : [{ itemDescription: '', amount: null }]}
+                    >
                         {(fields, { add, remove }) => (
                             <>
                                 <div className="invoice-item-labels">
                                     <Row gutter={16}>
-                                        <Col span={16}>
+                                        {isMultiple && (
+                                            <Col span={8}>
+                                                <span className="ant-form-item-label">Payer</span>
+                                            </Col>
+                                        )}
+                                        <Col span={isMultiple ? 8 : 16}>
                                             <span className="ant-form-item-label">
-                                                <span className="required-label">*</span> Item
-                                                Description
+                                                <span className="required-label">*</span>
+                                                {isMultiple ? 'Description' : 'Item Description'}
                                             </span>
                                         </Col>
                                         <Col span={6}>
@@ -252,6 +344,11 @@ const AppContainer = () => {
                                                 <span className="required-label">*</span> Amount
                                             </span>
                                         </Col>
+                                        {!isMultiple && (
+                                            <Col span={2} className="remove-item">
+                                                <span></span>
+                                            </Col>
+                                        )}
                                     </Row>
                                 </div>
                                 {fields.map(({ key, name, ...restField }) => (
@@ -261,30 +358,71 @@ const AppContainer = () => {
                                             align="middle"
                                             className="invoice-item-row"
                                         >
-                                            <Col span={16}>
+                                            {isMultiple && (
+                                                <Col span={8}>
+                                                    <Form.Item
+                                                        {...restField}
+                                                        name={[name, 'payerUnitId']}
+                                                    >
+                                                        <Select
+                                                            placeholder="Select Payer"
+                                                            disabled
+                                                            defaultValue={
+                                                                payerOptions[name]?.unitId
+                                                            }
+                                                        >
+                                                            {payerOptions.map(payer => (
+                                                                <Option
+                                                                    key={payer.unitId}
+                                                                    value={payer.unitId}
+                                                                >
+                                                                    {payer.groupUnitId} -{' '}
+                                                                    {payer.code}
+                                                                </Option>
+                                                            ))}
+                                                        </Select>
+                                                    </Form.Item>
+                                                </Col>
+                                            )}
+                                            <Col span={isMultiple ? 8 : 16}>
                                                 <Form.Item
                                                     {...restField}
                                                     name={[name, 'itemDescription']}
-                                                    rules={[
-                                                        {
-                                                            required: true,
-                                                            message: 'Missing description',
-                                                        },
-                                                    ]}
+                                                    rules={
+                                                        isMultiple
+                                                            ? []
+                                                            : [
+                                                                  {
+                                                                      required: true,
+                                                                      message:
+                                                                          'Missing description',
+                                                                  },
+                                                              ]
+                                                    }
                                                 >
-                                                    <Input placeholder="Item Description" />
+                                                    <Input
+                                                        placeholder={
+                                                            isMultiple
+                                                                ? 'Description'
+                                                                : 'Item Description'
+                                                        }
+                                                    />
                                                 </Form.Item>
                                             </Col>
                                             <Col span={6}>
                                                 <Form.Item
                                                     {...restField}
                                                     name={[name, 'amount']}
-                                                    rules={[
-                                                        {
-                                                            required: true,
-                                                            message: 'Missing amount',
-                                                        },
-                                                    ]}
+                                                    rules={
+                                                        isMultiple
+                                                            ? []
+                                                            : [
+                                                                  {
+                                                                      required: true,
+                                                                      message: 'Missing amount',
+                                                                  },
+                                                              ]
+                                                    }
                                                 >
                                                     <InputNumber
                                                         style={{ width: '100%' }}
@@ -307,26 +445,30 @@ const AppContainer = () => {
                                                     />
                                                 </Form.Item>
                                             </Col>
-                                            <Col span={2} className="remove-item">
-                                                {fields.length > 1 && (
-                                                    <MinusCircleOutlined
-                                                        onClick={() => remove(name)}
-                                                    />
-                                                )}
-                                            </Col>
+                                            {!isMultiple && (
+                                                <Col span={2} className="remove-item">
+                                                    {fields.length > 1 && (
+                                                        <MinusCircleOutlined
+                                                            onClick={() => remove(name)}
+                                                        />
+                                                    )}
+                                                </Col>
+                                            )}
                                         </Row>
                                     </div>
                                 ))}
-                                <Form.Item>
-                                    <Button
-                                        type="dashed"
-                                        onClick={() => add()}
-                                        block
-                                        icon={<PlusOutlined />}
-                                    >
-                                        Add Item
-                                    </Button>
-                                </Form.Item>
+                                {!isMultiple && (
+                                    <Form.Item>
+                                        <Button
+                                            type="dashed"
+                                            onClick={() => add()}
+                                            block
+                                            icon={<PlusOutlined />}
+                                        >
+                                            Add Item
+                                        </Button>
+                                    </Form.Item>
+                                )}
                                 <Form.Item>
                                     <div className="invoice-total-amount">
                                         Total Amount: {CommonFunctions.formatCurrency(totalAmount)}{' '}
@@ -350,6 +492,16 @@ const AppContainer = () => {
                             <Option value={PeriodType.Monthly}>
                                 {mapPeriodType[PeriodType.Monthly]}
                             </Option>
+                            {isMultiple && (
+                                <>
+                                    <Option value={PeriodType.RangeDate}>
+                                        {mapPeriodType[PeriodType.RangeDate]}
+                                    </Option>
+                                    <Option value={PeriodType.OneTime}>
+                                        {mapPeriodType[PeriodType.OneTime]}
+                                    </Option>
+                                </>
+                            )}
                         </Select>
                     </Form.Item>
 

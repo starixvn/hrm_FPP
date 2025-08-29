@@ -78,7 +78,9 @@ const Filter = ({ onFilter, isHost }) => {
                             <div className="create-button-container">
                                 <Button
                                     type="primary"
-                                    onClick={() => onClickCreate('/interInvoice/createMultiple')}
+                                    onClick={() =>
+                                        onClickCreate('/interInvoice/create?isMultiple=1')
+                                    }
                                 >
                                     Create Multiple
                                 </Button>
