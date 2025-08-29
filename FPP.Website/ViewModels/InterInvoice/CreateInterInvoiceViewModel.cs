@@ -23,12 +23,14 @@ namespace FPP.Website.ViewModels.InterInvoice
         public string Notes { get; set; }
 
         [Required]
-        public List<InvoiceItemViewModel> Items { get; set; } = new List<InvoiceItemViewModel>();
+        public List<InvoiceItemViewModel> Items { get; set; } = [];
     }
 
     public class InvoiceItemViewModel
     {
         public int InterInvoiceId { get; set; }
+
+        public int PayerUnitId { get; set; }
 
         [Required]
         public string ItemDescription { get; set; }

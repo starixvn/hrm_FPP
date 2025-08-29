@@ -121,6 +121,46 @@ public class InterInvoiceController(
         return new JsonResult(result);
     }
 
+    [HttpPost]
+    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    public async Task<IActionResult> CreateMultipleInvoice([FromBody] CreateInterInvoiceViewModel viewModel)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var criteria = new CreateInterInvoiceMultiplePayerCriteria
+        {
+            BillerUnitId = viewModel.BillerUnitId,
+            CurrencyId = viewModel.CurrencyId,
+            PeriodType = viewModel.PeriodType,
+            FromDate = viewModel.FromDate,
+            ToDate = viewModel.ToDate,
+            Notes = viewModel.Notes,
+            CreatedBy = session.UserId,
+            ItemListJson = JsonConvert.SerializeObject(viewModel.Items)
+        };
+
+        var result = await baseService.ExecuteNonQueryAsync(criteria);
+        if (!result.IsSuccessful)
+        {
+            return BadRequest(result.Message);
+        }
+        result.OutputId = criteria.OutputId;
+
+        await activityLogService.LogActivity(new InsertActivityLogCriteria
+        {
+            ObjectTypeId = ObjectType.Invoice,
+            ObjectId = criteria.OutputId,
+            ActionTypeId = ActionType.Create,
+            CreatedBy = session.UserId,
+            ChangedData = JsonHelper.GetStringChanges(null, criteria),
+            SpName = criteria.GetSettingKey(),
+        });
+        return new JsonResult(result);
+    }
+
     [HttpGet]
     [FppPermission(Policy.Read, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> GetInvoice(int id, bool isEdit = false)

@@ -23,6 +23,7 @@
 		<Setting Key="InterInvoice_GetList" SpName="InterInvoice_GetList" DbName="bodb_FPP" Plain="0" />
 		<Setting Key="InterInvoice_UnlockEditing" SpName="InterInvoice_UnlockEditing" DbName="bodb_FPP" Plain="0" />
 		<Setting Key="BU_GetList" SpName="BU_GetList" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="InterInvoice_CreateForMultiplePayer" SpName="InterInvoice_CreateForMultiplePayer" DbName="bodb_FPP" Plain="0" />
 	</Function>
 	<Function Name="Currency">
 		<Setting Key="Currency_GetAll" SpName="Currency_GetAll" DbName="bodb_FPP" Plain="0" />
