@@ -1,18 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-    Form,
-    Input,
-    Select,
-    DatePicker,
-    Button,
-    Card,
-    InputNumber,
-    Divider,
-    Row,
-    Col,
-    message,
-} from 'antd';
+import { Form, Input, Select, Button, Card, InputNumber, Divider, Row, Col, message } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import CommonFunctions from '../../../../common/common-functions';
 import { calculateTotalAmount, getDateRange } from '../../helper/invoiceUtils';

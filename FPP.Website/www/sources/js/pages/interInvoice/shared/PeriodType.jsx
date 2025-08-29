@@ -3,6 +3,8 @@ import { mapPeriodType, PeriodType } from '../helper/enum';
 import React, { useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 
+const { RangePicker } = DatePicker;
+
 export const PeriodTypeFields = () => {
     const [periodType, setPeriodType] = useState(PeriodType.Monthly);
     return (
