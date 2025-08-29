@@ -16,14 +16,12 @@ import {
     Space,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import {
-    mapPeriodType,
-    PeriodType,
-    InterInvoiceStatus,
-} from '../../helper/enum';
+import { mapPeriodType, PeriodType, InterInvoiceStatus } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
 import dayjs from 'dayjs';
 import { DateTimeFormat } from '../../../../common/constants';
+import { getDateRange } from '../../helper/invoiceUtils';
+import { ErrorState, LoadingState } from '../../shared/LoadingStates';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -78,8 +76,9 @@ const AppContainer = () => {
                 // Fetch prepared data
                 const preparedResponse = await axios.get('/InterInvoice/GetPreparedData');
                 setPayerOptions(
-                    preparedResponse.data.units.filter(unit => unit.picEmpId != null && unit.picEmpId > 0)
-                    || []
+                    preparedResponse.data.units.filter(
+                        unit => unit.picEmpId != null && unit.picEmpId > 0
+                    ) || []
                 );
                 setBillerOptions(preparedResponse.data.units);
                 setCurrencyOptions(preparedResponse.data.currencies || []);
@@ -139,9 +138,13 @@ const AppContainer = () => {
         }
 
         try {
+            const { fromDate, toDate } = getDateRange(values);
+
             const formData = {
                 ...values,
                 interInvoiceId: parseInt(window.invoiceId, 10),
+                fromDate,
+                toDate,
                 items: values.items.map(item => ({
                     interInvoiceId: window.invoiceId,
                     itemDescription: item.itemDescription,
@@ -149,20 +152,6 @@ const AppContainer = () => {
                 })),
             };
 
-            switch (values.periodType) {
-                case PeriodType.Monthly:
-                    formData.fromDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
-                    formData.toDate = values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD);
-                    break;
-                case PeriodType.RangeDate:
-                    formData.fromDate = values.rangeDate[0].format(DateTimeFormat.YYYY_MM_DD);
-                    formData.toDate = values.rangeDate[1].format(DateTimeFormat.YYYY_MM_DD);
-                    break;
-                case PeriodType.OneTime:
-                    formData.fromDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
-                    formData.toDate = values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD);
-                    break;
-            }
             window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
             message.success('Invoice updated successfully');
         } catch (error) {
@@ -170,30 +159,11 @@ const AppContainer = () => {
         }
     };
 
-    if (loading){
-        return (
-            <div className="invoice-container">
-                <Card className="invoice-form-card">
-                    <div style={{ textAlign: 'center', padding: '50px 0' }}>
-                        <Spin size="large" />
-                        <div style={{ marginTop: '20px', fontSize: '16px', color: '#666' }}>
-                            Loading invoice data...
-                        </div>
-                    </div>
-                </Card>
-            </div>
-        );
+    if (loading) {
+        return <LoadingState message="Loading invoice data..." />;
     }
-    if (error){
-        return (
-            <div className="invoice-container">
-                <Card className="invoice-form-card">
-                    <div style={{ textAlign: 'center', padding: '50px 0', color: '#ff4d4f' }}>
-                        <div style={{ fontSize: '16px' }}>{error}</div>
-                    </div>
-                </Card>
-            </div>
-        );
+    if (error) {
+        return <ErrorState error={error} />;
     }
 
     return (
@@ -210,9 +180,7 @@ const AppContainer = () => {
                     }}
                     onValuesChange={(_changedValues, allValues) => {
                         const items = allValues.items || [];
-                        const total = items
-                            .filter(item => item && item.amount !== undefined)
-                            .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+                        const total = calculateTotalAmount(items);
                         setTotalAmount(total);
                     }}
                     className="invoice-form"

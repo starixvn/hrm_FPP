@@ -17,7 +17,8 @@ import {
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { mapPeriodType, PeriodType } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
-import { DateTimeFormat } from '../../../../common/constants';
+import { calculateTotalAmount, getDateRange } from '../../helper/invoiceUtils';
+import { ErrorState, LoadingState } from '../../shared/LoadingStates';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -85,28 +86,6 @@ const AppContainer = () => {
         fetchData();
     }, [isMultiple]);
 
-    const getDateRange = values => {
-        switch (values.periodType) {
-            case PeriodType.Monthly:
-                return {
-                    fromDate: values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD),
-                    toDate: values.monthlyDate.startOf('month').format(DateTimeFormat.YYYY_MM_DD),
-                };
-            case PeriodType.RangeDate:
-                return {
-                    fromDate: values.rangeDate[0].format(DateTimeFormat.YYYY_MM_DD),
-                    toDate: values.rangeDate[1].format(DateTimeFormat.YYYY_MM_DD),
-                };
-            case PeriodType.OneTime:
-                return {
-                    fromDate: values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD),
-                    toDate: values.deliveryDate.format(DateTimeFormat.YYYY_MM_DD),
-                };
-            default:
-                return { fromDate: null, toDate: null };
-        }
-    };
-
     const validateMultipleItems = values => {
         const validItems = values.items.filter(
             item => item.itemDescription && item.amount !== null
@@ -149,6 +128,7 @@ const AppContainer = () => {
         try {
             await axios.post('/InterInvoice/CreateMultipleInvoice', formData);
             message.success(`Successfully created ${validItems.length} invoices`);
+            window.location.href = `/interInvoice`;
         } catch (error) {
             message.error(error.response?.data || 'Failed to create invoice');
         }
@@ -180,7 +160,9 @@ const AppContainer = () => {
 
         if (isMultiple) {
             const { isValid, validItems } = validateMultipleItems(values);
-            if (!isValid) return;
+            if (!isValid) {
+                return;
+            }
 
             formData.items = validItems.map(item => ({
                 payerUnitId: item.payerUnitId,
@@ -394,28 +376,10 @@ const AppContainer = () => {
     };
 
     if (loading) {
-        return (
-            <div className="invoice-container">
-                <Card className="invoice-form-card">
-                    <div className="loading-container">
-                        <Spin size="large" />
-                        <div className="loading-text">Loading invoice data...</div>
-                    </div>
-                </Card>
-            </div>
-        );
+        return <LoadingState message="Loading invoice data..." />;
     }
-
     if (error) {
-        return (
-            <div className="invoice-container">
-                <Card className="invoice-form-card">
-                    <div className="error-container">
-                        <div className="error-text">{error}</div>
-                    </div>
-                </Card>
-            </div>
-        );
+        return <ErrorState error={error} />;
     }
 
     return (
@@ -432,9 +396,7 @@ const AppContainer = () => {
                     }}
                     onValuesChange={(_changedValues, allValues) => {
                         const items = allValues.items || [];
-                        const total = items
-                            .filter(item => item && item.amount !== undefined)
-                            .reduce((sum, item) => sum + (Number(item.amount) || 0), 0);
+                        const total = calculateTotalAmount(items);
                         setTotalAmount(total);
                     }}
                     className="invoice-form"
