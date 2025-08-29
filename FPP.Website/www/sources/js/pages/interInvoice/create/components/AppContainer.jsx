@@ -200,26 +200,19 @@ const AppContainer = () => {
                             <div key={key} className="invoice-item">
                                 <Row gutter={16} align="middle" className="invoice-item-row">
                                     {isMultiple && (
-                                        <Col span={8}>
+                                        <Col span={4}>
                                             <Form.Item {...restField} name={[name, 'payerUnitId']}>
-                                                <Select
-                                                    placeholder="Select Payer"
-                                                    disabled
-                                                    defaultValue={payerOptions[name]?.unitId}
-                                                >
-                                                    {payerOptions.map(payer => (
-                                                        <Option
-                                                            key={payer.unitId}
-                                                            value={payer.unitId}
-                                                        >
-                                                            {payer.groupUnitId} - {payer.code}
-                                                        </Option>
-                                                    ))}
-                                                </Select>
+                                                <div className="payer-label">
+                                                    <strong>
+                                                        {payerOptions[name]
+                                                            ? `${payerOptions[name].groupUnitId} - ${payerOptions[name].code}`
+                                                            : ''}
+                                                    </strong>
+                                                </div>
                                             </Form.Item>
                                         </Col>
                                     )}
-                                    <Col span={isMultiple ? 8 : 16}>
+                                    <Col span={isMultiple ? 12 : 16}>
                                         <Form.Item
                                             {...restField}
                                             name={[name, 'itemDescription']}

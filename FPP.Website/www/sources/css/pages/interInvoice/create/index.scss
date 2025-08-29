@@ -99,6 +99,14 @@
         .cancel-button {
             margin-right: 8px;
         }
+
+        .payer-label {
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #262626;
+        }
     }
 
     .required-label {
