@@ -243,8 +243,8 @@ const AppContainer = () => {
                                                 Description
                                             </span>
                                         </Col>
-                                        <Col span={6}>
-                                            <span className="ant-form-item-label">
+                                        <Col span={6} className="amount-label">
+                                            <span className="ant-form-item-label amount-label">
                                                 <span className="required-label">*</span> Amount
                                             </span>
                                         </Col>

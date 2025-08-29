@@ -178,18 +178,18 @@ const AppContainer = () => {
                         <div className="invoice-item-labels">
                             <Row gutter={16}>
                                 {isMultiple && (
-                                    <Col span={8}>
+                                    <Col span={3}>
                                         <span className="ant-form-item-label">Payer</span>
                                     </Col>
                                 )}
-                                <Col span={isMultiple ? 8 : 16}>
+                                <Col span={isMultiple ? 15 : 16}>
                                     <span className="ant-form-item-label">
-                                        <span className="required-label">*</span>
+                                        <span className="required-label">* </span>
                                         {isMultiple ? 'Description' : 'Item Description'}
                                     </span>
                                 </Col>
-                                <Col span={6}>
-                                    <span className="ant-form-item-label">
+                                <Col span={6} className="amount-label">
+                                    <span className="ant-form-item-label ">
                                         <span className="required-label">*</span> Amount
                                     </span>
                                 </Col>
@@ -204,7 +204,7 @@ const AppContainer = () => {
                             <div key={key} className="invoice-item">
                                 <Row gutter={16} align="middle" className="invoice-item-row">
                                     {isMultiple && (
-                                        <Col span={4}>
+                                        <Col span={3}>
                                             <Form.Item {...restField} name={[name, 'payerUnitId']}>
                                                 <div className="payer-label">
                                                     <strong>
@@ -216,7 +216,7 @@ const AppContainer = () => {
                                             </Form.Item>
                                         </Col>
                                     )}
-                                    <Col span={isMultiple ? 12 : 16}>
+                                    <Col span={isMultiple ? 15 : 16}>
                                         <Form.Item
                                             {...restField}
                                             name={[name, 'itemDescription']}

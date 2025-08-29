@@ -29,14 +29,14 @@
 
     .invoice-form {
         .ant-form-item {
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .invoice-item {
             background-color: #fafafa;
-            padding: 12px;
+            padding: 6px 16px;
             border-radius: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
 
             .ant-form-item {
                 margin-bottom: 0;
@@ -52,6 +52,10 @@
                     color: #ff7875;
                 }
             }
+
+            .ant-input-number-input {
+                text-align: right;
+            }
         }
 
         .invoice-total-amount {
@@ -63,6 +67,7 @@
             background-color: #f5faff;
             border-radius: 4px;
             margin-top: 8px;
+            text-align: right;
         }
 
         .ant-divider {
@@ -94,6 +99,20 @@
 
         .invoice-item-labels {
             margin-bottom: 8px;
+
+            .amount-label {
+                text-align: right;
+
+                .ant-form-item-label {
+                    padding-right: 26px;
+                }
+            }
+
+            .ant-form-item-label {
+                padding-left: 12px;
+            }
+
+
         }
 
         .cancel-button {

@@ -82,7 +82,7 @@ const Filter = ({ onFilter, isHost }) => {
                                         onClickCreate('/interInvoice/create?isMultiple=1')
                                     }
                                 >
-                                    Create Multiple
+                                    Create Multiple Invoices
                                 </Button>
                             </div>
                             <div className="create-button-container">
@@ -90,7 +90,7 @@ const Filter = ({ onFilter, isHost }) => {
                                     type="primary"
                                     onClick={() => onClickCreate('/interInvoice/create')}
                                 >
-                                    Create
+                                    Create Invoice
                                 </Button>
                             </div>
                         </Col>
