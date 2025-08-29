@@ -113,6 +113,7 @@ const AppContainer = () => {
             await axios.post('/InterInvoice/CreateMultipleInvoice', formData);
             message.success(`Successfully created ${validItems.length} invoices`);
             window.location.href = `/interInvoice`;
+            resetForm();
         } catch (error) {
             message.error(error.response?.data || 'Failed to create invoice');
         }
@@ -127,9 +128,15 @@ const AppContainer = () => {
         try {
             const response = await axios.post('/InterInvoice/CreateInvoice', formData);
             window.location.href = `/interInvoice/detail?id=${response.data.outputId}`;
+            resetForm();
         } catch (error) {
             message.error(error.response?.data || 'Failed to create invoice');
         }
+    };
+
+    const resetForm = () => {
+        form.resetFields();
+        setTotalAmount(0);
     };
 
     const onFinish = async values => {
@@ -158,9 +165,6 @@ const AppContainer = () => {
         } else {
             await handleSingleInvoiceCreation(formData);
         }
-
-        form.resetFields();
-        setTotalAmount(0);
     };
 
     const renderInvoiceItems = () => {
