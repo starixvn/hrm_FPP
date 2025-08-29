@@ -12,21 +12,17 @@ import {
     Row,
     Col,
     message,
-    Spin,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { mapPeriodType, PeriodType } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
 import { calculateTotalAmount, getDateRange } from '../../helper/invoiceUtils';
 import { ErrorState, LoadingState } from '../../shared/LoadingStates';
+import { PeriodTypeFields } from '../../shared/PeriodType';
 
 const { Option } = Select;
-const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 const AppContainer = () => {
     const [form] = Form.useForm();
-    const [periodType, setPeriodType] = useState(PeriodType.Monthly);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [payerOptions, setPayerOptions] = useState([]);
@@ -177,54 +173,6 @@ const AppContainer = () => {
 
         form.resetFields();
         setTotalAmount(0);
-    };
-
-    const renderPeriodTypeFields = () => {
-        return (
-            <>
-                <Form.Item
-                    name="periodType"
-                    label="Billing Period"
-                    initialValue={PeriodType.Monthly}
-                >
-                    <Select onChange={value => setPeriodType(value)}>
-                        <Option value={PeriodType.Monthly}>
-                            {mapPeriodType[PeriodType.Monthly]}
-                        </Option>
-                    </Select>
-                </Form.Item>
-
-                {periodType === PeriodType.Monthly && (
-                    <Form.Item
-                        name="monthlyDate"
-                        label="Period Details"
-                        rules={[{ required: true, message: 'Please select month' }]}
-                    >
-                        <DatePicker picker="month" style={{ width: '100%' }} />
-                    </Form.Item>
-                )}
-
-                {periodType === PeriodType.RangeDate && (
-                    <Form.Item
-                        name="rangeDate"
-                        label="Period Details"
-                        rules={[{ required: true, message: 'Please select date range' }]}
-                    >
-                        <RangePicker style={{ width: '100%' }} />
-                    </Form.Item>
-                )}
-
-                {periodType === PeriodType.OneTime && (
-                    <Form.Item
-                        name="deliveryDate"
-                        label="Delivery Date"
-                        rules={[{ required: true, message: 'Please select delivery date' }]}
-                    >
-                        <DatePicker style={{ width: '100%' }} />
-                    </Form.Item>
-                )}
-            </>
-        );
     };
 
     const renderInvoiceItems = () => {
@@ -501,13 +449,7 @@ const AppContainer = () => {
 
                     {renderInvoiceItems()}
 
-                    <Divider>Billing Period</Divider>
-
-                    {renderPeriodTypeFields()}
-
-                    <Form.Item name="notes" label="Notes">
-                        <TextArea rows={4} placeholder="Enter any additional information here" />
-                    </Form.Item>
+                    <PeriodTypeFields />
 
                     <Form.Item style={{ textAlign: 'right' }}>
                         <Button

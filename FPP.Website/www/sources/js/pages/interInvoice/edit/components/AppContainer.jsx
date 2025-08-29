@@ -4,7 +4,6 @@ import {
     Form,
     Input,
     Select,
-    DatePicker,
     Button,
     Card,
     InputNumber,
@@ -12,24 +11,20 @@ import {
     Row,
     Col,
     message,
-    Spin,
     Space,
 } from 'antd';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-import { mapPeriodType, PeriodType, InterInvoiceStatus } from '../../helper/enum';
+import { PeriodType, InterInvoiceStatus } from '../../helper/enum';
 import CommonFunctions from '../../../../common/common-functions';
 import dayjs from 'dayjs';
-import { DateTimeFormat } from '../../../../common/constants';
-import { getDateRange } from '../../helper/invoiceUtils';
+import { calculateTotalAmount, getDateRange } from '../../helper/invoiceUtils';
 import { ErrorState, LoadingState } from '../../shared/LoadingStates';
+import { PeriodTypeFields } from '../../shared/PeriodType';
 
 const { Option } = Select;
-const { TextArea } = Input;
-const { RangePicker } = DatePicker;
 
 const AppContainer = () => {
     const [form] = Form.useForm();
-    const [periodType, setPeriodType] = useState(PeriodType.Monthly);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [payerOptions, setPayerOptions] = useState([]);
@@ -119,7 +114,6 @@ const AppContainer = () => {
                 }
 
                 form.setFieldsValue(formValues);
-                setPeriodType(invoiceData.periodType);
                 setLoading(false);
             } catch (err) {
                 setError(error.response?.data);
@@ -151,7 +145,7 @@ const AppContainer = () => {
                     amount: item.amount.toFixed(2),
                 })),
             };
-
+            await axios.put('/InterInvoice/UpdateInvoice', formData);
             window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
             message.success('Invoice updated successfully');
         } catch (error) {
@@ -341,57 +335,7 @@ const AppContainer = () => {
                         )}
                     </Form.List>
 
-                    <Divider>Billing Period</Divider>
-
-                    <Form.Item
-                        name="periodType"
-                        label="Billing Period"
-                        initialValue={PeriodType.Monthly}
-                    >
-                        <Select onChange={value => setPeriodType(value)}>
-                            <Option value={PeriodType.Monthly}>
-                                {mapPeriodType[PeriodType.Monthly]}
-                            </Option>
-                        </Select>
-                    </Form.Item>
-
-                    {periodType === PeriodType.Monthly && (
-                        <Form.Item
-                            name="monthlyDate"
-                            label="Period Details"
-                            rules={[{ required: true, message: 'Please select month' }]}
-                        >
-                            <DatePicker picker="month" style={{ width: '100%' }} />
-                        </Form.Item>
-                    )}
-
-                    {periodType === PeriodType.RangeDate && (
-                        <Form.Item
-                            name="rangeDate"
-                            label="Period Details"
-                            rules={[{ required: true, message: 'Please select date range' }]}
-                        >
-                            <RangePicker style={{ width: '100%' }} />
-                        </Form.Item>
-                    )}
-
-                    {periodType === PeriodType.OneTime && (
-                        <Form.Item
-                            name="deliveryDate"
-                            label="Delivery Date"
-                            rules={[{ required: true, message: 'Please select delivery date' }]}
-                        >
-                            <DatePicker
-                                style={{ width: '100%' }}
-                                showTime={false}
-                                format="YYYY-MM-DD"
-                            />
-                        </Form.Item>
-                    )}
-
-                    <Form.Item name="notes" label="Notes">
-                        <TextArea rows={4} placeholder="Enter any additional notes" />
-                    </Form.Item>
+                    <PeriodTypeFields />
 
                     <Form.Item style={{ textAlign: 'right' }}>
                         <Space>
