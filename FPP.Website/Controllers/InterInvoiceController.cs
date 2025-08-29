@@ -36,12 +36,6 @@ public class InterInvoiceController(
     }
 
     [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
-    public IActionResult CreateMultiple()
-    {
-        return View();
-    }
-
-    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> Edit(int id)
     {
         var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
@@ -118,11 +112,12 @@ public class InterInvoiceController(
             ChangedData = JsonHelper.GetStringChanges(null, criteria),
             SpName = criteria.GetSettingKey(),
         });
+
         return new JsonResult(result);
     }
 
     [HttpPost]
-    [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
+    //[FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> CreateMultipleInvoice([FromBody] CreateInterInvoiceViewModel viewModel)
     {
         if (!ModelState.IsValid)
@@ -147,17 +142,7 @@ public class InterInvoiceController(
         {
             return BadRequest(result.Message);
         }
-        result.OutputId = criteria.OutputId;
 
-        await activityLogService.LogActivity(new InsertActivityLogCriteria
-        {
-            ObjectTypeId = ObjectType.Invoice,
-            ObjectId = criteria.OutputId,
-            ActionTypeId = ActionType.Create,
-            CreatedBy = session.UserId,
-            ChangedData = JsonHelper.GetStringChanges(null, criteria),
-            SpName = criteria.GetSettingKey(),
-        });
         return new JsonResult(result);
     }
 

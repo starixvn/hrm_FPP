@@ -4,7 +4,6 @@ namespace FPP.Core.Criteria.InterInvoice
 {
     public class CreateInterInvoiceMultiplePayerCriteria : BaseNonQueryCommand
     {
-        public int OutputId { get; set; }
         public int BillerUnitId { get; set; }
         public int CurrencyId { get; set; }
         public int PeriodType { get; set; }
