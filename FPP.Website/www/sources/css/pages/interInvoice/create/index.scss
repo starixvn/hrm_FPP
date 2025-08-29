@@ -34,9 +34,9 @@
 
         .invoice-item {
             background-color: #fafafa;
-            padding: 6px 16px;
+            padding: 4px 16px;
             border-radius: 4px;
-            margin-bottom: 8px;
+            margin-bottom: 4px;
 
             .ant-form-item {
                 margin-bottom: 0;
@@ -59,7 +59,7 @@
         }
 
         .invoice-total-amount {
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 600;
             color: #22455a;
             text-align: left;
@@ -71,7 +71,7 @@
         }
 
         .ant-divider {
-            margin: 16px 0 24px;
+            margin: 16px 0;
         }
 
         .ant-btn-dashed {
@@ -120,7 +120,6 @@
         }
 
         .payer-label {
-            padding: 8px 0;
             display: flex;
             align-items: center;
             font-size: 14px;
