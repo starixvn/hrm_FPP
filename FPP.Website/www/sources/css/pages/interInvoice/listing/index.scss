@@ -17,6 +17,7 @@
 
             .ant-table-column-sorter {
                 .ant-table-column-sorter-inner {
+
                     .ant-table-column-sorter-up.active,
                     .ant-table-column-sorter-down.active {
                         color: #ff4d4f;
@@ -33,11 +34,16 @@
         }
     }
 
-    .create-button-container {
+    .create-button-group {
         display: flex;
-        justify-content: end;
-        align-items: flex-end;
-        height: 100%;
+        justify-content: flex-end;
+        gap: 10px;
+
+        .create-button-container {
+            display: flex;
+            align-items: flex-end;
+            height: 100%;
+        }
     }
 
     .status-confirmed {

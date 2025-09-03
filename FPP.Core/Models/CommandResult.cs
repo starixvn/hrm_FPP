@@ -1,4 +1,4 @@
-﻿namespace FPP.Core.Models;
+namespace FPP.Core.Models;
 
 public class CommandResult
 {
@@ -10,4 +10,6 @@ public class CommandResult
     public bool IsSuccessful => Code == 0;
 
     public long OutputId { get; set; }
+
+    public string OutputIds { get; set; }
 }

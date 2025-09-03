@@ -29,14 +29,14 @@
 
     .invoice-form {
         .ant-form-item {
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .invoice-item {
             background-color: #fafafa;
-            padding: 12px;
+            padding: 4px 16px;
             border-radius: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 4px;
 
             .ant-form-item {
                 margin-bottom: 0;
@@ -52,10 +52,14 @@
                     color: #ff7875;
                 }
             }
+
+            .ant-input-number-input {
+                text-align: right;
+            }
         }
 
         .invoice-total-amount {
-            font-size: 17px;
+            font-size: 14px;
             font-weight: 600;
             color: #22455a;
             text-align: left;
@@ -63,10 +67,11 @@
             background-color: #f5faff;
             border-radius: 4px;
             margin-top: 8px;
+            text-align: right;
         }
 
         .ant-divider {
-            margin: 16px 0 24px;
+            margin: 16px 0;
         }
 
         .ant-btn-dashed {
@@ -94,10 +99,31 @@
 
         .invoice-item-labels {
             margin-bottom: 8px;
+
+            .amount-label {
+                text-align: right;
+
+                .ant-form-item-label {
+                    padding-right: 26px;
+                }
+            }
+
+            .ant-form-item-label {
+                padding-left: 12px;
+            }
+
+
         }
 
         .cancel-button {
             margin-right: 8px;
+        }
+
+        .payer-label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #262626;
         }
     }
 

@@ -25,8 +25,8 @@ const Filter = ({ onFilter, isHost }) => {
         onFilter(params);
     };
 
-    const handleCreate = () => {
-        window.location.href = '/interInvoice/create';
+    const onClickCreate = href => {
+        window.location.href = href;
     };
 
     return (
@@ -73,13 +73,28 @@ const Filter = ({ onFilter, isHost }) => {
                     </Form.Item>
                 </Col>
                 {isHost && (
-                    <Col span={8}>
-                        <div className="create-button-container">
-                            <Button type="primary" onClick={handleCreate}>
-                                Create
-                            </Button>
-                        </div>
-                    </Col>
+                    <>
+                        <Col span={8} className="create-button-group">
+                            <div className="create-button-container">
+                                <Button
+                                    type="primary"
+                                    onClick={() =>
+                                        onClickCreate('/interInvoice/create?isMultiple=1')
+                                    }
+                                >
+                                    Create Multiple Invoices
+                                </Button>
+                            </div>
+                            <div className="create-button-container">
+                                <Button
+                                    type="primary"
+                                    onClick={() => onClickCreate('/interInvoice/create')}
+                                >
+                                    Create Invoice
+                                </Button>
+                            </div>
+                        </Col>
+                    </>
                 )}
             </Row>
         </Form>
