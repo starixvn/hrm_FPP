@@ -14,6 +14,7 @@ const cssPaths = {
     interInvoice_create_index: ['./www/sources/css/pages/interInvoice/create/index.scss'],
     interInvoice_listing_index: ['./www/sources/css/pages/interInvoice/listing/index.scss'],
     interInvoice_detail_index: ['./www/sources/css/pages/interInvoice/detail/index.scss'],
+    interInvoice_report_index: ['./www/sources/css/pages/interInvoice/report/index.scss'],
 };
 
 const scriptPaths = {
@@ -30,6 +31,7 @@ const scriptPaths = {
     interInvoice_listing_index: ['./www/sources/js/pages/interInvoice/listing/index.jsx'],
     interInvoice_detail_index: ['./www/sources/js/pages/interInvoice/detail/index.jsx'],
     interInvoice_edit_index: ['./www/sources/js/pages/interInvoice/edit/index.jsx'],
+    interInvoice_report_index: ['./www/sources/js/pages/interInvoice/report/index.jsx'],
 };
 
 module.exports = {
