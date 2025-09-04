@@ -1,6 +1,6 @@
 using Fanex.Data.Repository;
 
-namespace FPP.Criteria.BU;
+namespace FPP.Core.Criteria.Common;
 
 public class GetBUListCriteria : CriteriaBase
 {
