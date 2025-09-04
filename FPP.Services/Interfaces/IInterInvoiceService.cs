@@ -7,5 +7,7 @@ namespace FPP.Services.Interfaces
         Task<InterInvoiceDetail> GetInterInvoiceById(int id, int currentUserId, bool isEdit, bool isGlobal);
 
         Task<List<InterInvoiceReportModel>> GetReportGroupedByPayerAsync(DateTime month);
+
+        Task<byte[]> ExportInvoiceReportToExcelAsync(DateTime month);
     }
 }

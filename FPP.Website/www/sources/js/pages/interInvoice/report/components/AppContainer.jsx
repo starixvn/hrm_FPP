@@ -19,9 +19,10 @@ const AppContainer = () => {
     const renderCostCenterValue = unitName => (_, record) => {
         const unitData = record.units?.find(u => u.name === unitName);
         const value = unitData ? unitData.value : 0;
+        const formattedValue = value.toLocaleString('en-US');
         return (
             <span style={{ color: value < 0 ? '#ff4d4f' : 'inherit' }}>
-                {value}
+                {formattedValue}
             </span>
         );
     };
@@ -46,16 +47,20 @@ const AppContainer = () => {
                     <Summary.Cell index={0} colSpan={5} align="right">
                         Total
                     </Summary.Cell>
-                    {buData?.[0]?.units?.map((unit, index) => (
-                        <Summary.Cell key={`total_${index}`} index={index + 5} align="right">
-                            <span style={{ 
-                                color: totals[unit.name] < 0 ? '#ff4d4f' : 'inherit',
-                                fontWeight: 'bold'
-                            }}>
-                                {totals[unit.name] || 0}
-                            </span>
-                        </Summary.Cell>
-                    )) || []}
+                    {buData?.[0]?.units?.map((unit, index) => {
+                        const totalValue = totals[unit.name] || 0;
+                        const formattedTotal = totalValue.toLocaleString('en-US');
+                        return (
+                            <Summary.Cell key={`total_${index}`} index={index + 5} align="right">
+                                <span style={{ 
+                                    color: totalValue < 0 ? '#ff4d4f' : 'inherit',
+                                    fontWeight: 'bold'
+                                }}>
+                                    {formattedTotal}
+                                </span>
+                            </Summary.Cell>
+                        );
+                    }) || []}
                 </Summary.Row>
             </Summary>
         );
@@ -66,7 +71,7 @@ const AppContainer = () => {
         {
             title: 'BU',
             key: 'bu',
-            width: 100,
+            width: 90,
             render: (_, record) => `${record.buId} - ${record.buCode}`,
             sorter: (a, b) => a.buId - b.buId,
             fixed: 'left'
@@ -75,7 +80,7 @@ const AppContainer = () => {
             title: 'BU Category',
             dataIndex: 'buCategory',
             key: 'buCategory',
-            width: 150,
+            width: 120,
             sorter: (a, b) => a.buCategory.localeCompare(b.buCategory),
             sortDirections: ['ascend', 'descend'],
             fixed: 'left'
@@ -104,16 +109,8 @@ const AppContainer = () => {
             sorter: (a, b) => a.buPicName.localeCompare(b.buPicName),
             fixed: 'left'
         },
-        // {
-        //     title: 'Description of Service',
-        //     dataIndex: 'descriptionOfService',
-        //     key: 'descriptionOfService',
-        //     width: 250,
-        //     sorter: (a, b) => a.descriptionOfService.localeCompare(b.descriptionOfService),
-        // }
         ];
 
-        // Generate cost center columns dynamically from first record's units
         const costCenterColumns = [];
         if (buData.length > 0 && buData[0].units) {
             buData[0].units.forEach((unit, index) => {
@@ -188,7 +185,7 @@ const AppContainer = () => {
     };
 
     const handleExport = async () => {
-        window.location.href = await axios.get('/InterInvoice/ExportInvoiceReport', { params: filters });
+        window.location.href = `/InterInvoice/ExportInvoiceReport?month=${selectedMonth.format('YYYY-MM')}`;
     };
 
     useEffect(() => {

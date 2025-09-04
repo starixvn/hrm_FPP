@@ -1,10 +1,8 @@
 using FPP.Core.Constants;
 using FPP.Core.Criteria.ActivityLog;
-using FPP.Core.Criteria.InterCharging;
 using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Enums;
 using FPP.Core.Helpers;
-using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Models.InterInvoice;
 using FPP.Services.Interfaces;
@@ -328,6 +326,9 @@ public class InterInvoiceController(
     [FppPermission(Policy.Read, FunctionKey.InterInvoiceReport)]
     public async Task<IActionResult> ExportInvoiceReport(DateTime month)
     {
-        return Json("");
+        var excelBytes = await interInvoiceService.ExportInvoiceReportToExcelAsync(month);
+        var fileName = $"InterInvoiceReport_{month:yyyy-MM}.xlsx";
+
+        return File(excelBytes, "application/octet-stream", fileName);
     }
 }
