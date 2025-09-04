@@ -318,63 +318,16 @@ public class InterInvoiceController(
 
     [HttpGet]
     [FppPermission(Policy.Read, FunctionKey.InterInvoiceReport)]
-    public async Task<IActionResult> GetInvoiceReport([FromQuery] GetInterInvoiceReportCriteria criteria)
+    public async Task<IActionResult> GetInvoiceReport(DateTime month)
     {
-        criteria.EmpId = session.UserId;
-        var fakeData = GetFakeInvoiceReportData();
-        return Json(fakeData);
-    }
-
-    private static InterInvoiceReportModel[] GetFakeInvoiceReportData()
-    {
-        return [
-            new InterInvoiceReportModel
-            {
-                BuId = 901,
-                BuCode = "IT001",
-                BuCategory = "Information Technology",
-                BuType = "Support",
-                AccountableArea = "North America",
-                BuPicName = "John Smith",
-                DescriptionOfService = "IT Support and Maintenance Services",
-                Units =
-                [
-                    new UnitData { Name = "901OT (USD)", Value = 2 },
-                    new UnitData { Name = "902SP (USD)", Value = 0 },
-                    new UnitData { Name = "903NV (USD)", Value = -4 },
-                    new UnitData { Name = "905CD (USD)", Value = 0 },
-                    new UnitData { Name = "906CL (USD)", Value = 0 },
-                    new UnitData { Name = "908IM (USD)", Value = 0 },
-                    new UnitData { Name = "909HC (USD)", Value = 0 },
-                    new UnitData { Name = "910IH (USD)", Value = 0 },
-                    new UnitData { Name = "911LG (USD)", Value = 0 },
-                    new UnitData { Name = "913FI (USD)", Value = 0 },
-                    new UnitData { Name = "919CI (USD)", Value = 0 },
-                    new UnitData { Name = "920OL (USD)", Value = 0 },
-                    new UnitData { Name = "921NF (USD)", Value = 0 },
-                    new UnitData { Name = "923HJ (USD)", Value = 0 },
-                    new UnitData { Name = "924AT (USD)", Value = 0 },
-                    new UnitData { Name = "925NX (USD)", Value = 0 },
-                    new UnitData { Name = "926AU (USD)", Value = 0 },
-                    new UnitData { Name = "928ES (USD)", Value = 0 },
-                    new UnitData { Name = "929OS (USD)", Value = 0 },
-                    new UnitData { Name = "931PH (USD)", Value = 0 },
-                    new UnitData { Name = "932RD (USD)", Value = 0 },
-                    new UnitData { Name = "933SO (USD)", Value = 0 },
-                    new UnitData { Name = "934SV (USD)", Value = 0 },
-                    new UnitData { Name = "935MW (USD)", Value = 0 },
-                    new UnitData { Name = "936SR (USD)", Value = 0 }
-                ]
-            }
-        ];
+        var result = await interInvoiceService.GetReportGroupedByPayerAsync(month);
+        return new JsonResult(result);
     }
 
     [HttpGet]
     [FppPermission(Policy.Read, FunctionKey.InterInvoiceReport)]
-    public async Task<IActionResult> ExportInvoiceReport([FromQuery] GetInterInvoiceReportCriteria criteria)
+    public async Task<IActionResult> ExportInvoiceReport(DateTime month)
     {
-        criteria.EmpId = session.UserId;
-
         return Json("");
     }
 }

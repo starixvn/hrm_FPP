@@ -4,8 +4,7 @@ namespace FPP.Core.Criteria.InterInvoice
 {
     public class GetInterInvoiceReportCriteria : CriteriaBase
     {
-        public int? EmpId { get; set; }
-        public string Month { get; set; }
+        public DateTime Month { get; set; }
 
         public override string GetSettingKey()
         {
