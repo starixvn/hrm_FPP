@@ -7,7 +7,6 @@ COPY FPP.Core/*.csproj FPP.Core/
 COPY FPP.Models/*.csproj FPP.Models/
 COPY FPP.Services/*.csproj FPP.Services/
 COPY FPP.Resources/*.csproj FPP.Resources/
-COPY FPP.Criteria/*.csproj FPP.Criteria/
 
 # Copy the rest of the source code
 RUN dotnet nuget add source https://nuget.nexdev.net/api/v2
@@ -20,7 +19,6 @@ COPY FPP.Core/ FPP.Core/
 COPY FPP.Models/ FPP.Models/
 COPY FPP.Services/ FPP.Services/
 COPY FPP.Resources/ FPP.Resources/
-COPY FPP.Criteria/ FPP.Criteria/
 
 # Publish the application
 WORKDIR /src/FPP.Website
