@@ -45,6 +45,7 @@ namespace FPP.Services.Implement
                     x.PayerCategory,
                     x.PayerType,
                     x.PayerAccountableArea,
+                    x.PayerPicName
                 })
                 .Select(g => new InterInvoiceReportModel
                 {
@@ -53,6 +54,7 @@ namespace FPP.Services.Implement
                     BuCategory = g.Key.PayerCategory,
                     BuType = g.Key.PayerType,
                     AccountableArea = g.Key.PayerAccountableArea,
+                    BuPicName = g.Key.PayerPicName,
                     Units = [.. g.Select(x => new UnitData
                     {
                         Id = x.BillerGroupId,

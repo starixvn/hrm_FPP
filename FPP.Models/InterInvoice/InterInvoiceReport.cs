@@ -11,5 +11,6 @@ namespace FPP.Models.InterInvoice
         public string PayerType { get; set; } = string.Empty;
         public string PayerAccountableArea { get; set; } = string.Empty;
         public string CurrencySymbol { get; set; } = string.Empty;
+        public string PayerPicName { get; set; } = string.Empty;
     }
 }
