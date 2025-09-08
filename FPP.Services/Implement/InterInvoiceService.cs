@@ -104,7 +104,6 @@ namespace FPP.Services.Implement
                 var totalValue = reportData.Sum(r => r.Units[unitIndex].Value);
                 var cell = worksheet.Cells[totalRow, fromCol++];
                 cell.Value = totalValue;
-                cell.Style.Numberformat.Format = "#,##0";
                 cell.Style.Font.Bold = true;
                 cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightBlue);
@@ -135,7 +134,6 @@ namespace FPP.Services.Implement
                 {
                     var cell = worksheet.Cells[dataRow, col++];
                     cell.Value = value;
-                    cell.Style.Numberformat.Format = "#,##0";
                     cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
 
                     if (value < 0)
