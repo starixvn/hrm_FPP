@@ -132,7 +132,7 @@ const AppContainer = () => {
 
                     <Spin spinning={loading}>
                         <Table
-                            className="inter-charging-table"
+                            className='inter-charging-table'
                             columns={columns}
                             dataSource={interChargingData}
                             pagination={false}

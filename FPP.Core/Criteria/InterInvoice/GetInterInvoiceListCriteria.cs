@@ -1,6 +1,6 @@
 using Fanex.Data.Repository;
 
-namespace FPP.Core.Criteria.InterCharging;
+namespace FPP.Core.Criteria.InterInvoice;
 
 public class GetInterInvoiceListCriteria : CriteriaBase
 {

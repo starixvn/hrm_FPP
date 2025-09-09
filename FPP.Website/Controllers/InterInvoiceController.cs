@@ -1,6 +1,5 @@
 using FPP.Core.Constants;
 using FPP.Core.Criteria.ActivityLog;
-using FPP.Core.Criteria.InterCharging;
 using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Enums;
 using FPP.Core.Helpers;
@@ -65,7 +64,8 @@ public class InterInvoiceController(
     public async Task<IActionResult> GetPreparedData()
     {
         var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
-        var vm = new PreparedDataViewModel {
+        var vm = new PreparedDataViewModel
+        {
             Units = await commonService.GetAllUnitsAsync(),
             Currencies = await commonService.GetAllCurrenciesAsync(),
             IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host),
@@ -306,5 +306,29 @@ public class InterInvoiceController(
         };
         var activityLogs = await activityLogService.GetLogActivity(criteria);
         return new JsonResult(activityLogs);
+    }
+
+    [FppPermission(Policy.Read, FunctionKey.InterInvoiceReport)]
+    public IActionResult Report()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    [FppPermission(Policy.Read, FunctionKey.InterInvoiceReport)]
+    public async Task<IActionResult> GetInvoiceReport(DateTime month)
+    {
+        var result = await interInvoiceService.GetReportGroupedByPayerAsync(month);
+        return new JsonResult(result);
+    }
+
+    [HttpGet]
+    [FppPermission(Policy.Read, FunctionKey.InterInvoiceReport)]
+    public async Task<IActionResult> ExportInvoiceReport(DateTime month)
+    {
+        var excelBytes = await interInvoiceService.ExportInvoiceReportToExcelAsync(month);
+        var fileName = $"InterInvoiceReport_{month:yyyy-MM}.xlsx";
+
+        return File(excelBytes, "application/octet-stream", fileName);
     }
 }

@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FPP.Core\FPP.Core.csproj" />
-    <ProjectReference Include="..\FPP.Criteria\FPP.Criteria.csproj" />
     <ProjectReference Include="..\FPP.Models\FPP.Models.csproj" />
   </ItemGroup>
 

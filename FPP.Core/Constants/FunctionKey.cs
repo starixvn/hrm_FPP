@@ -12,6 +12,8 @@ public static class FunctionKey
 
     public const string InterInvoice = "InterInvoice";
 
+    public const string InterInvoiceReport = "InterInvoiceReport";
+
     public const string MyBUInvoice = "MyBUInvoice";
 
     public const string GlobalInvoice = "GlobalInvoice";
