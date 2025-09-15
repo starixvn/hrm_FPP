@@ -42,7 +42,7 @@ const AppContainer = () => {
         });
 
         return (
-            <Summary fixed>
+            <Summary fixed="top">
                 <Summary.Row>
                     <Summary.Cell index={0} colSpan={5} align="right">
                         Total
