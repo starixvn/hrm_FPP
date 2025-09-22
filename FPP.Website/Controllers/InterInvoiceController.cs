@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace FPP.Website.Controllers;
+
 public class InterInvoiceController(
     IBaseService baseService,
     IUserControlSession session,
@@ -294,7 +295,6 @@ public class InterInvoiceController(
         return new JsonResult(result);
     }
 
-
     [HttpGet]
     [FppPermission(Policy.Read, FunctionKey.InterInvoice)]
     public async Task<IActionResult> GetActivityLog(int id)
@@ -328,6 +328,20 @@ public class InterInvoiceController(
     {
         var excelBytes = await interInvoiceService.ExportInvoiceReportToExcelAsync(month);
         var fileName = $"InterInvoiceReport_{month:yyyy-MM}.xlsx";
+
+        return File(excelBytes, "application/octet-stream", fileName);
+    }
+
+    [HttpGet]
+    [FppPermission(Policy.Read, FunctionKey.InterInvoiceReport)]
+    public async Task<IActionResult> ExportInterInvoice(GetInterInvoiceListCriteria criteria)
+    {
+        criteria.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
+        criteria.EmpId = session.UserId;
+
+        var interInvoices = await baseService.GetDataAsync<InterInvoiceList>(criteria);
+        var excelBytes = await interInvoiceService.ExportInterInvoiceToExcelAsync(interInvoices);
+        var fileName = $"InterInvoice_{DateTimeOffset.Now.DateTime:yyyy-MM-dd}.xlsx";
 
         return File(excelBytes, "application/octet-stream", fileName);
     }

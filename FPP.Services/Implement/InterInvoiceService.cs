@@ -1,5 +1,7 @@
 using Fanex.Data;
 using FPP.Core.Criteria.InterInvoice;
+using FPP.Core.Enums;
+using FPP.Core.Helpers;
 using FPP.Core.Services;
 using FPP.Models.InterInvoice;
 using FPP.Services.Interfaces;
@@ -160,6 +162,60 @@ namespace FPP.Services.Implement
                 cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
                 cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
                 cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            }
+        }
+
+        public async Task<byte[]> ExportInterInvoiceToExcelAsync(IEnumerable<InterInvoiceList> interInvoices)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            using var package = new ExcelPackage();
+            var worksheet = package.Workbook.Worksheets.Add("Inter Invoice Report");
+
+            WriteInterInvoiceHeaders(worksheet);
+            WriteInterInvoiceDataRows(worksheet, interInvoices);
+
+            worksheet.View.FreezePanes(2, 1);
+
+            worksheet.Cells.AutoFitColumns();
+
+            return await package.GetAsByteArrayAsync();
+        }
+
+        private static void WriteInterInvoiceHeaders(ExcelWorksheet worksheet)
+        {
+            var headers = new List<string> { "Invoice ID", "Biller", "Receiver", "Total Amount", "Currency", "Handler", "Period Type", "Created Date", "Created By", "Status" };
+
+            for (var i = 0; i < headers.Count; i++)
+            {
+                var cell = worksheet.Cells[1, i + 1];
+                cell.Value = headers[i];
+                cell.Style.Font.Bold = true;
+                cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
+                cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.LightGray);
+                cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+            }
+        }
+
+        private static void WriteInterInvoiceDataRows(ExcelWorksheet worksheet, IEnumerable<InterInvoiceList> interInvoices)
+        {
+            var rowIndex = 2;
+            foreach (var interInvoice in interInvoices)
+            {
+                var colIndex = 1;
+
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.InterInvoiceId;
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.BillerUnitCode;
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.PayerUnitCode;
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.TotalAmount;
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.Currency;
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.Handler;
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.FromDate.ToString("MMM, yyyy");
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.CreatedDate?.ToString("dd MMM, yyyy HH:mm");
+                worksheet.Cells[rowIndex, colIndex++].Value = interInvoice.CreatedBy;
+                worksheet.Cells[rowIndex, colIndex].Value = ((InterInvoiceStatus)interInvoice.Status).GetDescription();
+
+                rowIndex++;
             }
         }
     }

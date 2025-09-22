@@ -9,5 +9,7 @@ namespace FPP.Services.Interfaces
         Task<List<InterInvoiceReportModel>> GetReportGroupedByPayerAsync(DateTime month);
 
         Task<byte[]> ExportInvoiceReportToExcelAsync(DateTime month);
+
+        Task<byte[]> ExportInterInvoiceToExcelAsync(IEnumerable<InterInvoiceList> interInvoices);
     }
 }
