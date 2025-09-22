@@ -48,7 +48,7 @@ const AppContainer = () => {
             width: '7%',
         },
         {
-            title: 'Payer',
+            title: 'Receiver',
             dataIndex: 'payerUnitCode',
             key: 'payerUnitCode',
             sorter: (a, b) => a.payerUnitCode.localeCompare(b.payerUnitCode),

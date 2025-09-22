@@ -230,7 +230,7 @@ const AppContainer = () => {
                             </span>
                         </div>
                         <div className="header-label">
-                            PAYER:{' '}
+                            RECEIVER:{' '}
                             <span className="header-value">
                                 {invoiceData?.payerGroupUnitId} - {invoiceData?.payerName}
                             </span>

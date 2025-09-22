@@ -198,10 +198,10 @@ const AppContainer = () => {
                         <Col span={8}>
                             <Form.Item
                                 name="payerUnitId"
-                                label="Payer"
-                                rules={[{ required: true, message: 'Please select payer' }]}
+                                label="Receiver"
+                                rules={[{ required: true, message: 'Please select receiver' }]}
                             >
-                                <Select placeholder="Select Payer" disabled={true}>
+                                <Select placeholder="Select Receiver" disabled={true}>
                                     {payerOptions.map(payer => (
                                         <Option key={payer.unitId} value={payer.unitId}>
                                             {payer.groupUnitId} - {payer.code}
