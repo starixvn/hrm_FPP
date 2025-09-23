@@ -29,6 +29,10 @@ const AppContainer = () => {
         window.location.href = `/interInvoice/detail/${id}`;
     };
 
+    const handleExportExcel = (params = {}) => {
+        window.location.href = `/InterInvoice/ExportInterInvoice?${new URLSearchParams(params).toString() }`;
+    };
+
     const columns = [
         {
             title: 'Invoice ID',
@@ -48,7 +52,7 @@ const AppContainer = () => {
             width: '7%',
         },
         {
-            title: 'Payer',
+            title: 'Receiver',
             dataIndex: 'payerUnitCode',
             key: 'payerUnitCode',
             sorter: (a, b) => a.payerUnitCode.localeCompare(b.payerUnitCode),
@@ -161,7 +165,7 @@ const AppContainer = () => {
     return (
         <div className="listing-invoice-container">
             <Card title={<Title level={4}>Inter Invoice</Title>} className="report-card">
-                <Filter onFilter={loadInvoices} isHost={isHost} />
+                <Filter onFilter={loadInvoices} onExportExcel={handleExportExcel} isHost={isHost} />
                 <Table
                     columns={columns}
                     dataSource={invoices}

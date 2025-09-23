@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Select, Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import { fetchBuList } from '../../helper/service';
 
 const { Option } = Select;
 
-const Filter = ({ onFilter, isHost }) => {
+const Filter = ({ onFilter, onExportExcel, isHost }) => {
     const [buList, setBuList] = useState([]);
     const [form] = Form.useForm();
 
@@ -25,6 +26,14 @@ const Filter = ({ onFilter, isHost }) => {
         onFilter(params);
     };
 
+    const handleExportExcel = values => {
+        const params = {
+            billerUnitId: values.billerUnitId === 'all' ? undefined : values.billerUnitId,
+            payerUnitId: values.payerUnitId === 'all' ? undefined : values.payerUnitId,
+        };
+        onExportExcel(params);
+    };
+
     const onClickCreate = href => {
         window.location.href = href;
     };
@@ -32,7 +41,7 @@ const Filter = ({ onFilter, isHost }) => {
     return (
         <Form form={form} onFinish={handleFilter} layout="vertical">
             <Row gutter={16} align="middle">
-                <Col span={8}>
+                <Col span={6}>
                     <Form.Item name="billerUnitId" label="Biller" initialValue="all">
                         <Select
                             placeholder="Select Biller"
@@ -52,7 +61,7 @@ const Filter = ({ onFilter, isHost }) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                     <Form.Item name="payerUnitId" label="Payer" initialValue="all">
                         <Select
                             placeholder="Select Payer"
@@ -72,29 +81,30 @@ const Filter = ({ onFilter, isHost }) => {
                         </Select>
                     </Form.Item>
                 </Col>
+                <Col span={4}>
+                    <Button type="primary" icon={<DownloadOutlined />} onClick={() => handleExportExcel(form.getFieldsValue())}>Export</Button>
+                </Col>
                 {isHost && (
-                    <>
-                        <Col span={8} className="create-button-group">
-                            <div className="create-button-container">
-                                <Button
-                                    type="primary"
-                                    onClick={() =>
-                                        onClickCreate('/interInvoice/create?isMultiple=1')
-                                    }
-                                >
-                                    Create Multiple Invoices
-                                </Button>
-                            </div>
-                            <div className="create-button-container">
-                                <Button
-                                    type="primary"
-                                    onClick={() => onClickCreate('/interInvoice/create')}
-                                >
-                                    Create Invoice
-                                </Button>
-                            </div>
-                        </Col>
-                    </>
+                    <Col span={8} className="create-button-group">
+                        <div className="create-button-container">
+                            <Button
+                                type="primary"
+                                onClick={() =>
+                                    onClickCreate('/interInvoice/create?isMultiple=1')
+                                }
+                            >
+                                Create Multiple Invoices
+                            </Button>
+                        </div>
+                        <div className="create-button-container">
+                            <Button
+                                type="primary"
+                                onClick={() => onClickCreate('/interInvoice/create')}
+                            >
+                                Create Invoice
+                            </Button>
+                        </div>
+                    </Col>
                 )}
             </Row>
         </Form>

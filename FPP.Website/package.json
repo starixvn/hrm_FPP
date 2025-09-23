@@ -17,7 +17,6 @@
   "scripts": {
     "build-dev": "node node_modules/webpack/bin/webpack.js --config www/webpackconfig/build/webpack.dev.conf.js",
     "build-pro": "node node_modules/webpack/bin/webpack.js --config www/webpackconfig/build/webpack.pro.conf.js",
-    "build-site": "node node_modules/webpack/bin/webpack.js --config www/webpackconfig/build/webpack.pro.conf.js",
     "start": "webpack serve --mode development --open",
     "build": "webpack --mode production",
     "test": "jest",

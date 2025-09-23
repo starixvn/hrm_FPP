@@ -179,7 +179,7 @@ const AppContainer = () => {
                             <Row gutter={16}>
                                 {isMultiple && (
                                     <Col span={3}>
-                                        <span className="ant-form-item-label">Payer</span>
+                                        <span className="ant-form-item-label">Receiver</span>
                                     </Col>
                                 )}
                                 <Col span={isMultiple ? 15 : 16}>
@@ -354,7 +354,7 @@ const AppContainer = () => {
                                                       }
                                                       return Promise.reject(
                                                           new Error(
-                                                              'Biller and Payer cannot be the same'
+                                                              'Biller and Receiver cannot be the same'
                                                           )
                                                       );
                                                   },
@@ -375,9 +375,9 @@ const AppContainer = () => {
                             <Col span={8}>
                                 <Form.Item
                                     name="payerUnitId"
-                                    label="Payer"
+                                    label="Receiver"
                                     rules={[
-                                        { required: true, message: 'Please select payer' },
+                                        { required: true, message: 'Please select receiver' },
                                         ({ getFieldValue }) => ({
                                             validator(_, value) {
                                                 if (
@@ -395,13 +395,13 @@ const AppContainer = () => {
                                                     return Promise.resolve();
                                                 }
                                                 return Promise.reject(
-                                                    new Error('Biller and Payer cannot be the same')
+                                                    new Error('Biller and Receiver cannot be the same')
                                                 );
                                             },
                                         }),
                                     ]}
                                 >
-                                    <Select placeholder="Select Payer">
+                                    <Select placeholder="Select Receiver">
                                         {payerOptions.map(payer => (
                                             <Option key={payer.unitId} value={payer.unitId}>
                                                 {payer.groupUnitId} - {payer.code}
