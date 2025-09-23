@@ -261,9 +261,10 @@ const AppContainer = () => {
                                                         return '';
                                                     }
                                                     const num = parseFloat(value);
-                                                    return Number.isInteger(num)
-                                                        ? num.toString()
-                                                        : num.toFixed(2);
+                                                    return num.toLocaleString('en-US', {
+                                                        minimumFractionDigits: 0,
+                                                        maximumFractionDigits: 2,
+                                                    });
                                                 }}
                                                 parser={value => value.replace(/[^\d.]/g, '')}
                                                 controls={false}
@@ -395,7 +396,9 @@ const AppContainer = () => {
                                                     return Promise.resolve();
                                                 }
                                                 return Promise.reject(
-                                                    new Error('Biller and Receiver cannot be the same')
+                                                    new Error(
+                                                        'Biller and Receiver cannot be the same'
+                                                    )
                                                 );
                                             },
                                         }),

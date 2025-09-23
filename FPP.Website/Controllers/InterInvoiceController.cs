@@ -165,8 +165,8 @@ public class InterInvoiceController(
 
         if (isMyBuPermissionHost)
         {
-            invoice.IsCanConfirmReject = invoice.HandlerId == session.UserId;
-            invoice.IsCanEdit = invoice.BillerUnitId == currentUserUnit.UnitId;
+            invoice.IsCanConfirmReject = invoice.HandlerId == session.UserId || invoice.IsPayerSupporter;
+            invoice.IsCanEdit = invoice.BillerUnitId == currentUserUnit?.UnitId || invoice.IsBillerSupporter;
         }
 
         if (isGlobalPermissionHost)

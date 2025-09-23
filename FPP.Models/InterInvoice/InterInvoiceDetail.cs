@@ -47,6 +47,8 @@ namespace FPP.Models.InterInvoice
         }
         public string RejectionReason { get; set; }
         public List<InterInvoiceItem> Items { get; set; } = new List<InterInvoiceItem>();
+        public bool IsBillerSupporter { get; set; }
+        public bool IsPayerSupporter { get; set; }
         public bool IsCanEdit { get; set; }
         public bool IsCanConfirmReject { get; set; }
     }

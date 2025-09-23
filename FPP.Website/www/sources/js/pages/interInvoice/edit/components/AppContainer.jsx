@@ -290,9 +290,10 @@ const AppContainer = () => {
                                                                 return '';
                                                             }
                                                             const num = parseFloat(value);
-                                                            return Number.isInteger(num)
-                                                                ? num.toString()
-                                                                : num.toFixed(2);
+                                                            return num.toLocaleString('en-US', {
+                                                                minimumFractionDigits: 0,
+                                                                maximumFractionDigits: 2,
+                                                            });
                                                         }}
                                                         parser={value =>
                                                             value.replace(/[^\d.]/g, '')
