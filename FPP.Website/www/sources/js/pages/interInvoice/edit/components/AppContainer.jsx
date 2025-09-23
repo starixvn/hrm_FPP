@@ -63,7 +63,9 @@ const AppContainer = () => {
                 }
                 if (
                     invoiceData.status !== InterInvoiceStatus.Pending ||
-                    (invoiceData.billerUnitId !== window.currentEmpUnitId && !window.isGlobal)
+                    (invoiceData.billerUnitId !== window.currentEmpUnitId &&
+                        !window.isGlobal &&
+                        !invoiceData.isBillerSupporter)
                 ) {
                     await axios.put(`/InterInvoice/UnlockEditing?id=${window.invoiceId}`);
                     window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
