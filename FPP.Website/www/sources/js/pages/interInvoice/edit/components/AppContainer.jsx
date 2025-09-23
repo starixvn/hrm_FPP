@@ -50,15 +50,12 @@ const AppContainer = () => {
     }, []);
 
     const checkInvoiceEditPermission = invoiceData => {
-        if (
-            invoiceData.status !== InterInvoiceStatus.Pending ||
-            (invoiceData.billerUnitId !== window.currentEmpUnitId &&
-                !window.isGlobal &&
-                !invoiceData.isBillerSupporter)
-        ) {
-            return false;
-        }
-        return true;
+        return (
+            invoiceData.status === InterInvoiceStatus.Pending &&
+            (invoiceData.billerUnitId === window.currentEmpUnitId ||
+                window.isGlobal ||
+                invoiceData.isBillerSupporter)
+        );
     };
 
     useEffect(() => {
