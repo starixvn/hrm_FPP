@@ -16,7 +16,6 @@ const AppContainer = () => {
     const [payerOptions, setPayerOptions] = useState([]);
     const [billerOptions, setBillerOptions] = useState([]);
     const [currencyOptions, setCurrencyOptions] = useState([]);
-    const [isGlobal, setIsGlobal] = useState(false);
     const [totalAmount, setTotalAmount] = useState(0);
 
     const getIsMultiple = () => {
@@ -30,10 +29,13 @@ const AppContainer = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/InterInvoice/GetPreparedData');
+                debugger;
+
                 setPayerOptions(response.data.units);
-                setBillerOptions(response.data.accessibleUnits);
+                setBillerOptions(
+                    response.data.isGlobal ? response.data.units : response.data.accessibleUnits
+                );
                 setCurrencyOptions(response.data.currencies || []);
-                setIsGlobal(response.data.isGlobal);
 
                 if (isMultiple) {
                     const initialItems = response.data.units.map(payer => ({
@@ -51,6 +53,16 @@ const AppContainer = () => {
                 if (response.data.currencies && response.data.currencies.length > 0) {
                     form.setFieldsValue({
                         currencyId: response.data.currencies[0].id,
+                    });
+                }
+
+                // Auto-select biller if only one accessible biller
+                const billerOptions = response.data.isGlobal
+                    ? response.data.units
+                    : response.data.accessibleUnits;
+                if (billerOptions && billerOptions.length === 1) {
+                    form.setFieldsValue({
+                        billerUnitId: billerOptions[0].unitId,
                     });
                 }
 
@@ -382,7 +394,7 @@ const AppContainer = () => {
                                                     const selectedPayer = payerOptions.find(
                                                         p => p.unitId === value
                                                     );
-                                                    if (!selectedPayer?.picEmpId) {
+                                                    if (selectedPayer && !selectedPayer.picEmpId) {
                                                         return Promise.reject(
                                                             new Error('This BU does not have a PIC')
                                                         );
