@@ -31,7 +31,7 @@ const AppContainer = () => {
             try {
                 const response = await axios.get('/InterInvoice/GetPreparedData');
                 setPayerOptions(response.data.units);
-                setBillerOptions(response.data.units);
+                setBillerOptions(response.data.accessibleUnits);
                 setCurrencyOptions(response.data.currencies || []);
                 setIsGlobal(response.data.isGlobal);
 
@@ -45,12 +45,6 @@ const AppContainer = () => {
                 } else {
                     form.setFieldsValue({
                         items: [{ itemDescription: '', amount: null }],
-                    });
-                }
-
-                if (response.data.currentEmpUnitId) {
-                    form.setFieldsValue({
-                        billerUnitId: response.data.currentEmpUnitId,
                     });
                 }
 
@@ -363,7 +357,7 @@ const AppContainer = () => {
                                           ]),
                                 ]}
                             >
-                                <Select placeholder="Select Biller" disabled={!isGlobal}>
+                                <Select placeholder="Select Biller">
                                     {billerOptions.map(biller => (
                                         <Option key={biller.unitId} value={biller.unitId}>
                                             {biller.groupUnitId} - {biller.code}

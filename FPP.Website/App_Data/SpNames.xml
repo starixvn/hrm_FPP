@@ -31,6 +31,7 @@
 	</Function>
 	<Function Name="Unit">
 		<Setting Key="Unit_GetAll" SpName="Unit_GetAll" DbName="bodb_FPP" Plain="0" />
+		<Setting Key="Unit_GetAccessibleUnitsByEmpId" SpName="Unit_GetAccessibleUnitsByEmpId" DbName="bodb_FPP" Plain="0" />
 		<Setting Key="Unit_GetUnitByEmpId" SpName="Unit_GetUnitByEmpId" DbName="bodb_FPP" Plain="0" />
 	</Function>
 	<Function Name="ActivityLog">

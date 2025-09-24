@@ -64,13 +64,12 @@ public class InterInvoiceController(
     [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> GetPreparedData()
     {
-        var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
         var vm = new PreparedDataViewModel
         {
+            AccessibleUnits = await commonService.GetAccessibleUnitsByEmpId(session.UserId),
             Units = await commonService.GetAllUnitsAsync(),
             Currencies = await commonService.GetAllCurrenciesAsync(),
             IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host),
-            CurrentEmpUnitId = currentEmpUnit?.UnitId ?? 0
         };
         return new JsonResult(vm);
     }
