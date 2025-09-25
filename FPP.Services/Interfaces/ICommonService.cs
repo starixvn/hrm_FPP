@@ -8,6 +8,8 @@ namespace FPP.Services.Interfaces
 
         Task<IEnumerable<Unit>> GetAllUnitsAsync();
 
+        Task<IEnumerable<Unit>> GetAccessibleUnitsByEmpId(int empId);
+
         Task<Unit> GetUnitByEmpIdAsync(int empId);
     }
 }

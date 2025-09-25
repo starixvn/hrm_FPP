@@ -18,6 +18,11 @@ namespace FPP.Services.Implement
             return await baseService.GetDataAsync<Unit>(new GetAllUnitsCriteria());
         }
 
+        public async Task<IEnumerable<Unit>> GetAccessibleUnitsByEmpId(int empId)
+        {
+            return await baseService.GetDataAsync<Unit>(new GetAccessibleUnitsByEmpIdCriteria { EmpId = empId });
+        }
+
         public async Task<Unit> GetUnitByEmpIdAsync(int empId)
         {
             return await baseService.GetDataEntityAsync<Unit>(new GetUnitByEmpIdCriteria { EmpId = empId });

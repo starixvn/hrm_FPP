@@ -49,6 +49,15 @@ const AppContainer = () => {
         };
     }, []);
 
+    const checkInvoiceEditPermission = invoiceData => {
+        return (
+            invoiceData.status === InterInvoiceStatus.Pending &&
+            (invoiceData.billerUnitId === window.currentEmpUnitId ||
+                window.isGlobal ||
+                invoiceData.isBillerSupporter)
+        );
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -61,12 +70,11 @@ const AppContainer = () => {
                 if (invoiceData.interInvoiceId === 0) {
                     window.location.href = `/Error/AccessDenied`;
                 }
-                if (
-                    invoiceData.status !== InterInvoiceStatus.Pending ||
-                    (invoiceData.billerUnitId !== window.currentEmpUnitId && !window.isGlobal)
-                ) {
+                const hasEditPermission = checkInvoiceEditPermission(invoiceData);
+                if (!hasEditPermission) {
                     await axios.put(`/InterInvoice/UnlockEditing?id=${window.invoiceId}`);
                     window.location.href = `/interInvoice/detail?id=${window.invoiceId}`;
+                    return;
                 }
                 // Fetch prepared data
                 const preparedResponse = await axios.get('/InterInvoice/GetPreparedData');
@@ -290,9 +298,10 @@ const AppContainer = () => {
                                                                 return '';
                                                             }
                                                             const num = parseFloat(value);
-                                                            return Number.isInteger(num)
-                                                                ? num.toString()
-                                                                : num.toFixed(2);
+                                                            return num.toLocaleString('en-US', {
+                                                                minimumFractionDigits: 0,
+                                                                maximumFractionDigits: 2,
+                                                            });
                                                         }}
                                                         parser={value =>
                                                             value.replace(/[^\d.]/g, '')

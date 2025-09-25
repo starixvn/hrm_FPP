@@ -6,6 +6,7 @@ namespace FPP.Models.InterInvoice
         public int BillerUnitId { get; set; }
         public int BillerGroupUnitId { get; set; }
         public string BillerName { get; set; }
+        public int PayerPICEmpId { get; set; }
         public int PayerUnitId { get; set; }
         public int PayerGroupUnitId { get; set; }
         public string PayerName { get; set; }
@@ -47,6 +48,8 @@ namespace FPP.Models.InterInvoice
         }
         public string RejectionReason { get; set; }
         public List<InterInvoiceItem> Items { get; set; } = new List<InterInvoiceItem>();
+        public bool IsBillerSupporter { get; set; }
+        public bool IsPayerSupporter { get; set; }
         public bool IsCanEdit { get; set; }
         public bool IsCanConfirmReject { get; set; }
     }
