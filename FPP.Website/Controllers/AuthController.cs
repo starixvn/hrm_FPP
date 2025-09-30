@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Security.Claims;
 using System.Text;
+using Fanex.Data;
 using FPP.Core.Constants;
 using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Models.Auth;
@@ -13,7 +15,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace FPP.Website.Controllers;
 
 public class AuthController(
-    IUserControlSettings userControlSettings,
     IUserControlSession session,
     IUserService userService,
     IAuthService authService,
@@ -46,7 +47,6 @@ public class AuthController(
         if (loginResult.IsSuccessfull)
         {
             session.UserId = loginResult.UserId;
-            session.SiteId = userControlSettings.SiteId;
             session.JwtToken = loginResult.JwtToken;
             session.OnUserId = loginResult.OnUserId;
             session.MenuItems = await userService.GetMenuItemAsync();
@@ -70,6 +70,47 @@ public class AuthController(
 
         return RedirectToAction("Login");
     }
+
+    public async Task<IActionResult> SSO(string userId, string onUserId, string time, string redirectUrl = null)
+    {
+        const string DateTimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
+        var userIdValue = Cryptography.DecryptPassword(userId.Replace(" ", "+"));
+        var onUserIdValue = Cryptography.DecryptPassword(onUserId.Replace(" ", "+"));
+        var timeValue = Cryptography.DecryptPassword(time.Replace(" ", "+"));
+        var currentTime = await authService.SSOGetTimeAsync();
+        var expiration = DateTime.ParseExact(currentTime, DateTimeFormat, new CultureInfo("en-US")) - DateTime.ParseExact(timeValue, DateTimeFormat, new CultureInfo("en-US"));
+        const byte TimeExpiration = 30;
+        if (expiration.TotalSeconds <= TimeExpiration)
+        {
+            var tmpUserId = Convert.ToInt32(userIdValue);
+            var ssoParam = new SSOLoginParam
+            {
+                UserId = tmpUserId,
+                CheckOnUserId = Convert.ToInt64(onUserIdValue),
+                OnUserId = 0,
+                IP = GetClientIpAddress(),
+                Platform = HttpContext.Request.Headers["User-Agent"].ToString(),
+                BrowserName = HttpContext.Request.Headers["User-Agent"].ToString(),
+                NetSessionId = HttpContext.Session.Id
+            };
+            var loginResult = await authService.SSOLoginAsync(ssoParam);
+            if (loginResult.IsSuccessfull)
+            {
+                session.UserId = loginResult.UserId;
+                session.JwtToken = loginResult.JwtToken;
+                session.OnUserId = loginResult.OnUserId;
+                session.MenuItems = await userService.GetMenuItemAsync();
+                session.Functions = await userService.GetFunctionPermissionAsync(session.SiteId, session.UserId);
+                session.Set(SessionKey.CurrentUser, await userService.GetByIdAsync(loginResult.UserId));
+                await DoLoginAsync(loginResult.UserId);
+
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        return RedirectToAction("Login");
+    }
+
 
     private async Task DoLoginAsync(int userId)
     {
