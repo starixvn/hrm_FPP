@@ -4,7 +4,6 @@ using System.Security.Claims;
 using System.Text;
 using Fanex.Data;
 using FPP.Core.Constants;
-using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Models.Auth;
 using GO.UserControl.Client.Core.Services;
 using GO.UserControl.Client.Core.Session;
@@ -33,14 +32,15 @@ public class AuthController(
         var keyIv = token.Split(':');
         var rijndaelKey = keyIv[0];
         var rijndaelIv = keyIv[1];
+        var userAgent = HttpContext.Request.Headers["User-Agent"].ToString();
         var loginParam = new LoginParam
         {
             Username = cryptoService.Encrypt(model.Username, rijndaelKey, rijndaelIv),
             Password = cryptoService.Encrypt(model.Password, rijndaelKey, rijndaelIv),
             Token = token,
             IP = GetClientIpAddress(),
-            Platform = HttpContext.Request.Headers["User-Agent"].ToString(),
-            BrowserName = HttpContext.Request.Headers["User-Agent"].ToString(),
+            Platform = userAgent,
+            BrowserName = userAgent,
             NetSessionId = HttpContext.Session.Id
         };
         var loginResult = await authService.LoginAsync(loginParam);
@@ -80,17 +80,19 @@ public class AuthController(
         var currentTime = await authService.SSOGetTimeAsync();
         var expiration = DateTime.ParseExact(currentTime, DateTimeFormat, new CultureInfo("en-US")) - DateTime.ParseExact(timeValue, DateTimeFormat, new CultureInfo("en-US"));
         const byte TimeExpiration = 30;
+
         if (expiration.TotalSeconds <= TimeExpiration)
         {
             var tmpUserId = Convert.ToInt32(userIdValue);
+            var userAgent = HttpContext.Request.Headers["User-Agent"].ToString();
             var ssoParam = new SSOLoginParam
             {
                 UserId = tmpUserId,
                 CheckOnUserId = Convert.ToInt64(onUserIdValue),
                 OnUserId = 0,
                 IP = GetClientIpAddress(),
-                Platform = HttpContext.Request.Headers["User-Agent"].ToString(),
-                BrowserName = HttpContext.Request.Headers["User-Agent"].ToString(),
+                Platform = userAgent,
+                BrowserName = userAgent,
                 NetSessionId = HttpContext.Session.Id
             };
             var loginResult = await authService.SSOLoginAsync(ssoParam);
