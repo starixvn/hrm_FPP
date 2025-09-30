@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using Fanex.Data;
 using FPP.Core.Constants;
+using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Models.Auth;
 using GO.UserControl.Client.Core.Services;
 using GO.UserControl.Client.Core.Session;
@@ -47,6 +48,7 @@ public class AuthController(
         if (loginResult.IsSuccessfull)
         {
             session.UserId = loginResult.UserId;
+            session.SiteId = UserControlClient.SiteId;
             session.JwtToken = loginResult.JwtToken;
             session.OnUserId = loginResult.OnUserId;
             session.MenuItems = await userService.GetMenuItemAsync();
@@ -98,13 +100,14 @@ public class AuthController(
             var loginResult = await authService.SSOLoginAsync(ssoParam);
             if (loginResult.IsSuccessfull)
             {
-                session.UserId = loginResult.UserId;
+                session.UserId = tmpUserId;
+                session.SiteId = UserControlClient.SiteId;
                 session.JwtToken = loginResult.JwtToken;
                 session.OnUserId = loginResult.OnUserId;
                 session.MenuItems = await userService.GetMenuItemAsync();
                 session.Functions = await userService.GetFunctionPermissionAsync(session.SiteId, session.UserId);
-                session.Set(SessionKey.CurrentUser, await userService.GetByIdAsync(loginResult.UserId));
-                await DoLoginAsync(loginResult.UserId);
+                session.Set(SessionKey.CurrentUser, await userService.GetByIdAsync(session.UserId));
+                await DoLoginAsync(session.UserId);
 
                 return RedirectToAction("Index", "Home");
             }
