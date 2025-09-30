@@ -1,4 +1,3 @@
-using Fanex.Common.Extensions;
 using Fanex.Data.SqlServer;
 using Fanex.Logging.Sentry.RavenClient;
 using FPP.Website;
