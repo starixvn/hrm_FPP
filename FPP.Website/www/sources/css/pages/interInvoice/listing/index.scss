@@ -55,4 +55,30 @@
         color: #ff4d4f;
         font-weight: 500;
     }
+
+    .status-with-reason {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+
+        .reason-icon {
+            color: #ff4d4f;
+            font-size: 12px;
+            transition: all 0.2s ease;
+
+            &:hover {
+                color: #ff7875;
+                transform: scale(1.1);
+            }
+        }
+    }
+
+    .status-with-tooltip {
+        cursor: help;
+        position: relative;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
 }

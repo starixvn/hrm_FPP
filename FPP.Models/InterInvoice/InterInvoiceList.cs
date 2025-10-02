@@ -26,6 +26,7 @@ public class InterInvoiceList
     public string Handler { get; set; } = string.Empty;
     public decimal TotalAmount { get; set; }
     public int Status { get; set; }
+    public string RejectionReason { get; set; } = string.Empty;
     public int PeriodType { get; set; }
     public DateTime FromDate { get; set; }
     public DateTime ToDate { get; set; }
