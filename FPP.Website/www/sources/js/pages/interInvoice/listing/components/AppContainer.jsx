@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Card, Typography, Button } from 'antd';
+import { Table, Card, Typography, Button, Tooltip } from 'antd';
 import { fetchInvoices } from '../../helper/service';
 import Filter from './Filter';
 import { mapInterInvoiceStatus, mapPeriodType } from '../../helper/enum';
-import { EyeOutlined } from '@ant-design/icons';
+import { EyeOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import CommonFunctions from '../../../../common/common-functions';
 import { formatPeriod, formatAmount } from '../../helper/format';
 
@@ -81,7 +81,7 @@ const AppContainer = () => {
             key: 'handler',
             sorter: (a, b) => a.handler.localeCompare(b.handler),
             align: 'left',
-            width: '8%',
+            width: '10%',
         },
         {
             title: 'Period Type',
@@ -99,7 +99,7 @@ const AppContainer = () => {
             sorter: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
             render: (_, record) => formatPeriod(record.periodType, record.fromDate, record.toDate),
             align: 'left',
-            width: '16%',
+            width: '12%',
         },
         {
             title: 'Created Date',
@@ -116,16 +116,27 @@ const AppContainer = () => {
             key: 'createdBy',
             sorter: (a, b) => a.createdBy.localeCompare(b.createdBy),
             align: 'left',
-            width: '8%',
+            width: '10%',
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
             sorter: (a, b) => a.status - b.status,
-            render: status => {
+            render: (status, record) => {
                 const statusText = mapInterInvoiceStatus[status] || status;
-                return <span className={`status-${statusText.toLowerCase()}`}>{statusText}</span>;
+                const hasReason = record.rejectionReason && record.rejectionReason.trim();
+
+                return (
+                    <div className="status-with-reason">
+                        <span className={`status-${statusText.toLowerCase()}`}>{statusText}</span>
+                        {hasReason && (
+                            <Tooltip title={record.rejectionReason} placement="top">
+                                <ExclamationCircleOutlined className="reason-icon" />
+                            </Tooltip>
+                        )}
+                    </div>
+                );
             },
             align: 'left',
             width: '8%',

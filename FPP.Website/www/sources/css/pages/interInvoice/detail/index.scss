@@ -29,10 +29,6 @@
         }
     }
 
-    .rejection-reason-textarea {
-        margin-top: 16px;
-    }
-
     .invoice-header-row {
         display: flex;
         justify-content: space-between;
@@ -183,6 +179,23 @@
                 border-color: #22455a;
             }
         }
+    }
+}
+
+.rejection-modal-content {
+    margin-top: 16px;
+
+    .rejection-label {
+        display: block;
+        font-weight: bold;
+
+        .required-asterisk {
+            color: red;
+        }
+    }
+
+    .rejection-reason-textarea {
+        margin-top: 8px;
     }
 }
 

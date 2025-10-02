@@ -161,16 +161,24 @@ const AppContainer = () => {
                             }}
                             okText="Yes, Reject"
                             cancelText="Cancel"
-                            okButtonProps={{ danger: true }}
+                            okButtonProps={{
+                                danger: true,
+                                disabled: !rejectionReason.trim(),
+                            }}
                         >
                             <p>Are you sure you want to reject this invoice?</p>
-                            <Input.TextArea
-                                placeholder="Please enter rejection reason"
-                                value={rejectionReason}
-                                onChange={e => setRejectionReason(e.target.value)}
-                                rows={4}
-                                className="rejection-reason-textarea"
-                            />
+                            <div className="rejection-modal-content">
+                                <label className="rejection-label">
+                                    Rejection Reason <span className="required-asterisk">*</span>
+                                </label>
+                                <Input.TextArea
+                                    placeholder="Please enter rejection reason (required)"
+                                    value={rejectionReason}
+                                    onChange={e => setRejectionReason(e.target.value)}
+                                    rows={4}
+                                    className="rejection-reason-textarea"
+                                />
+                            </div>
                         </Modal>
                     </>
                 )}
