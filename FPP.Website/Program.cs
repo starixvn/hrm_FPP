@@ -29,9 +29,8 @@ services.AddDIServices(configuration);
 
 var app = builder.Build();
 
-UserControlClientManager
-    .UseSettings(app.Services.GetRequiredService<IUserControlSettings>())
-    .UseSession(app.Services.GetRequiredService<IUserControlSession>());
+UserControlClient
+    .UseSession(app.Services.GetRequiredService<IUserControlSession>(), configuration);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

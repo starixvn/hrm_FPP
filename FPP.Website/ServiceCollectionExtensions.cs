@@ -6,9 +6,6 @@ using Fanex.Caching.Redis;
 using Fanex.Data.Repository;
 using Fanex.Logging;
 using FPP.Core.Models;
-using GO.UserControl.Client.AspNetCore;
-using GO.UserControl.Client.AspNetCore.Session;
-using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Services;
 using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -84,7 +81,6 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ILogger, Logger>();
 
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-        services.AddSingleton<IUserControlSettings>(new UserControlSettings(configuration));
         services.AddSingleton<IUserControlSession, UserControlSession>();
         services.AddSingleton<IAuthService, AuthService>();
         services.AddSingleton<ICryptoService, CryptoService>();

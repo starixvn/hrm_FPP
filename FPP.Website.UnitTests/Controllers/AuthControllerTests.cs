@@ -1,6 +1,5 @@
 using System.Text;
 using FPP.Website.Controllers;
-using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Models;
 using GO.UserControl.Client.Core.Models.Auth;
 using GO.UserControl.Client.Core.Models.User;
@@ -25,7 +24,6 @@ public class AuthControllerTests
 
     public AuthControllerTests()
     {
-        var userControlSettingsMock = new Mock<IUserControlSettings>();
         _sessionMock = new Mock<IUserControlSession>();
         _userServiceMock = new Mock<IUserService>();
         _authServiceMock = new Mock<IAuthService>();
@@ -37,7 +35,6 @@ public class AuthControllerTests
         };
 
         _controller = new AuthController(
-            userControlSettingsMock.Object,
             _sessionMock.Object,
             _userServiceMock.Object,
             _authServiceMock.Object,
