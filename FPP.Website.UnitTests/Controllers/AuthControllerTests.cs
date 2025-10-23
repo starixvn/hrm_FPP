@@ -1,4 +1,5 @@
 using System.Text;
+using FPP.Core.Services;
 using FPP.Website.Controllers;
 using GO.UserControl.Client.Core.Models;
 using GO.UserControl.Client.Core.Models.Auth;
@@ -28,6 +29,7 @@ public class AuthControllerTests
         _userServiceMock = new Mock<IUserService>();
         _authServiceMock = new Mock<IAuthService>();
         _cryptoServiceMock = new Mock<ICryptoService>();
+        var baseService = new Mock<IBaseService>();
 
         var controllerContext = new ControllerContext
         {
@@ -38,7 +40,8 @@ public class AuthControllerTests
             _sessionMock.Object,
             _userServiceMock.Object,
             _authServiceMock.Object,
-            _cryptoServiceMock.Object)
+            _cryptoServiceMock.Object,
+            baseService.Object)
         {
             ControllerContext = controllerContext
         };

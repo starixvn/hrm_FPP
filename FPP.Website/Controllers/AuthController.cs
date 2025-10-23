@@ -4,6 +4,9 @@ using System.Security.Claims;
 using System.Text;
 using Fanex.Data;
 using FPP.Core.Constants;
+using FPP.Core.Criteria.Common;
+using FPP.Core.Models;
+using FPP.Core.Services;
 using GO.UserControl.Client.Core;
 using GO.UserControl.Client.Core.Models.Auth;
 using GO.UserControl.Client.Core.Services;
@@ -18,7 +21,8 @@ public class AuthController(
     IUserControlSession session,
     IUserService userService,
     IAuthService authService,
-    ICryptoService cryptoService) : Controller
+    ICryptoService cryptoService,
+    IBaseService baseService) : Controller
 {
     public IActionResult Login()
     {
@@ -53,7 +57,7 @@ public class AuthController(
             session.OnUserId = loginResult.OnUserId;
             session.MenuItems = await userService.GetMenuItemAsync();
             session.Functions = await userService.GetFunctionPermissionAsync(session.SiteId, session.UserId);
-            session.Set(SessionKey.CurrentUser, await userService.GetByIdAsync(loginResult.UserId));
+            session.Set(SessionKey.CurrentEmployee, await GetEmployeeAsync(loginResult.UserId));
             await DoLoginAsync(loginResult.UserId);
 
             return RedirectToAction("Index", "Home");
@@ -106,7 +110,7 @@ public class AuthController(
                 session.OnUserId = loginResult.OnUserId;
                 session.MenuItems = await userService.GetMenuItemAsync();
                 session.Functions = await userService.GetFunctionPermissionAsync(session.SiteId, session.UserId);
-                session.Set(SessionKey.CurrentUser, await userService.GetByIdAsync(session.UserId));
+                session.Set(SessionKey.CurrentEmployee, await GetEmployeeAsync(session.UserId));
                 await DoLoginAsync(session.UserId);
 
                 return RedirectToAction("Index", "Home");
@@ -116,6 +120,27 @@ public class AuthController(
         return RedirectToAction("Login");
     }
 
+    private async Task<EmployeeSession> GetEmployeeAsync(int userId)
+    {
+        var criteria = new GetEmployeeByUserIdCriteria
+        {
+            UserId = userId
+        };
+        var employee = await baseService.GetDataEntityAsync<EmployeeSession>(criteria);
+
+        if (employee == null)
+        {
+            var user = await userService.GetByIdAsync(session.UserId);
+            employee = new EmployeeSession
+            {
+                EmpId = user.UserId,
+                FullName = user.FullName,
+                Nickname = user.Nickname
+            };
+        }
+
+        return employee;
+    }
 
     private async Task DoLoginAsync(int userId)
     {

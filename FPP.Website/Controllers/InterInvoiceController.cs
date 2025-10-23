@@ -16,11 +16,11 @@ using Newtonsoft.Json;
 namespace FPP.Website.Controllers;
 
 public class InterInvoiceController(
-    IBaseService baseService,
     IUserControlSession session,
+    IBaseService baseService,
     ICommonService commonService,
     IActivityLogService activityLogService,
-    IInterInvoiceService interInvoiceService) : Controller
+    IInterInvoiceService interInvoiceService) : BaseController(session)
 {
     public IActionResult Index()
     {
@@ -38,7 +38,7 @@ public class InterInvoiceController(
     [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> Edit(int id)
     {
-        var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
+        var currentEmpUnit = await commonService.GetUnitByEmpIdAsync(EmployeeSession.EmpId);
         ViewBag.CurrentEmpUnitId = currentEmpUnit?.UnitId ?? 0;
         ViewBag.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
         return View(id);
@@ -55,7 +55,7 @@ public class InterInvoiceController(
     public async Task<IActionResult> GetInvoiceList([FromBody] GetInterInvoiceListCriteria criteria)
     {
         criteria.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
-        criteria.EmpId = session.UserId;
+        criteria.EmpId = EmployeeSession.EmpId;
 
         var result = await baseService.GetDataAsync<InterInvoiceList>(criteria);
         return Json(result);
@@ -66,7 +66,7 @@ public class InterInvoiceController(
     {
         var vm = new PreparedDataViewModel
         {
-            AccessibleUnits = await commonService.GetAccessibleUnitsByEmpId(session.UserId),
+            AccessibleUnits = await commonService.GetAccessibleUnitsByEmpId(EmployeeSession.EmpId),
             Units = await commonService.GetAllUnitsAsync(),
             Currencies = await commonService.GetAllCurrenciesAsync(),
             IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host),
@@ -92,7 +92,7 @@ public class InterInvoiceController(
             FromDate = viewModel.FromDate,
             ToDate = viewModel.ToDate,
             Notes = viewModel.Notes,
-            CreatedBy = session.UserId,
+            CreatedBy = EmployeeSession.EmpId,
             ItemListJson = JsonConvert.SerializeObject(viewModel.Items)
         };
 
@@ -108,7 +108,7 @@ public class InterInvoiceController(
             ObjectTypeId = ObjectType.Invoice,
             ObjectId = criteria.OutputId,
             ActionTypeId = ActionType.Create,
-            CreatedBy = session.UserId,
+            CreatedBy = EmployeeSession.EmpId,
             ChangedData = JsonHelper.GetStringChanges(null, criteria),
             SpName = criteria.GetSettingKey(),
         });
@@ -133,7 +133,7 @@ public class InterInvoiceController(
             FromDate = viewModel.FromDate,
             ToDate = viewModel.ToDate,
             Notes = viewModel.Notes,
-            CreatedBy = session.UserId,
+            CreatedBy = EmployeeSession.EmpId,
             ItemListJson = JsonConvert.SerializeObject(viewModel.Items)
         };
 
@@ -159,12 +159,12 @@ public class InterInvoiceController(
         var isGlobalPermissionHost = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Host);
         var isGlobalPermissionRead = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
 
-        var invoice = await interInvoiceService.GetInterInvoiceById(id, session.UserId, isEdit, isGlobalPermissionRead);
-        var currentUserUnit = await commonService.GetUnitByEmpIdAsync(session.UserId);
+        var invoice = await interInvoiceService.GetInterInvoiceById(id, EmployeeSession.EmpId, isEdit, isGlobalPermissionRead);
+        var currentUserUnit = await commonService.GetUnitByEmpIdAsync(EmployeeSession.EmpId);
 
         if (isMyBuPermissionHost)
         {
-            invoice.IsCanConfirmReject = invoice.HandlerId == session.UserId || invoice.IsPayerSupporter || invoice.PayerPICEmpId == session.UserId;
+            invoice.IsCanConfirmReject = invoice.HandlerId == EmployeeSession.EmpId || invoice.IsPayerSupporter || invoice.PayerPICEmpId == EmployeeSession.EmpId;
             invoice.IsCanEdit = invoice.BillerUnitId == currentUserUnit?.UnitId || invoice.IsBillerSupporter;
         }
 
@@ -186,7 +186,7 @@ public class InterInvoiceController(
             return BadRequest(ModelState);
         }
 
-        var oldInvoice = await interInvoiceService.GetInterInvoiceById(viewModel.InterInvoiceId, session.UserId, false, true);
+        var oldInvoice = await interInvoiceService.GetInterInvoiceById(viewModel.InterInvoiceId, EmployeeSession.EmpId, false, true);
 
         var criteria = new UpdateInterInvoiceCriteria
         {
@@ -196,7 +196,7 @@ public class InterInvoiceController(
             FromDate = viewModel.FromDate,
             ToDate = viewModel.ToDate,
             Notes = viewModel.Notes,
-            ModifiedBy = session.UserId,
+            ModifiedBy = EmployeeSession.EmpId,
             ItemListJson = JsonConvert.SerializeObject(viewModel.Items)
         };
 
@@ -222,7 +222,7 @@ public class InterInvoiceController(
             ObjectTypeId = ObjectType.Invoice,
             ObjectId = criteria.InterInvoiceId,
             ActionTypeId = ActionType.Update,
-            CreatedBy = session.UserId,
+            CreatedBy = EmployeeSession.EmpId,
             ChangedData = JsonHelper.GetStringChanges(oldCriteria, criteria),
             SpName = criteria.GetSettingKey(),
         });
@@ -244,7 +244,7 @@ public class InterInvoiceController(
             InterInvoiceId = viewModel.InterInvoiceId,
             Status = viewModel.Status,
             RejectionReason = viewModel.RejectionReason,
-            ModifiedBy = session.UserId
+            ModifiedBy = EmployeeSession.EmpId
         };
 
         var result = await baseService.ExecuteNonQueryAsync(criteria);
@@ -265,7 +265,7 @@ public class InterInvoiceController(
             ObjectId = criteria.InterInvoiceId,
             ActionTypeId = ActionType.Update,
             ChangedData = JsonHelper.GetStringChanges(oldCriteria, criteria),
-            CreatedBy = session.UserId,
+            CreatedBy = EmployeeSession.EmpId,
             SpName = criteria.GetSettingKey(),
         });
         return new JsonResult(result);
@@ -283,7 +283,7 @@ public class InterInvoiceController(
         var criteria = new UnlockEditingInvoiceCriteria
         {
             InterInvoiceId = id,
-            ModifiedBy = session.UserId
+            ModifiedBy = EmployeeSession.EmpId
         };
 
         var result = await baseService.ExecuteNonQueryAsync(criteria);
@@ -336,7 +336,7 @@ public class InterInvoiceController(
     public async Task<IActionResult> ExportInterInvoice(GetInterInvoiceListCriteria criteria)
     {
         criteria.IsGlobal = session.HasPermissionOnFunction(FunctionKey.GlobalInvoice, Policy.Read);
-        criteria.EmpId = session.UserId;
+        criteria.EmpId = EmployeeSession.EmpId;
 
         var interInvoices = await baseService.GetDataAsync<InterInvoiceList>(criteria);
         var excelBytes = await interInvoiceService.ExportInterInvoiceToExcelAsync(interInvoices);

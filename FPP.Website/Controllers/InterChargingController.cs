@@ -1,20 +1,21 @@
 using FPP.Core.Constants;
+using FPP.Core.Criteria.InterCharging;
 using FPP.Core.Services;
+using FPP.Models.Common;
+using FPP.Models.InterCharging;
 using FPP.Services.Interfaces;
 using FPP.Website.Filters;
-using GO.UserControl.Client.Core.Session;
 using GO.UserControl.Client.Core.Enumerables;
+using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
-using FPP.Models.InterCharging;
-using FPP.Core.Criteria.InterCharging;
-using FPP.Models.Common;
 
 namespace FPP.Website.Controllers;
+
 public class InterChargingController(
+    IUserControlSession session,
     IMinIOService minIOService,
     IBaseService baseService,
-    IInterChargingService interChargingService,
-    IUserControlSession session) : Controller
+    IInterChargingService interChargingService) : BaseController(session)
 {
     [FppPermission(Policy.Read, FunctionKey.InterChargingUpload)]
     public IActionResult Upload()
@@ -37,7 +38,7 @@ public class InterChargingController(
 
         var savedFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
         var path = $"{MinIOFolderConstants.InterCharging}/{savedFileName}";
-        var res = await interChargingService.ImportInterChargingExcelAsync(file, savedFileName, session.UserId);
+        var res = await interChargingService.ImportInterChargingExcelAsync(file, savedFileName, EmployeeSession.EmpId);
         if (!res.IsSuccessful)
         {
             return BadRequest(res.Message);
@@ -71,7 +72,6 @@ public class InterChargingController(
         var result = await baseService.GetDataAsync<InterChargingHistory>(criteria);
         return new JsonResult(result);
     }
-
 
     [FppPermission(Policy.Read, FunctionKey.InterChargingReport)]
     public IActionResult Report()
