@@ -1,10 +1,9 @@
-using FPP.Website.Filters;
+using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers;
 
-[FppAuthorize]
-public class HomeController : Controller
+public class HomeController(IUserControlSession session) : BaseController(session)
 {
     public IActionResult Index()
     {

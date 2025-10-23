@@ -1,20 +1,21 @@
 using FPP.Core.Constants;
+using FPP.Core.Criteria.CostExpense;
 using FPP.Core.Services;
+using FPP.Models.Common;
+using FPP.Models.CostExpense;
 using FPP.Services.Interfaces;
 using FPP.Website.Filters;
-using GO.UserControl.Client.Core.Session;
 using GO.UserControl.Client.Core.Enumerables;
+using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
-using FPP.Core.Criteria.CostExpense;
-using FPP.Models.CostExpense;
-using FPP.Models.Common;
 
 namespace FPP.Website.Controllers;
+
 public class CostExpenseController(
+    IUserControlSession session,
     IMinIOService minIOService,
     IBaseService baseService,
-    ICostExpenseService costExpenseService,
-    IUserControlSession session) : Controller
+    ICostExpenseService costExpenseService) : BaseController(session)
 {
     [FppPermission(Policy.Read, FunctionKey.CostExpenseUpload)]
     public IActionResult Upload()
@@ -37,7 +38,7 @@ public class CostExpenseController(
 
         var savedFileName = $"{fileNameWithoutExtension}_{timestamp}{extension}";
         var path = $"{MinIOFolderConstants.BUCostAndExpense}/{savedFileName}";
-        var res = await costExpenseService.ImportCostExpenseExcelAsync(file, savedFileName, session.UserId);
+        var res = await costExpenseService.ImportCostExpenseExcelAsync(file, savedFileName, EmployeeSession.EmpId);
         if (!res.IsSuccessful)
         {
             return BadRequest(res.Message);
@@ -71,7 +72,6 @@ public class CostExpenseController(
         var result = await baseService.GetDataAsync<CostExpenseHistory>(criteria);
         return new JsonResult(result);
     }
-
 
     [FppPermission(Policy.Read, FunctionKey.CostExpenseReport)]
     public IActionResult Report()

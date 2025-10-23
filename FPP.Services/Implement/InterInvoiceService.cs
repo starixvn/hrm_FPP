@@ -1,4 +1,3 @@
-using Fanex.Data;
 using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Enums;
 using FPP.Core.Helpers;
@@ -21,18 +20,15 @@ namespace FPP.Services.Implement
                 IsEdit = isEdit,
                 IsGlobal = isGlobal
             };
-            using var db = ObjectDbFactory.CreateInstance(criteria.GetSettingKey());
-            using var multi = await db.QueryMultipleAsync(criteria);
-            var invoices = multi.Read<InterInvoiceDetail>().ToList();
-            var items = multi.Read<InterInvoiceItem>().ToList();
+            var (invoices, items) = await baseService.FetchMultipleAsync<InterInvoiceDetail, InterInvoiceItem>(criteria);
 
-            foreach (var invoice in invoices)
+            var invoice = invoices.FirstOrDefault();
+            if (invoice != null)
             {
-
                 invoice.Items = items.Where(i => i.InterInvoiceId == invoice.InterInvoiceId).ToList();
             }
 
-            return invoices.FirstOrDefault() ?? new InterInvoiceDetail();
+            return invoice ?? new InterInvoiceDetail();
         }
 
         public async Task<List<InterInvoiceReportModel>> GetReportGroupedByPayerAsync(DateTime month)

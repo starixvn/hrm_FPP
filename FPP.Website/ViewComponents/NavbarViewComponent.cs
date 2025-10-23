@@ -1,5 +1,5 @@
 using FPP.Core.Constants;
-using GO.UserControl.Client.Core.Models.User;
+using FPP.Core.Models;
 using GO.UserControl.Client.Core.Session;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +9,7 @@ public class NavbarViewComponent(IUserControlSession session) : ViewComponent
 {
     public IViewComponentResult Invoke()
     {
-        var user = session.Get<User>(SessionKey.CurrentUser) ?? new User();
-        return View(user);
+        var employee = session.Get<EmployeeSession>(SessionKey.CurrentEmployee) ?? new EmployeeSession();
+        return View(employee);
     }
 }
