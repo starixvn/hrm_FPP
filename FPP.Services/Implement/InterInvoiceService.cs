@@ -72,7 +72,7 @@ namespace FPP.Services.Implement
             var reportData = await GetReportGroupedByPayerAsync(month);
 
             using var package = new ExcelPackage();
-            var worksheet = package.Workbook.Worksheets.Add("Inter Invoice Report");
+            var worksheet = package.Workbook.Worksheets.Add("Group Invoice Summary");
 
             WriteTotalRow(reportData, worksheet);
             WriteHeaders(reportData, worksheet);
@@ -166,7 +166,7 @@ namespace FPP.Services.Implement
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
             using var package = new ExcelPackage();
-            var worksheet = package.Workbook.Worksheets.Add("Inter Invoice Report");
+            var worksheet = package.Workbook.Worksheets.Add("Group Invoice Summary");
 
             WriteInterInvoiceHeaders(worksheet);
             WriteInterInvoiceDataRows(worksheet, interInvoices);

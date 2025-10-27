@@ -326,7 +326,7 @@ public class InterInvoiceController(
     public async Task<IActionResult> ExportInvoiceReport(DateTime month)
     {
         var excelBytes = await interInvoiceService.ExportInvoiceReportToExcelAsync(month);
-        var fileName = $"InterInvoiceReport_{month:yyyy-MM}.xlsx";
+        var fileName = $"GroupInvoiceSummary_{month:yyyy-MM}.xlsx";
 
         return File(excelBytes, "application/octet-stream", fileName);
     }
