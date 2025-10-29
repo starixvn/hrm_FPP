@@ -19,64 +19,59 @@ const AppContainer = () => {
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
     const [selectedBUId, setSelectedBUId] = useState(null);
 
-    const renderSummaryRow = pageData => {
-        if (!pageData || pageData.length === 0) {
-            return null;
-        }
-
-        // Aggregate totals across all BUs
-        const grandTotals = {
+    const calculateGrandTotals = pageData => {
+        const totals = {
             confirmed: { income: 0, expense: 0, net: 0 },
             pending: { income: 0, expense: 0, net: 0 },
             rejected: { income: 0, expense: 0, net: 0 },
         };
 
         pageData.forEach(record => {
-            // Sum confirmed values
-            grandTotals.confirmed.income += record.confirmedIncome || 0;
-            grandTotals.confirmed.expense += Math.abs(record.confirmedExpense || 0);
-
-            // Sum pending values
-            grandTotals.pending.income += record.pendingIncome || 0;
-            grandTotals.pending.expense += Math.abs(record.pendingExpense || 0);
-
-            // Sum rejected values
-            grandTotals.rejected.income += record.rejectedIncome || 0;
-            grandTotals.rejected.expense += Math.abs(record.rejectedExpense || 0);
+            totals.confirmed.income += record.confirmedIncome || 0;
+            totals.confirmed.expense += Math.abs(record.confirmedExpense || 0);
+            totals.pending.income += record.pendingIncome || 0;
+            totals.pending.expense += Math.abs(record.pendingExpense || 0);
+            totals.rejected.income += record.rejectedIncome || 0;
+            totals.rejected.expense += Math.abs(record.rejectedExpense || 0);
         });
 
-        // Calculate Net as Total Income - Total Expense for each status
-        grandTotals.confirmed.net = grandTotals.confirmed.income - grandTotals.confirmed.expense;
-        grandTotals.pending.net = grandTotals.pending.income - grandTotals.pending.expense;
-        grandTotals.rejected.net = grandTotals.rejected.income - grandTotals.rejected.expense;
+        totals.confirmed.net = totals.confirmed.income - totals.confirmed.expense;
+        totals.pending.net = totals.pending.income - totals.pending.expense;
+        totals.rejected.net = totals.rejected.income - totals.rejected.expense;
+
+        return totals;
+    };
+
+    const getClassNameForValue = (value, isExpense = false) => {
+        if (value === 0) {
+            return 'positive-value summary-value-bold';
+        }
+        if (isExpense) {
+            return 'negative-value summary-value-bold';
+        }
+        return value < 0
+            ? 'negative-value summary-value-bold'
+            : 'positive-value summary-value-bold';
+    };
+
+    const renderSummaryRow = pageData => {
+        if (!pageData || pageData.length === 0) {
+            return null;
+        }
+
+        const grandTotals = calculateGrandTotals(pageData);
 
         const renderSummaryCell = (status, type) => {
             let value = grandTotals[status][type];
-            let className;
+            const isExpense = type === 'expense';
 
-            if (type === 'expense') {
+            if (isExpense) {
                 value = value > 0 ? -value : value;
-                className =
-                    value === 0
-                        ? 'positive-value summary-value-bold'
-                        : 'negative-value summary-value-bold';
-            } else if (type === 'income') {
-                className =
-                    value === 0
-                        ? 'positive-value summary-value-bold'
-                        : value < 0
-                        ? 'negative-value summary-value-bold'
-                        : 'positive-value summary-value-bold';
-            } else if (type === 'net') {
-                className =
-                    value === 0
-                        ? 'positive-value summary-value-bold'
-                        : value < 0
-                        ? 'negative-value summary-value-bold'
-                        : 'positive-value summary-value-bold';
             }
 
+            const className = getClassNameForValue(value, isExpense);
             const formattedTotal = value.toLocaleString('en-US');
+
             return (
                 <Summary.Cell key={`${status}_${type}`} align="right">
                     <span className={className}>{formattedTotal}</span>
@@ -183,12 +178,14 @@ const AppContainer = () => {
                     const expense = record[`${status}Expense`] || 0;
                     const value = income - expense;
                     const formattedValue = value.toLocaleString('en-US');
-                    const className =
-                        value === 0
-                            ? 'positive-value summary-value-bold'
-                            : value < 0
-                            ? 'negative-value summary-value-bold'
-                            : 'positive-value summary-value-bold';
+                    let className;
+                    if (value === 0) {
+                        className = 'positive-value summary-value-bold';
+                    } else if (value < 0) {
+                        className = 'negative-value summary-value-bold';
+                    } else {
+                        className = 'positive-value summary-value-bold';
+                    }
                     return <span className={className}>{formattedValue}</span>;
                 },
             },
@@ -231,7 +228,6 @@ const AppContainer = () => {
 
     const handleBuChange = value => {
         if (!value) {
-            console.warn('Invalid BUId:', value);
             return;
         }
 
@@ -250,7 +246,6 @@ const AppContainer = () => {
 
     const loadBuData = async () => {
         if (filters.buId && filters.buId <= 0) {
-            console.warn('BUId must be greater than 0, current value:', filters.buId);
             return;
         }
 
@@ -261,7 +256,7 @@ const AppContainer = () => {
                 setBuData(response.data);
             }
         } catch (error) {
-            console.error('Error loading BU data:', error);
+            // Error handling - silently fail
         } finally {
             setLoading(false);
         }

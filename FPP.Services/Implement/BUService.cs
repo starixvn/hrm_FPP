@@ -34,7 +34,7 @@ namespace FPP.Services.Implement
 
             worksheet.View.FreezePanes(4, 1);
 
-            int[] columnWidths = { 15, 15, 28, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18 };
+            int[] columnWidths = [15, 15, 28, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18];
             for (int i = 0; i < columnWidths.Length; i++)
                 worksheet.Column(i + 1).Width = columnWidths[i];
 
@@ -61,7 +61,9 @@ namespace FPP.Services.Implement
                 cell.Value = baseHeaders[i];
                 ApplyHeaderStyle(cell, headerBgColor, System.Drawing.Color.White, borderColor, bold: true);
                 if (i == 0)
+                {
                     cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                }
             }
 
             int col = 5;
@@ -129,7 +131,9 @@ namespace FPP.Services.Implement
                         cell.Style.Numberformat.Format = "#,##0";
                         cell.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
                         if (Convert.ToDecimal(cell.Value) < 0)
+                        {
                             cell.Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                        }
                     }
                     col += 3;
                 }
@@ -139,9 +143,9 @@ namespace FPP.Services.Implement
 
         private static void WriteTotalRow(List<BUInvoiceSummaryModel> data, ExcelWorksheet worksheet)
         {
-            if (!data.Any()) return;
+            if (data.Count == 0) return;
 
-            int totalRow = 3;
+            const int totalRow = 3;
             worksheet.Cells[totalRow, 1, totalRow, 4].Merge = true;
             worksheet.Cells[totalRow, 1].Value = "Total";
             worksheet.Cells[totalRow, 1].Style.Font.Bold = true;
@@ -172,7 +176,9 @@ namespace FPP.Services.Implement
                     cell.Style.Fill.PatternType = ExcelFillStyle.Solid;
                     cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.FromArgb(245, 245, 245));
                     if (Convert.ToDecimal(cell.Value) < 0)
+                    {
                         cell.Style.Font.Color.SetColor(System.Drawing.Color.Red);
+                    }
                 }
                 col += 3;
             }
