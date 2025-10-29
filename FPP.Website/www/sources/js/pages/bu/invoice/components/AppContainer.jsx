@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Spin, ConfigProvider, DatePicker, Row, Col, Typography, Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Card, Table, Spin, ConfigProvider, Typography } from 'antd';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import Filter from './Filter';
 
 const { Title } = Typography;
 const { Summary } = Table;
@@ -10,18 +10,21 @@ const { Summary } = Table;
 const AppContainer = () => {
     const [loading, setLoading] = useState(false);
     const [buData, setBuData] = useState([]);
+    const [buList, setBuList] = useState([]);
     const currentMonth = dayjs();
     const [filters, setFilters] = useState({
         month: currentMonth.format('YYYY-MM'),
+        buId: null, // Will be set when BU list loads
     });
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+    const [selectedBUId, setSelectedBUId] = useState(null);
 
     const renderSummaryRow = pageData => {
         if (!pageData || pageData.length === 0) {
             return null;
         }
 
-        // Aggregate totals across all units
+        // Aggregate totals across all BUs
         const grandTotals = {
             confirmed: { income: 0, expense: 0, net: 0 },
             pending: { income: 0, expense: 0, net: 0 },
@@ -29,24 +32,51 @@ const AppContainer = () => {
         };
 
         pageData.forEach(record => {
-            if (record.units) {
-                record.units.forEach(unit => {
-                    // For now, putting all values in confirmed
-                    // You may need to update backend to provide breakdown
-                    grandTotals.confirmed.income += 0;
-                    grandTotals.confirmed.expense += unit.value || 0;
-                    grandTotals.confirmed.net += unit.value || 0;
-                });
-            }
+            // Sum confirmed values
+            grandTotals.confirmed.income += record.confirmedIncome || 0;
+            grandTotals.confirmed.expense += Math.abs(record.confirmedExpense || 0);
+
+            // Sum pending values
+            grandTotals.pending.income += record.pendingIncome || 0;
+            grandTotals.pending.expense += Math.abs(record.pendingExpense || 0);
+
+            // Sum rejected values
+            grandTotals.rejected.income += record.rejectedIncome || 0;
+            grandTotals.rejected.expense += Math.abs(record.rejectedExpense || 0);
         });
 
+        // Calculate Net as Total Income - Total Expense for each status
+        grandTotals.confirmed.net = grandTotals.confirmed.income - grandTotals.confirmed.expense;
+        grandTotals.pending.net = grandTotals.pending.income - grandTotals.pending.expense;
+        grandTotals.rejected.net = grandTotals.rejected.income - grandTotals.rejected.expense;
+
         const renderSummaryCell = (status, type) => {
-            const value = grandTotals[status][type];
+            let value = grandTotals[status][type];
+            let className;
+
+            if (type === 'expense') {
+                value = value > 0 ? -value : value;
+                className =
+                    value === 0
+                        ? 'positive-value summary-value-bold'
+                        : 'negative-value summary-value-bold';
+            } else if (type === 'income') {
+                className =
+                    value === 0
+                        ? 'positive-value summary-value-bold'
+                        : value < 0
+                        ? 'negative-value summary-value-bold'
+                        : 'positive-value summary-value-bold';
+            } else if (type === 'net') {
+                className =
+                    value === 0
+                        ? 'positive-value summary-value-bold'
+                        : value < 0
+                        ? 'negative-value summary-value-bold'
+                        : 'positive-value summary-value-bold';
+            }
+
             const formattedTotal = value.toLocaleString('en-US');
-            const className =
-                value < 0
-                    ? 'summary-value-negative summary-value-bold'
-                    : 'summary-value-positive summary-value-bold';
             return (
                 <Summary.Cell key={`${status}_${type}`} align="right">
                     <span className={className}>{formattedTotal}</span>
@@ -60,19 +90,18 @@ const AppContainer = () => {
                     <Summary.Cell index={0} colSpan={4} align="right">
                         <span className="summary-label">Total</span>
                     </Summary.Cell>
-                    {/* Confirmed columns */}
                     {renderSummaryCell('confirmed', 'income')}
                     {renderSummaryCell('confirmed', 'expense')}
                     {renderSummaryCell('confirmed', 'net')}
-                    {/* Pending columns */}
+
                     {renderSummaryCell('pending', 'income')}
                     {renderSummaryCell('pending', 'expense')}
                     {renderSummaryCell('pending', 'net')}
-                    {/* Rejected columns */}
+
                     {renderSummaryCell('rejected', 'income')}
                     {renderSummaryCell('rejected', 'expense')}
                     {renderSummaryCell('rejected', 'net')}
-                    {/* Empty last column */}
+
                     <Summary.Cell />
                 </Summary.Row>
             </Summary>
@@ -82,10 +111,10 @@ const AppContainer = () => {
     const generateColumns = () => {
         const baseColumns = [
             {
-                title: 'BU ID ',
+                title: 'BU ID',
+                dataIndex: 'buId',
                 key: 'buId',
                 width: 90,
-                render: (_, record) => `${record.buId}  `,
                 sorter: (a, b) => a.buId - b.buId,
                 fixed: 'left',
             },
@@ -107,15 +136,14 @@ const AppContainer = () => {
             },
             {
                 title: 'BU PIC Name',
-                dataIndex: 'buPicName',
-                key: 'buPicName',
+                dataIndex: 'bupicName',
+                key: 'bupicName',
                 width: 150,
-                sorter: (a, b) => a.buPicName.localeCompare(b.buPicName),
+                sorter: (a, b) => a.bupicName.localeCompare(b.bupicName),
                 fixed: 'left',
             },
         ];
 
-        // Create renderer for status columns
         const createStatusColumns = status => [
             {
                 title: 'Income',
@@ -123,14 +151,10 @@ const AppContainer = () => {
                 width: 100,
                 align: 'right',
                 render: (_, record) => {
-                    const unitData = record.units?.[0];
-                    const value = unitData
-                        ? status === 'confirmed'
-                            ? Math.abs(unitData.value)
-                            : 0
-                        : 0;
+                    const value = record[`${status}Income`] || 0;
                     const formattedValue = value.toLocaleString('en-US');
-                    const className = value < 0 ? 'negative-value' : 'positive-value';
+                    const className =
+                        value === 0 || value > 0 ? 'positive-value' : 'negative-value';
                     return <span className={className}>{formattedValue}</span>;
                 },
             },
@@ -140,10 +164,12 @@ const AppContainer = () => {
                 width: 100,
                 align: 'right',
                 render: (_, record) => {
-                    const unitData = record.units?.[0];
-                    const value = unitData ? (status === 'confirmed' ? unitData.value : 0) : 0;
-                    const formattedValue = value.toLocaleString('en-US');
-                    const className = value < 0 ? 'negative-value' : 'positive-value';
+                    const value = record[`${status}Expense`] || 0;
+                    const formattedValue =
+                        value > 0
+                            ? `-${value.toLocaleString('en-US')}`
+                            : value.toLocaleString('en-US');
+                    const className = value === 0 ? 'positive-value' : 'negative-value';
                     return <span className={className}>{formattedValue}</span>;
                 },
             },
@@ -153,11 +179,14 @@ const AppContainer = () => {
                 width: 100,
                 align: 'right',
                 render: (_, record) => {
-                    const unitData = record.units?.[0];
-                    const value = unitData ? (status === 'confirmed' ? unitData.value : 0) : 0;
+                    const income = record[`${status}Income`] || 0;
+                    const expense = record[`${status}Expense`] || 0;
+                    const value = income - expense;
                     const formattedValue = value.toLocaleString('en-US');
                     const className =
-                        value < 0
+                        value === 0
+                            ? 'positive-value summary-value-bold'
+                            : value < 0
                             ? 'negative-value summary-value-bold'
                             : 'positive-value summary-value-bold';
                     return <span className={className}>{formattedValue}</span>;
@@ -200,73 +229,89 @@ const AppContainer = () => {
         }
     };
 
-    const renderFilters = () => {
-        return (
-            <div className="report-filters">
-                <Row gutter={[16, 16]} align="middle">
-                    <Col xs={24} sm={12} md={8} lg={6}>
-                        <div className="filter-item">
-                            <label htmlFor="month-picker">Month</label>
-                            <DatePicker
-                                id="month-picker"
-                                value={selectedMonth}
-                                onChange={handleMonthChange}
-                                format="YYYY-MM"
-                                picker="month"
-                                placeholder="Select Month"
-                                style={{ width: '100%' }}
-                            />
-                        </div>
-                    </Col>
-                    <Col xs={24} sm={12} md={8} lg={6}>
-                        <div className="filter-actions">
-                            <Button
-                                type="primary"
-                                icon={<DownloadOutlined />}
-                                onClick={handleExport}
-                                loading={loading}
-                            >
-                                Export
-                            </Button>
-                        </div>
-                    </Col>
-                </Row>
-            </div>
-        );
-    };
-
-    const loadBuData = async () => {
-        setLoading(true);
-        const response = await axios.get('/BUInvoice/GetBUInvoiceSummary', { params: filters });
-        if (response?.data) {
-            setBuData(response.data);
+    const handleBuChange = value => {
+        if (!value) {
+            console.warn('Invalid BUId:', value);
+            return;
         }
 
-        setLoading(false);
+        setSelectedBUId(value);
+        setFilters(prev => ({
+            ...prev,
+            buId: value,
+        }));
     };
 
     const handleExport = async () => {
-        window.location.href = `/BUInvoice/ExportBUInvoiceSummary?month=${selectedMonth.format(
+        window.location.href = `/BU/ExportBUInvoiceSummary?month=${selectedMonth.format(
             'YYYY-MM'
-        )}`;
+        )}&buId=${selectedBUId}`;
+    };
+
+    const loadBuData = async () => {
+        if (filters.buId && filters.buId <= 0) {
+            console.warn('BUId must be greater than 0, current value:', filters.buId);
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const response = await axios.get('/BU/GetBUInvoiceSummary', { params: filters });
+            if (response?.data) {
+                setBuData(response.data);
+            }
+        } catch (error) {
+            console.error('Error loading BU data:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const loadBuList = async () => {
+        const response = await axios.get('/BU/GetBUListByEmpId');
+        if (response?.data && response.data.length > 0) {
+            setBuList(response.data);
+            // Select first BU as default
+            const firstBUId = response.data[0].unitId;
+            setSelectedBUId(firstBUId);
+            setFilters(prev => ({
+                ...prev,
+                buId: firstBUId,
+            }));
+        }
     };
 
     useEffect(() => {
         loadBuData();
     }, [filters]);
 
+    useEffect(() => {
+        loadBuList();
+    }, []);
+
     return (
         <div className="report-container">
             <ConfigProvider>
                 <Card title={<Title level={4}>BU Invoice Summary</Title>} className="report-card">
-                    {renderFilters()}
+                    <Filter
+                        selectedMonth={selectedMonth}
+                        selectedBUId={selectedBUId}
+                        buList={buList}
+                        loading={loading}
+                        onMonthChange={handleMonthChange}
+                        onBuChange={handleBuChange}
+                        onExport={handleExport}
+                    />
                     <Spin spinning={loading}>
                         <Table
                             className="bu-report-table"
                             columns={columns}
                             dataSource={buData}
                             pagination={false}
-                            scroll={{ x: 'max-content', y: 'calc(100vh - 340px)' }}
+                            scroll={{
+                                x: 'max-content',
+                                y: buData && buData.length > 0 ? 'calc(100vh - 340px)' : undefined,
+                            }}
                             bordered
                             rowKey={record => record.buId}
                             summary={renderSummaryRow}

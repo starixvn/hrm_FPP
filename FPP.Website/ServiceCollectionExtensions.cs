@@ -97,6 +97,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICommonService, CommonService>();
         services.AddSingleton<IActivityLogService, ActivityLogService>();
         services.AddSingleton<IInterInvoiceService, InterInvoiceService>();
+        services.AddSingleton<IBUService, BUService>();
 
         return services;
     }

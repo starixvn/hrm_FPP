@@ -26,6 +26,7 @@
         <Setting Key="InterInvoice_GetList" SpName="InterInvoice_GetList" DbName="bodb_FPP" Plain="0" />
         <Setting Key="InterInvoice_UnlockEditing" SpName="InterInvoice_UnlockEditing" DbName="bodb_FPP" Plain="0" />
         <Setting Key="BU_GetList" SpName="BU_GetList" DbName="bodb_FPP" Plain="0" />
+        <Setting Key="BU_InvoiceSummary_Get" SpName="BU_InvoiceSummary_Get" DbName="bodb_FPP" Plain="0" />
         <Setting Key="InterInvoice_CreateForMultiplePayer" SpName="InterInvoice_CreateForMultiplePayer" DbName="bodb_FPP" Plain="0" />
         <Setting Key="InterInvoice_GetReport" SpName="InterInvoice_GetReport" DbName="bodb_FPP" Plain="0" />
     </Function>
