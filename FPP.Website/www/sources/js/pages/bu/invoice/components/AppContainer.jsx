@@ -7,6 +7,9 @@ import Filter from './Filter';
 const { Title } = Typography;
 const { Summary } = Table;
 
+const POSITIVE_VALUE_CLASS = 'positive-value summary-value-bold';
+const NEGATIVE_VALUE_CLASS = 'negative-value summary-value-bold';
+
 const AppContainer = () => {
     const [loading, setLoading] = useState(false);
     const [buData, setBuData] = useState([]);
@@ -14,7 +17,7 @@ const AppContainer = () => {
     const currentMonth = dayjs();
     const [filters, setFilters] = useState({
         month: currentMonth.format('YYYY-MM'),
-        buId: null, // Will be set when BU list loads
+        buId: null,
     });
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
     const [selectedBUId, setSelectedBUId] = useState(null);
@@ -44,14 +47,12 @@ const AppContainer = () => {
 
     const getClassNameForValue = (value, isExpense = false) => {
         if (value === 0) {
-            return 'positive-value summary-value-bold';
+            return POSITIVE_VALUE_CLASS;
         }
         if (isExpense) {
-            return 'negative-value summary-value-bold';
+            return NEGATIVE_VALUE_CLASS;
         }
-        return value < 0
-            ? 'negative-value summary-value-bold'
-            : 'positive-value summary-value-bold';
+        return value < 0 ? NEGATIVE_VALUE_CLASS : POSITIVE_VALUE_CLASS;
     };
 
     const renderSummaryRow = pageData => {
@@ -180,11 +181,11 @@ const AppContainer = () => {
                     const formattedValue = value.toLocaleString('en-US');
                     let className;
                     if (value === 0) {
-                        className = 'positive-value summary-value-bold';
+                        className = POSITIVE_VALUE_CLASS;
                     } else if (value < 0) {
-                        className = 'negative-value summary-value-bold';
+                        className = NEGATIVE_VALUE_CLASS;
                     } else {
-                        className = 'positive-value summary-value-bold';
+                        className = POSITIVE_VALUE_CLASS;
                     }
                     return <span className={className}>{formattedValue}</span>;
                 },
