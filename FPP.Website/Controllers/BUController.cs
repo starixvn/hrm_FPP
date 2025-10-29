@@ -32,14 +32,14 @@ public class BUController(
         return Ok(buList);
     }
 
-    //[FppPermission(Policy.Read, FunctionKey.BUInvoiceSummary)]
+    [FppPermission(Policy.Read, FunctionKey.BUInvoiceSummary)]
     public IActionResult InvoiceSummary()
     {
         return View();
     }
 
     [HttpGet]
-    //[FppPermission(Policy.Read, FunctionKey.BUInvoiceSummary)]
+    [FppPermission(Policy.Read, FunctionKey.BUInvoiceSummary)]
     public async Task<IActionResult> GetBUInvoiceSummary(DateTime month, int buId)
     {
         var result = await buService.GetBUInvoiceSummaryAsync(month, buId);
@@ -47,7 +47,7 @@ public class BUController(
     }
 
     [HttpGet]
-    //[FppPermission(Policy.Read, FunctionKey.BUInvoiceSummary)]
+    [FppPermission(Policy.Read, FunctionKey.BUInvoiceSummary)]
     public async Task<IActionResult> ExportBUInvoiceSummary(DateTime month, int buId)
     {
         var excelBytes = await buService.ExportBUInvoiceSummaryToExcelAsync(month, buId);
