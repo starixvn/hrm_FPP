@@ -44,6 +44,10 @@
     }
 
     .bu-report-table {
+        .ant-table-expanded-row-fixed::after {
+            border: 0 !important;
+        }
+
         .ant-table {
             .ant-table-cell {
                 padding: 5px !important;
