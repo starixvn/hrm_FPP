@@ -3,7 +3,7 @@ using FPP.Core.Criteria.Common;
 using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Models.Common;
-using FPP.Models.InterInvoice;
+using FPP.Models.BU;
 using FPP.Services.Interfaces;
 using FPP.Website.Controllers;
 using FPP.Website.Filters;

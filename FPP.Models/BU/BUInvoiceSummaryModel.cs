@@ -1,4 +1,4 @@
-namespace FPP.Models.InterInvoice
+namespace FPP.Models.BU
 {
     public class BUInvoiceSummaryModel
     {

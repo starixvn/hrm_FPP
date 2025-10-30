@@ -1,6 +1,6 @@
-using FPP.Core.Criteria.InterInvoice;
+using FPP.Core.Criteria.BU;
 using FPP.Core.Services;
-using FPP.Models.InterInvoice;
+using FPP.Models.BU;
 using FPP.Services.Interfaces;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;

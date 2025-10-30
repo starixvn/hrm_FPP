@@ -1,4 +1,4 @@
-using FPP.Models.InterInvoice;
+using FPP.Models.BU;
 
 namespace FPP.Services.Interfaces
 {

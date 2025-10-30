@@ -1,6 +1,6 @@
 using Fanex.Data.Repository;
 
-namespace FPP.Core.Criteria.InterInvoice
+namespace FPP.Core.Criteria.BU
 {
     public class GetBUInvoiceSummaryCriteria : CriteriaBase
     {
