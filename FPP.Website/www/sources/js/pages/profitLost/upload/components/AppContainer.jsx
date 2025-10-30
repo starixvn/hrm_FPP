@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import UploadFile from '../../../common/components/UploadFile';
-import UploadHistoryTable from './UploadHistoryTable';
+import ProfitLostUploadHistoryTable from './ProfitLostUploadHistoryTable';
 import { Card, Typography } from 'antd';
 
 const { Title } = Typography;
@@ -29,7 +29,7 @@ const AppContainer = ({ isHost }) => {
                 <Title level={2} className="page-title">
                     Upload History
                 </Title>
-                <UploadHistoryTable refetchData={refreshKey} />
+                <ProfitLostUploadHistoryTable refetchData={refreshKey} />
             </Card>
         </div>
     );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import UploadFile from '../../../common/components/UploadFile';
-import UploadHistoryTable from './UploadHistoryTable';
+import UploadHistoryTable from './CostExpenseUploadHistoryTable';
 import { Card, Typography } from 'antd';
 
 const { Title } = Typography;

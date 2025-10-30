@@ -189,9 +189,10 @@ const AppContainer = () => {
         });
     };
 
-    const tableData = useMemo(() => {
-        return dataSource.concat(formatTotalsFromBackend()).filter(Boolean);
-    }, [dataSource, bus, data.totals]);
+    const tableData = useMemo(
+        () => dataSource.concat(formatTotalsFromBackend()).filter(Boolean),
+        [dataSource, bus, data.totals]
+    );
 
     const getRowClassName = record => {
         if (record.isSeparator) {
