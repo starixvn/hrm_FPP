@@ -32,5 +32,17 @@ namespace FPP.Models.ProfitLost
         public string BU { get; set; }
         public int ColumnIndex { get; set; }
     }
+
+    public class ProfitLostTotal
+    {
+        public string Name { get; set; }
+        public Dictionary<string, decimal> BUAmounts { get; set; }
+    }
+
+    public class ProfitLostReportResponse
+    {
+        public IEnumerable<MonthlyProfitLostCategory> Categories { get; set; }
+        public IEnumerable<ProfitLostTotal> Totals { get; set; }
+    }
 }
 

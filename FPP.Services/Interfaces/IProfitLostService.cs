@@ -8,7 +8,7 @@ namespace FPP.Services.Interfaces
     {
         Task<CommandResult> ImportProfitLostExcelAsync(IFormFile file, string savedFileName, int userId);
 
-        Task<IEnumerable<MonthlyProfitLostCategory>> GetProfitLostExcelAsync(DateTime month);
+        Task<ProfitLostReportResponse> GetProfitLostExcelAsync(DateTime month);
     }
 }
 

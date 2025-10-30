@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import UploadCostFile from './UploadCostFile';
+import UploadFile from '../../../common/components/UploadFile';
 import UploadHistoryTable from './UploadHistoryTable';
 import { Card, Typography } from 'antd';
 
@@ -19,7 +19,10 @@ const AppContainer = ({ isHost }) => {
                     <Title level={2} className="page-title">
                         Cost/Expense Upload
                     </Title>
-                    <UploadCostFile onUploadSuccess={handleUploadSuccess} />
+                    <UploadFile
+                        uploadEndpoint="/CostExpense/UploadExcel"
+                        onUploadSuccess={handleUploadSuccess}
+                    />
                 </Card>
             )}
             <Card className="history-card" style={{ marginTop: 24 }}>

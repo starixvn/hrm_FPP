@@ -1,4 +1,5 @@
 using FPP.Core.Criteria.ProfitLost;
+using FPP.Core.Enums;
 using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Models.ProfitLost;
@@ -210,7 +211,7 @@ namespace FPP.Services.Implement
             return (result, null);
         }
 
-        public async Task<IEnumerable<MonthlyProfitLostCategory>> GetProfitLostExcelAsync(DateTime month)
+        public async Task<ProfitLostReportResponse> GetProfitLostExcelAsync(DateTime month)
         {
             var criteria = new GetProfitLostCriteria
             {
@@ -249,7 +250,64 @@ namespace FPP.Services.Implement
                 .OrderBy(x => x.CategoryType)
                 .ToList();
 
-            return grouped;
+            // Calculate totals for each BU
+            var allBUs = grouped
+                .SelectMany(c => c.MonthlyTotalAmounts?.Keys ?? Enumerable.Empty<string>())
+                .Distinct()
+                .OrderBy(bu => bu)
+                .ToList();
+
+            var totals = new List<ProfitLostTotal>();
+
+            // Calculate Total Income (CategoryType = 2)
+            var totalIncome = new ProfitLostTotal
+            {
+                Name = "Total Income",
+                BUAmounts = new Dictionary<string, decimal>()
+            };
+
+            // Calculate Gross Profit (Total Income - Direct Expense)
+            var grossProfit = new ProfitLostTotal
+            {
+                Name = "Gross Profit",
+                BUAmounts = new Dictionary<string, decimal>()
+            };
+
+            // Calculate Net Profit (Gross Profit - Other Expense)
+            var netProfit = new ProfitLostTotal
+            {
+                Name = "Net Profit",
+                BUAmounts = new Dictionary<string, decimal>()
+            };
+
+            foreach (var bu in allBUs)
+            {
+                var totalIncomeAmount = grouped
+                    .Where(c => (CategoryType)c.CategoryType == CategoryType.Income)
+                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
+
+                var totalDirectExpense = grouped
+                    .Where(c => (CategoryType)c.CategoryType == CategoryType.DirectExpense)
+                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
+
+                var totalOtherExpense = grouped
+                    .Where(c => (CategoryType)c.CategoryType == CategoryType.OtherExpense)
+                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
+
+                totalIncome.BUAmounts[bu] = totalIncomeAmount;
+                grossProfit.BUAmounts[bu] = totalIncomeAmount - totalDirectExpense;
+                netProfit.BUAmounts[bu] = grossProfit.BUAmounts[bu] - totalOtherExpense;
+            }
+
+            totals.Add(totalIncome);
+            totals.Add(grossProfit);
+            totals.Add(netProfit);
+
+            return new ProfitLostReportResponse
+            {
+                Categories = grouped,
+                Totals = totals
+            };
         }
 
     }

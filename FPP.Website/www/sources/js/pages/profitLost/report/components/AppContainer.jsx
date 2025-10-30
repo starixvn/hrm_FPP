@@ -8,7 +8,7 @@ const { Title } = Typography;
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(false);
-    const [plData, setPLData] = useState([]);
+    const [data, setData] = useState({ categories: [], totals: [] });
     const currentMonth = dayjs();
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
@@ -19,7 +19,10 @@ const AppContainer = () => {
                 month: selectedMonth.format('YYYY-MM'),
             };
             const response = await axios.get(`/ProfitLost/GetProfitLost`, { params });
-            setPLData(response.data);
+            setData({
+                categories: response.data.categories || [],
+                totals: response.data.totals || [],
+            });
         } catch (error) {
             console.info('Error fetching data:', error);
         } finally {
@@ -36,11 +39,11 @@ const AppContainer = () => {
     }, [selectedMonth]);
 
     const bus = useMemo(() => {
-        if (plData.length > 0 && plData[0].monthlyTotalAmounts) {
-            return Object.keys(plData[0].monthlyTotalAmounts).sort();
+        if (data.categories.length > 0 && data.categories[0].monthlyTotalAmounts) {
+            return Object.keys(data.categories[0].monthlyTotalAmounts).sort();
         }
         return [];
-    }, [plData]);
+    }, [data.categories]);
 
     const createSeparatorRow = key => {
         const separatorRow = {
@@ -52,12 +55,6 @@ const AppContainer = () => {
             separatorRow[bu] = '';
         });
         return separatorRow;
-    };
-
-    const calculateTotalByCategoryType = (categoryType, bu) => {
-        return plData
-            .filter(category => category.categoryType === categoryType)
-            .reduce((sum, category) => sum + (Number(category.monthlyTotalAmounts?.[bu]) || 0), 0);
     };
 
     const renderFilters = () => (
@@ -125,13 +122,13 @@ const AppContainer = () => {
     }, [bus]);
 
     const dataSource = useMemo(() => {
-        if (!plData.length) {
+        if (!data.categories.length) {
             return [];
         }
 
         const flatData = [];
 
-        plData.forEach((category, categoryIndex) => {
+        data.categories.forEach((category, categoryIndex) => {
             if (category.details && category.details.length) {
                 category.details.forEach((term, termIndex) => {
                     const termRow = {
@@ -164,61 +161,37 @@ const AppContainer = () => {
             }
 
             // Thêm separator row sau mỗi category (trừ category cuối cùng)
-            if (categoryIndex < plData.length) {
+            if (categoryIndex < data.categories.length) {
                 flatData.push(createSeparatorRow(`separator_${category.categoryId}`));
             }
         });
 
         return flatData;
-    }, [plData, bus]);
+    }, [data.categories, bus]);
 
-    const calculateTotals = () => {
-        if (!plData.length) {
+    const formatTotalsFromBackend = () => {
+        if (!data.totals.length) {
             return [];
         }
 
-        const totalsRows = [];
+        return data.totals.map((total, index) => {
+            const row = {
+                key: `total_${index}`,
+                name: total.name,
+                isGrandTotal: true,
+            };
 
-        // Calculate Total Income (categoryType = 2)
-        const totalIncomeRow = {
-            key: 'total_income',
-            name: 'Total Income',
-            isGrandTotal: true,
-        };
+            bus.forEach(bu => {
+                row[bu] = total.buAmounts?.[bu] || 0;
+            });
 
-        // Calculate Gross Profit (Total Income - categoryType = 3)
-        const grossProfitRow = {
-            key: 'gross_profit',
-            name: 'Gross Profit',
-            isGrandTotal: true,
-        };
-
-        // Calculate Net Profit (Gross Profit - categoryType = 4)
-        const netProfitRow = {
-            key: 'net_profit',
-            name: 'Net Profit',
-            isGrandTotal: true,
-        };
-
-        bus.forEach(bu => {
-            const totalIncome = calculateTotalByCategoryType(CategoryType.Income, bu);
-            const totalDirectExpense = calculateTotalByCategoryType(CategoryType.DirectExpense, bu);
-            const totalOtherExpense = calculateTotalByCategoryType(CategoryType.OtherExpense, bu);
-
-            totalIncomeRow[bu] = totalIncome;
-            grossProfitRow[bu] = totalIncome - totalDirectExpense;
-            netProfitRow[bu] = grossProfitRow[bu] - totalOtherExpense;
+            return row;
         });
-
-        totalsRows.push(totalIncomeRow, grossProfitRow, netProfitRow);
-        return totalsRows;
     };
 
     const tableData = useMemo(() => {
-        return dataSource
-            .concat(calculateTotals())
-            .filter(Boolean);
-    }, [dataSource, bus, plData]);
+        return dataSource.concat(formatTotalsFromBackend()).filter(Boolean);
+    }, [dataSource, bus, data.totals]);
 
     const getRowClassName = record => {
         if (record.isSeparator) {

@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 const { Dragger } = Upload;
 
-const UploadPLFile = ({ onUploadSuccess }) => {
+const UploadFile = ({ uploadEndpoint, onUploadSuccess }) => {
     const [fileList, setFileList] = useState([]);
     const [uploading, setUploading] = useState(false);
 
@@ -28,7 +28,7 @@ const UploadPLFile = ({ onUploadSuccess }) => {
         setUploading(true);
 
         try {
-            const response = await axios.post('/ProfitLost/UploadExcel', formData, {
+            const response = await axios.post(uploadEndpoint, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -99,8 +99,9 @@ const UploadPLFile = ({ onUploadSuccess }) => {
     );
 };
 
-UploadPLFile.propTypes = {
+UploadFile.propTypes = {
+    uploadEndpoint: PropTypes.string.isRequired,
     onUploadSuccess: PropTypes.func,
 };
 
-export default UploadPLFile;
+export default UploadFile;
