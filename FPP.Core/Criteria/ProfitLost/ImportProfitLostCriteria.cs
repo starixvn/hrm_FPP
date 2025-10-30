@@ -16,7 +16,7 @@ public class ImportProfitLostCriteria : BaseNonQueryCommand
 
     public override string GetSettingKey() => "MonthlyProfitLost_Import";
 
-    public override bool IsValid() => Month != DateTime.MinValue && !string.IsNullOrEmpty(FileName) && !string.IsNullOrEmpty(TermListJson);
+    public override bool IsValid() => !string.IsNullOrEmpty(FileName) && !string.IsNullOrEmpty(TermListJson);
 }
 
 public class TermItem

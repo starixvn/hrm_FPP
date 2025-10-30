@@ -1,8 +1,6 @@
 using FPP.Core.Constants;
-using FPP.Core.Criteria.CostExpense;
 using FPP.Core.Criteria.ProfitLost;
 using FPP.Core.Services;
-using FPP.Models.Common;
 using FPP.Models.ProfitLost;
 using FPP.Services.Interfaces;
 using FPP.Website.Filters;

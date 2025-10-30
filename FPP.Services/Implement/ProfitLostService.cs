@@ -1,4 +1,3 @@
-using System.Security.Cryptography.Xml;
 using FPP.Core.Criteria.ProfitLost;
 using FPP.Core.Models;
 using FPP.Core.Services;
@@ -7,6 +6,8 @@ using FPP.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using System.Globalization;
+using System.Text;
 
 namespace FPP.Services.Implement
 {
@@ -66,7 +67,7 @@ namespace FPP.Services.Implement
 
                 var criteria = new ImportProfitLostCriteria
                 {
-                    Month = month.Value,
+                    Month = month.Value.DateTime,
                     FileName = file.FileName,
                     SavedFileName = savedFileName,
                     CreatedBy = userId,
@@ -83,7 +84,7 @@ namespace FPP.Services.Implement
             return commandResult;
         }
 
-        private DateTime? ExtractMonth(ExcelWorksheet worksheet)
+        private DateTimeOffset? ExtractMonth(ExcelWorksheet worksheet)
         {
             var monthCellValue = worksheet.Cells[MonthCellRow, MonthCellCol].Text.Trim();
             if (string.IsNullOrWhiteSpace(monthCellValue))
@@ -103,7 +104,7 @@ namespace FPP.Services.Implement
                 return null;
             }
 
-            var monthAbbr = parts[1].ToUpper();
+            var monthAbbr = parts[1].ToUpper(CultureInfo.InvariantCulture);
             var monthNames = new Dictionary<string, int>
             {
                 { "JAN", 1 }, { "FEB", 2 }, { "MAR", 3 }, { "APR", 4 },
@@ -116,7 +117,7 @@ namespace FPP.Services.Implement
                 return null;
             }
 
-            return new DateTime(year, month, 1);
+            return new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
         }
 
         private List<BUInfo> ExtractBUInfos(ExcelWorksheet worksheet)
@@ -153,12 +154,12 @@ namespace FPP.Services.Implement
         private static int? ExtractGroupUnitIdFromCode(string code)
         {
             // Extract numeric prefix from code (e.g., "901OT" -> 901)
-            var numericPart = string.Empty;
+            var numericPart = new StringBuilder();
             foreach (var c in code)
             {
                 if (char.IsDigit(c))
                 {
-                    numericPart += c;
+                    numericPart.Append(c);
                 }
                 else
                 {
@@ -166,7 +167,7 @@ namespace FPP.Services.Implement
                 }
             }
 
-            return int.TryParse(numericPart, out var groupUnitId) ? groupUnitId : null;
+            return int.TryParse(numericPart.ToString(), out var groupUnitId) ? groupUnitId : null;
         }
 
         private (List<TermItem>? Items, string? DuplicateTerm) ExtractProfitLost(ExcelWorksheet worksheet, List<BUInfo> buInfos)
@@ -255,8 +256,8 @@ namespace FPP.Services.Implement
 
     internal class BUInfo
     {
-        public int GroupUnitId { get; set; }
-        public string Code { get; set; } = string.Empty;
-        public int ColumnIndex { get; set; }
+        internal int GroupUnitId { get; set; }
+        internal string Code { get; set; } = string.Empty;
+        internal int ColumnIndex { get; set; }
     }
 }

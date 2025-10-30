@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Table, Card, Spin, ConfigProvider, Typography, Row, Col, DatePicker } from 'antd';
 import dayjs from 'dayjs';
 import axios from 'axios';
+import { CategoryType } from '../../helper/enum';
 
 const { Title } = Typography;
 
@@ -41,6 +42,24 @@ const AppContainer = () => {
         return [];
     }, [plData]);
 
+    const createSeparatorRow = key => {
+        const separatorRow = {
+            key,
+            name: '',
+            isSeparator: true,
+        };
+        bus.forEach(bu => {
+            separatorRow[bu] = '';
+        });
+        return separatorRow;
+    };
+
+    const calculateTotalByCategoryType = (categoryType, bu) => {
+        return plData
+            .filter(category => category.categoryType === categoryType)
+            .reduce((sum, category) => sum + (Number(category.monthlyTotalAmounts?.[bu]) || 0), 0);
+    };
+
     const renderFilters = () => (
         <Row className="report-filters" gutter={[32, 32]}>
             <Col span={6}>
@@ -67,8 +86,11 @@ const AppContainer = () => {
                 dataIndex: 'name',
                 key: 'name',
                 fixed: 'left',
-                width: 120,
+                width: 190,
                 render: (text, record) => {
+                    if (record.isSeparator) {
+                        return null;
+                    }
                     if (record.isCategory) {
                         return <strong>{text}</strong>;
                     } else if (record.isGrandTotal) {
@@ -84,9 +106,12 @@ const AppContainer = () => {
             title: bu,
             dataIndex: bu,
             key: bu,
-            width: 100,
+            width: 92,
             align: 'right',
             render: (text, record) => {
+                if (record.isSeparator) {
+                    return null;
+                }
                 const value = text || '0';
                 const formattedValue = Number(value).toLocaleString('en-US');
                 if (record.isCategory || record.isGrandTotal) {
@@ -106,7 +131,7 @@ const AppContainer = () => {
 
         const flatData = [];
 
-        plData.forEach(category => {
+        plData.forEach((category, categoryIndex) => {
             if (category.details && category.details.length) {
                 category.details.forEach((term, termIndex) => {
                     const termRow = {
@@ -123,51 +148,82 @@ const AppContainer = () => {
                 });
             }
 
-            const categoryRow = {
-                key: `category_${category.categoryId}`,
-                name: category.categoryName,
-                isCategory: true,
-            };
+            // Không hiển thị sum tổng của category nếu là Metadata
+            if (category.categoryType !== CategoryType.Metadata) {
+                const categoryRow = {
+                    key: `category_${category.categoryId}`,
+                    name: category.categoryName,
+                    isCategory: true,
+                };
 
-            bus.forEach(bu => {
-                categoryRow[bu] = category.monthlyTotalAmounts?.[bu] || 0;
-            });
+                bus.forEach(bu => {
+                    categoryRow[bu] = category.monthlyTotalAmounts?.[bu] || 0;
+                });
 
-            flatData.push(categoryRow);
+                flatData.push(categoryRow);
+            }
+
+            // Thêm separator row sau mỗi category (trừ category cuối cùng)
+            if (categoryIndex < plData.length) {
+                flatData.push(createSeparatorRow(`separator_${category.categoryId}`));
+            }
         });
 
         return flatData;
     }, [plData, bus]);
 
-    const calculateGrandTotals = () => {
+    const calculateTotals = () => {
         if (!plData.length) {
-            return null;
+            return [];
         }
 
-        const totalsRow = {
-            key: 'grand_total',
-            name: 'Grand Total',
+        const totalsRows = [];
+
+        // Calculate Total Income (categoryType = 2)
+        const totalIncomeRow = {
+            key: 'total_income',
+            name: 'Total Income',
+            isGrandTotal: true,
+        };
+
+        // Calculate Gross Profit (Total Income - categoryType = 3)
+        const grossProfitRow = {
+            key: 'gross_profit',
+            name: 'Gross Profit',
+            isGrandTotal: true,
+        };
+
+        // Calculate Net Profit (Gross Profit - categoryType = 4)
+        const netProfitRow = {
+            key: 'net_profit',
+            name: 'Net Profit',
             isGrandTotal: true,
         };
 
         bus.forEach(bu => {
-            totalsRow[bu] = plData.reduce(
-                (sum, category) => sum + (Number(category.monthlyTotalAmounts?.[bu]) || 0),
-                0
-            );
+            const totalIncome = calculateTotalByCategoryType(CategoryType.Income, bu);
+            const totalDirectExpense = calculateTotalByCategoryType(CategoryType.DirectExpense, bu);
+            const totalOtherExpense = calculateTotalByCategoryType(CategoryType.OtherExpense, bu);
+
+            totalIncomeRow[bu] = totalIncome;
+            grossProfitRow[bu] = totalIncome - totalDirectExpense;
+            netProfitRow[bu] = grossProfitRow[bu] - totalOtherExpense;
         });
 
-        return totalsRow;
+        totalsRows.push(totalIncomeRow, grossProfitRow, netProfitRow);
+        return totalsRows;
     };
 
     const tableData = useMemo(() => {
         return dataSource
-            .filter(item => !item.isSeparator)
-            .concat(calculateGrandTotals())
+            .concat(calculateTotals())
             .filter(Boolean);
-    }, [dataSource, bus]);
+    }, [dataSource, bus, plData]);
 
     const getRowClassName = record => {
+        if (record.isSeparator) {
+            return 'separator-row';
+        }
         if (record.isGrandTotal) {
             return 'grand-total-row';
         } else if (record.isCategory) {
@@ -194,14 +250,6 @@ const AppContainer = () => {
                             scroll={{ x: 'max-content', y: 'calc(100vh - 324px)' }}
                             bordered
                             rowClassName={getRowClassName}
-                            onRow={record => {
-                                if (record?.isSeparator) {
-                                    return {
-                                        className: 'separator-row',
-                                    };
-                                }
-                                return {};
-                            }}
                         />
                     </Spin>
                 </Card>

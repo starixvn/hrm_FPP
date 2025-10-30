@@ -8,6 +8,6 @@ public class GetProfitLostCriteria : CriteriaBase
 
     public override string GetSettingKey() => "MonthlyProfitLost_Get";
 
-    public override bool IsValid() => Month != DateTime.MinValue;
+    public override bool IsValid() => true;
 }
 
