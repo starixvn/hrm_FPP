@@ -1,32 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, message } from 'antd';
-import axios from 'axios';
+import React from 'react';
+import UploadHistoryTable from '../../../common/components/UploadHistoryTable';
+import PropTypes from 'prop-types';
 
-const UploadHistoryTable = ({ refetchData }) => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get('/CostExpense/GetUploadHistory');
-            setData(response.data);
-        } catch (error) {
-            message.error('Failed to fetch upload history');
-            console.info('Error fetching data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDownload = async (savedFileName, fileName) => {
-        window.location.href = `/CostExpense/DownloadExcel?savedFileName=${savedFileName}&fileName=${fileName}`;
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [refetchData]);
-
+const CostExpenseUploadHistoryTable = ({ refetchData }) => {
     const columns = [
         {
             title: 'BU ID',
@@ -45,14 +21,6 @@ const UploadHistoryTable = ({ refetchData }) => {
             dataIndex: 'fileName',
             key: 'fileName',
             align: 'center',
-            render: (text, record) => (
-                <Button
-                    type="link"
-                    onClick={() => handleDownload(record.savedFileName, record.fileName)}
-                >
-                    {text}
-                </Button>
-            ),
         },
         {
             title: 'Uploaded By',
@@ -70,17 +38,18 @@ const UploadHistoryTable = ({ refetchData }) => {
     ];
 
     return (
-        <Table
-            className="custom-table"
+        <UploadHistoryTable
+            refetchData={refetchData}
+            fetchEndpoint="/CostExpense/GetUploadHistory"
+            downloadEndpoint="/CostExpense/DownloadExcel"
             columns={columns}
-            dataSource={data}
-            loading={loading}
             rowKey={record => `${record.buId}-${record.createdDate}`}
-            pagination={{ pageSize: 10 }}
-            size="small"
-            bordered
         />
     );
 };
 
-export default UploadHistoryTable;
+CostExpenseUploadHistoryTable.propTypes = {
+    refetchData: PropTypes.any,
+};
+
+export default CostExpenseUploadHistoryTable;

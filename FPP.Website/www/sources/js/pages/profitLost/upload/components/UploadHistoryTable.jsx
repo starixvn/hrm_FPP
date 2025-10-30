@@ -1,34 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Button, message } from 'antd';
+import React from 'react';
+import { Button } from 'antd';
 import { FileExcelOutlined } from '@ant-design/icons';
-import axios from 'axios';
+import UploadHistoryTable from '../../../common/components/UploadHistoryTable';
 import CommonFunctions from '../../../../common/common-functions';
+import PropTypes from 'prop-types';
 
-const UploadHistoryTable = ({ refetchData }) => {
-    const [data, setData] = useState([]);
-    const [loading, setLoading] = useState(false);
-
-    const fetchData = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.get('/ProfitLost/GetUploadHistory');
-            setData(response.data);
-        } catch (error) {
-            message.error('Failed to fetch upload history');
-            console.info('Error fetching data:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleDownload = async (savedFileName, fileName) => {
-        window.location.href = `/ProfitLost/DownloadExcel?savedFileName=${savedFileName}&fileName=${fileName}`;
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, [refetchData]);
-
+const ProfitLostUploadHistoryTable = ({ refetchData }) => {
     const columns = [
         {
             title: 'Month',
@@ -45,11 +22,7 @@ const UploadHistoryTable = ({ refetchData }) => {
             align: 'left',
             ellipsis: true,
             render: (text, record) => (
-                <Button
-                    type="link"
-                    icon={<FileExcelOutlined />}
-                    onClick={() => handleDownload(record.savedFileName, record.fileName)}
-                >
+                <Button type="link" icon={<FileExcelOutlined />} onClick={() => {}}>
                     {text}
                 </Button>
             ),
@@ -70,17 +43,18 @@ const UploadHistoryTable = ({ refetchData }) => {
     ];
 
     return (
-        <Table
-            className="custom-table"
+        <UploadHistoryTable
+            refetchData={refetchData}
+            fetchEndpoint="/ProfitLost/GetUploadHistory"
+            downloadEndpoint="/ProfitLost/DownloadExcel"
             columns={columns}
-            dataSource={data}
-            loading={loading}
             rowKey={record => `${record.month}-${record.createdDate}-${record.fileName}`}
-            pagination={{ pageSize: 10 }}
-            size="small"
-            bordered
         />
     );
 };
 
-export default UploadHistoryTable;
+ProfitLostUploadHistoryTable.propTypes = {
+    refetchData: PropTypes.any,
+};
+
+export default ProfitLostUploadHistoryTable;
