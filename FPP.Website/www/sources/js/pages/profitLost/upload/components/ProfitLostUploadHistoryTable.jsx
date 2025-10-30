@@ -21,7 +21,7 @@ const ProfitLostUploadHistoryTable = ({ refetchData }) => {
             key: 'fileName',
             align: 'left',
             ellipsis: true,
-            render: (text, record) => (
+            render: (text, _record) => (
                 <Button type="link" icon={<FileExcelOutlined />} onClick={() => {}}>
                     {text}
                 </Button>
