@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import UploadFile from '../../../common/components/UploadFile';
 import ProfitLostUploadHistoryTable from './ProfitLostUploadHistoryTable';
-import { Card, Typography } from 'antd';
+import { Card, Typography, Button } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
@@ -16,9 +17,28 @@ const AppContainer = ({ isHost }) => {
         <div>
             {isHost && (
                 <Card className="upload-card">
-                    <Title level={2} className="page-title">
-                        BU P&L Upload
-                    </Title>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: 16,
+                        }}
+                    >
+                        <Title level={2} className="page-title" style={{ margin: 0 }}>
+                            BU P&L Upload
+                        </Title>
+                        <Button
+                            className="btn-download"
+                            type="default"
+                            icon={<DownloadOutlined />}
+                            onClick={() => {
+                                window.location.href = '/ProfitLost/DownloadTemplate';
+                            }}
+                        >
+                            Download Template
+                        </Button>
+                    </div>
                     <UploadFile
                         uploadEndpoint="/ProfitLost/UploadExcel"
                         onUploadSuccess={handleUploadSuccess}

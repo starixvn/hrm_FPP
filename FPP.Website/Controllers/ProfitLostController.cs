@@ -6,6 +6,7 @@ using FPP.Services.Interfaces;
 using FPP.Website.Filters;
 using GO.UserControl.Client.Core.Enumerables;
 using GO.UserControl.Client.Core.Session;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers;
@@ -14,7 +15,8 @@ public class ProfitLostController(
     IUserControlSession session,
     IMinIOService minIOService,
     IBaseService baseService,
-    IProfitLostService profitLostService) : BaseController(session)
+    IProfitLostService profitLostService,
+    IWebHostEnvironment environment) : BaseController(session)
 {
     [FppPermission(Policy.Read, FunctionKey.BUPLUpload)]
     public IActionResult Upload()
@@ -67,6 +69,17 @@ public class ProfitLostController(
         var criteria = new GetProfitLostHistoryCriteria();
         var result = await baseService.GetDataAsync<ProfitLostHistory>(criteria);
         return new JsonResult(result);
+    }
+
+    [FppPermission(Policy.Read, FunctionKey.BUPLUpload)]
+    public IActionResult DownloadTemplate()
+    {
+        var templatePath = Path.Combine(environment.ContentRootPath, "ExcelTemplates", "BU P&L Upload Template.xlsx");
+        if (!System.IO.File.Exists(templatePath))
+        {
+            return NotFound("Template file not found.");
+        }
+        return PhysicalFile(templatePath, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BU P&L Upload Template.xlsx");
     }
 
     [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
