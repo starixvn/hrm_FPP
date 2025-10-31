@@ -25,7 +25,7 @@ const AppContainer = ({ isHost }) => {
                             marginBottom: 16,
                         }}
                     >
-                        <Title level={2} className="page-title" style={{ margin: 0 }}>
+                        <Title level={4} className="page-title" style={{ margin: 0 }}>
                             BU P&L Upload
                         </Title>
                         <Button
@@ -46,7 +46,7 @@ const AppContainer = ({ isHost }) => {
                 </Card>
             )}
             <Card className="history-card" style={{ marginTop: 24 }}>
-                <Title level={2} className="page-title">
+                <Title level={4} className="page-title">
                     Upload History
                 </Title>
                 <ProfitLostUploadHistoryTable refetchData={refreshKey} />

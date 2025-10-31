@@ -8,6 +8,30 @@
     color: #fff !important;
 }
 
+.upload-card {
+    margin-top: 12px;
+
+    .ant-card-body {
+        padding: 12px;
+    }
+
+    >div:first-child {
+        margin-bottom: 10px !important;
+    }
+}
+
+.history-card {
+    margin-top: 16px !important;
+
+    .ant-card-body {
+        padding: 12px;
+    }
+
+    .page-title {
+        margin-bottom: 10px !important;
+    }
+}
+
 .ant-table {
     .ant-table-thead>tr>th {
         background-color: #f0f2f5;
@@ -147,12 +171,25 @@
     cursor: not-allowed;
 }
 
+.ant-upload-list-item-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .ant-upload-list-item {
     flex-direction: row-reverse;
     justify-content: flex-end;
 
     .ant-upload-list-item-name {
         text-align: right;
+    }
+
+    [data-icon="delete"] {
+        color: #ff4d4f;
+
+        &:hover {
+            color: #ff7875;
+        }
     }
 }
 
@@ -166,4 +203,37 @@
 .custom-table .ant-table-thead>tr>th {
     background-color: #47638d !important;
     color: white !important;
+}
+
+.upload-content {
+    .upload-dragger {
+
+        .ant-upload-drag-icon {
+            margin-bottom: 8px;
+
+            .anticon {
+                font-size: 32px;
+            }
+        }
+
+        .ant-upload-text {
+            margin-bottom: 4px;
+            font-size: 13px;
+        }
+
+        .ant-upload-hint {
+            margin-bottom: 4px;
+        }
+    }
+
+    .upload-button-container {
+        margin-top: 10px;
+
+        .upload-button {
+            height: 40px;
+            max-width: 130px;
+            font-size: 15px;
+            margin-top: 0;
+        }
+    }
 }
