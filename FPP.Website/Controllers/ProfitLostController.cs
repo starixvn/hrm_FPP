@@ -105,7 +105,7 @@ public class ProfitLostController(
     {
         var res = await profitLostService.GetProfitLostExcelAsync(month);
         var excelBytes = await profitLostService.ExportProfitLostToExcelAsync(res, month);
-        var fileName = $"BU P&L Upload_{DateTimeOffset.Now.DateTime:yyyy-MM-dd}.xlsx";
+        var fileName = $"BU P&L_{DateTimeOffset.Now.DateTime:yyyy-MM-dd}.xlsx";
 
         return File(excelBytes, "application/octet-stream", fileName);
     }
