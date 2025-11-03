@@ -343,6 +343,16 @@ namespace FPP.Services.Implement
             );
 
             allRows.AddRange(
+                response.Categories
+                    .Where(c => c.MonthlyTotalAmounts != null)
+                    .Select(c => new ProfitLostRow
+                    {
+                        Name = c.CategoryName,
+                        BUAmounts = c.MonthlyTotalAmounts
+                    })
+            );
+
+            allRows.AddRange(
                 response.Totals.Select(t => new ProfitLostRow
                 {
                     Name = t.Name,
