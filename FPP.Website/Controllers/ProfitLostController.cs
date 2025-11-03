@@ -82,14 +82,14 @@ public class ProfitLostController(
     }
 
     [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
-    public IActionResult Report()
+    public IActionResult ConsolidationReport()
     {
         return View();
     }
 
     [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
     [HttpGet]
-    public async Task<IActionResult> GetProfitLost(DateTime month)
+    public async Task<IActionResult> GetConsolidationProfitLost(DateTime month)
     {
         var res = await profitLostService.GetProfitLostExcelAsync(month);
         return new JsonResult(res);
@@ -97,7 +97,7 @@ public class ProfitLostController(
 
     [HttpGet]
     [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
-    public async Task<IActionResult> ExportProfitLost(DateTime month)
+    public async Task<IActionResult> ExportConsolidationProfitLost(DateTime month)
     {
         var res = await profitLostService.GetProfitLostExcelAsync(month);
         var excelBytes = await profitLostService.ExportProfitLostToExcelAsync(res, month);

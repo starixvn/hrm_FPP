@@ -19,7 +19,7 @@ const AppContainer = () => {
             const params = {
                 month: selectedMonth.format('YYYY-MM'),
             };
-            const response = await axios.get(`/ProfitLost/GetProfitLost`, { params });
+            const response = await axios.get(`/ProfitLost/GetConsolidationProfitLost`, { params });
             setData({
                 categories: response.data.categories || [],
                 totals: response.data.totals || [],
@@ -77,7 +77,9 @@ const AppContainer = () => {
                         type="default"
                         icon={<DownloadOutlined />}
                         onClick={() => {
-                            window.location.href = `/ProfitLost/ExportProfitLost?month=${selectedMonth.format('YYYY-MM')}`;
+                            window.location.href = `/ProfitLost/ExportConsolidationProfitLost?month=${selectedMonth.format(
+                                'YYYY-MM'
+                            )}`;
                         }}
                     >
                         Export Excel
