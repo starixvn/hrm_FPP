@@ -6,7 +6,6 @@ using FPP.Models.ProfitLost;
 using FPP.Services.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Globalization;
@@ -328,34 +327,8 @@ namespace FPP.Services.Implement
             const string monthCell = "C1";
             sheet.Cells[monthCell].Value = month;
 
-            // Map Term from template
-            int termCol = 2;        // B column
-            int startRow = 6;       // B6
-            int endRow = 139;       // B139
-
-            var termRowMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-
-            for (int row = startRow; row <= endRow; row++)
-            {
-                string? cellValue = sheet.Cells[row, termCol].Text?.Trim();
-                if (!string.IsNullOrWhiteSpace(cellValue))
-                {
-                    string key = cellValue;
-                    if (!termRowMap.ContainsKey(key))
-                        termRowMap[key] = row;
-                }
-            }
-
-            // Map BU from template
-            int headerRow = 5; // BU headers row
-            var buColMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-
-            for (int col = 1; col <= sheet.Dimension.End.Column; col++)
-            {
-                var val = sheet.Cells[headerRow, col].Text?.Trim();
-                if (!string.IsNullOrWhiteSpace(val))
-                    buColMap[NormalizeKey(val)] = col;
-            }
+            var termRowMap = MapTermFromTemplate(sheet);
+            var buColMap = MapBUFromTemplate(sheet);
 
             var allRows = new List<ProfitLostRow>();
 
@@ -393,7 +366,10 @@ namespace FPP.Services.Implement
                     var buKey = NormalizeKey(bu.Key);
 
                     if (!buColMap.TryGetValue(buKey, out int col))
+                    {
                         continue;
+                    }
+                        
                     sheet.Cells[targetRow, col].Value = bu.Value;
                 }
             }
@@ -404,6 +380,49 @@ namespace FPP.Services.Implement
             await using var ms = new MemoryStream();
             await outputPackage.SaveAsAsync(ms);
             return ms.ToArray();
+        }
+
+        private static Dictionary<string, int> MapTermFromTemplate(ExcelWorksheet sheet)
+        {
+            const int termCol = 2;        // B column
+            const int startRow = 6;       // B6
+            const int endRow = 139;       // B139
+
+            var termRowMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            for (int row = startRow; row <= endRow; row++)
+            {
+                string? cellValue = sheet.Cells[row, termCol].Text?.Trim();
+                if (!string.IsNullOrWhiteSpace(cellValue))
+                {
+                    string key = cellValue;
+                    if (!termRowMap.ContainsKey(key))
+                    {
+                        termRowMap[key] = row;
+                    }
+
+                }
+            }
+
+            return termRowMap;
+        }
+
+        private static Dictionary<string, int> MapBUFromTemplate(ExcelWorksheet sheet)
+        {
+            const int headerRow = 5; // BU headers row
+            var buColMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            for (int col = 1; col <= sheet.Dimension.End.Column; col++)
+            {
+                var val = sheet.Cells[headerRow, col].Text?.Trim();
+                if (!string.IsNullOrWhiteSpace(val))
+                {
+                    buColMap[NormalizeKey(val)] = col;
+                }
+
+            }
+
+            return buColMap;
         }
 
         private static string NormalizeKey(string input)

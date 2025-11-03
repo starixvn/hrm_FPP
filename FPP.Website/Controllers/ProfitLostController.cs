@@ -2,14 +2,11 @@ using FPP.Core.Constants;
 using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Criteria.ProfitLost;
 using FPP.Core.Services;
-using FPP.Models.InterInvoice;
 using FPP.Models.ProfitLost;
-using FPP.Services.Implement;
 using FPP.Services.Interfaces;
 using FPP.Website.Filters;
 using GO.UserControl.Client.Core.Enumerables;
 using GO.UserControl.Client.Core.Session;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FPP.Website.Controllers;
