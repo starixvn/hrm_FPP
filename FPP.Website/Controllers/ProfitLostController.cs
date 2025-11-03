@@ -1,5 +1,4 @@
 using FPP.Core.Constants;
-using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Criteria.ProfitLost;
 using FPP.Core.Services;
 using FPP.Models.ProfitLost;
