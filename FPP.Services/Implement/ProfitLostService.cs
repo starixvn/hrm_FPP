@@ -4,7 +4,9 @@ using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Models.ProfitLost;
 using FPP.Services.Interfaces;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting.Internal;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using System.Globalization;
@@ -13,8 +15,10 @@ using System.Text;
 namespace FPP.Services.Implement
 {
     public class ProfitLostService(
-        IBaseService baseService) : IProfitLostService
+        IBaseService baseService,
+        IWebHostEnvironment hostingEnvironment) : IProfitLostService
     {
+        private const string ProfitLostExportTemplate = "ExcelTemplates/BU P&L Upload Template.xlsx";
         private const int SheetIndex = 0;
         private const int MonthCellRow = 1; // Row 1
         private const int MonthCellCol = 3; // Column C (C1)
@@ -310,6 +314,106 @@ namespace FPP.Services.Implement
             };
         }
 
+        public async Task<byte[]> ExportProfitLostToExcelAsync(ProfitLostReportResponse response, DateTime month)
+        {
+            var templatePath = Path.Combine(hostingEnvironment.ContentRootPath, ProfitLostExportTemplate);
+
+            await using var templateStream = new FileStream(templatePath, FileMode.Open, FileAccess.Read);
+            using var templatePackage = new ExcelPackage(templateStream);
+            using var outputPackage = new ExcelPackage();
+
+            var templateSheet = templatePackage.Workbook.Worksheets[0];
+            var sheet = outputPackage.Workbook.Worksheets.Add("BU P&L", templateSheet);
+
+            const string monthCell = "C1";
+            sheet.Cells[monthCell].Value = month;
+
+            // Map Term from template
+            int termCol = 2;        // B column
+            int startRow = 6;       // B6
+            int endRow = 139;       // B139
+
+            var termRowMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            for (int row = startRow; row <= endRow; row++)
+            {
+                string? cellValue = sheet.Cells[row, termCol].Text?.Trim();
+                if (!string.IsNullOrWhiteSpace(cellValue))
+                {
+                    string key = cellValue;
+                    if (!termRowMap.ContainsKey(key))
+                        termRowMap[key] = row;
+                }
+            }
+
+            // Map BU from template
+            int headerRow = 5; // BU headers row
+            var buColMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            for (int col = 1; col <= sheet.Dimension.End.Column; col++)
+            {
+                var val = sheet.Cells[headerRow, col].Text?.Trim();
+                if (!string.IsNullOrWhiteSpace(val))
+                    buColMap[NormalizeKey(val)] = col;
+            }
+
+            var allRows = new List<ProfitLostRow>();
+
+            allRows.AddRange(
+                response.Categories
+                    .SelectMany(c => c.Details)
+                    .Select(d => new ProfitLostRow
+                    {
+                        Name = d.TermName,
+                        BUAmounts = d.BUAmounts
+                    })
+            );
+
+            allRows.AddRange(
+                response.Totals.Select(t => new ProfitLostRow
+                {
+                    Name = t.Name,
+                    BUAmounts = t.BUAmounts
+                })
+            );
+
+
+            foreach (var detail in allRows)
+            {
+                string key = detail.Name;
+
+                if (!termRowMap.TryGetValue(key, out int targetRow))
+                {
+                    continue;
+                }
+
+
+                foreach (var bu in detail.BUAmounts)
+                {
+                    var buKey = NormalizeKey(bu.Key);
+
+                    if (!buColMap.TryGetValue(buKey, out int col))
+                        continue;
+                    sheet.Cells[targetRow, col].Value = bu.Value;
+                }
+            }
+
+            sheet.View.FreezePanes(1, 3);
+
+
+            await using var ms = new MemoryStream();
+            await outputPackage.SaveAsAsync(ms);
+            return ms.ToArray();
+        }
+
+        private static string NormalizeKey(string input)
+        {
+            return input?
+                .Replace(" ", "")
+                .Replace("-", "")
+                .Trim()
+                .ToUpperInvariant() ?? "";
+        }
     }
 
     internal class BUInfo

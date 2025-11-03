@@ -1,7 +1,10 @@
 using FPP.Core.Constants;
+using FPP.Core.Criteria.InterInvoice;
 using FPP.Core.Criteria.ProfitLost;
 using FPP.Core.Services;
+using FPP.Models.InterInvoice;
 using FPP.Models.ProfitLost;
+using FPP.Services.Implement;
 using FPP.Services.Interfaces;
 using FPP.Website.Filters;
 using GO.UserControl.Client.Core.Enumerables;
@@ -94,6 +97,17 @@ public class ProfitLostController(
     {
         var res = await profitLostService.GetProfitLostExcelAsync(month);
         return new JsonResult(res);
+    }
+
+    [HttpGet]
+    [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
+    public async Task<IActionResult> ExportProfitLost(DateTime month)
+    {
+        var res = await profitLostService.GetProfitLostExcelAsync(month);
+        var excelBytes = await profitLostService.ExportProfitLostToExcelAsync(res, month);
+        var fileName = $"BU P&L Upload_{DateTimeOffset.Now.DateTime:yyyy-MM-dd}.xlsx";
+
+        return File(excelBytes, "application/octet-stream", fileName);
     }
 }
 

@@ -44,5 +44,11 @@ namespace FPP.Models.ProfitLost
         public IEnumerable<MonthlyProfitLostCategory> Categories { get; set; }
         public IEnumerable<ProfitLostTotal> Totals { get; set; }
     }
+
+    public class ProfitLostRow
+    {
+        public string Name { get; set; }
+        public Dictionary<string, decimal> BUAmounts { get; set; }
+    }
 }
 

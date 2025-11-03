@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Card, Spin, ConfigProvider, Typography, Row, Col, DatePicker } from 'antd';
+import { Table, Card, Spin, ConfigProvider, Typography, Row, Col, DatePicker, Button } from 'antd';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import { CategoryType } from '../../helper/enum';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { Title } = Typography;
 
@@ -71,6 +72,16 @@ const AppContainer = () => {
                         style={{ width: '100%' }}
                         allowClear
                     />
+                    <Button
+                        className="btn-download"
+                        type="default"
+                        icon={<DownloadOutlined />}
+                        onClick={() => {
+                            window.location.href = `/ProfitLost/ExportProfitLost?month=${selectedMonth.format('YYYY-MM')}`;
+                        }}
+                    >
+                        Export Excel
+                    </Button>
                 </div>
             </Col>
         </Row>
