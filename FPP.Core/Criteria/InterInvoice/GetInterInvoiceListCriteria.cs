@@ -6,6 +6,7 @@ public class GetInterInvoiceListCriteria : CriteriaBase
 {
     public int? BillerUnitId { get; set; }
     public int? PayerUnitId { get; set; }
+    public DateTime Month { get; set; }
     public bool? IsGlobal { get; set; }
     public int? EmpId { get; set; }
 

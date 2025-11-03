@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Row, Col, Select, Button } from 'antd';
+import { Form, Row, Col, Select, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { fetchBuList } from '../../helper/service';
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 
@@ -22,6 +23,7 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
         const params = {
             billerUnitId: values.billerUnitId === 'all' ? undefined : values.billerUnitId,
             payerUnitId: values.payerUnitId === 'all' ? undefined : values.payerUnitId,
+            month: values.month ? values.month : dayjs(),
         };
         onFilter(params);
     };
@@ -30,6 +32,7 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
         const params = {
             billerUnitId: values.billerUnitId === 'all' ? undefined : values.billerUnitId,
             payerUnitId: values.payerUnitId === 'all' ? undefined : values.payerUnitId,
+            month: values.month ? values.month : dayjs(),
         };
         onExportExcel(params);
     };
@@ -39,9 +42,16 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
     };
 
     return (
-        <Form form={form} onFinish={handleFilter} layout="vertical">
+        <Form
+            form={form}
+            onFinish={handleFilter}
+            layout="vertical"
+            initialValues={{
+                month: dayjs(),
+            }}
+        >
             <Row gutter={16} align="middle">
-                <Col span={6}>
+                <Col span={4}>
                     <Form.Item name="billerUnitId" label="Biller" initialValue="all">
                         <Select
                             placeholder="Select Biller"
@@ -61,7 +71,7 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
                         </Select>
                     </Form.Item>
                 </Col>
-                <Col span={6}>
+                <Col span={4}>
                     <Form.Item name="payerUnitId" label="Payer" initialValue="all">
                         <Select
                             placeholder="Select Payer"
@@ -82,16 +92,38 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
                     </Form.Item>
                 </Col>
                 <Col span={4}>
-                    <Button type="primary" icon={<DownloadOutlined />} onClick={() => handleExportExcel(form.getFieldsValue())}>Export</Button>
+                    <Form.Item name="month" label="Month">
+                        <DatePicker
+                            onChange={value => {
+                                form.setFieldValue('month', value);
+                                handleFilter({
+                                    ...form.getFieldsValue(),
+                                    month: value,
+                                });
+                            }}
+                            format="YYYY-MM"
+                            picker="month"
+                            placeholder="Select Month"
+                            style={{ width: '100%' }}
+                            allowClear
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={4}>
+                    <Button
+                        type="primary"
+                        icon={<DownloadOutlined />}
+                        onClick={() => handleExportExcel(form.getFieldsValue())}
+                    >
+                        Export
+                    </Button>
                 </Col>
                 {isHost && (
                     <Col span={8} className="create-button-group">
                         <div className="create-button-container">
                             <Button
                                 type="primary"
-                                onClick={() =>
-                                    onClickCreate('/interInvoice/create?isMultiple=1')
-                                }
+                                onClick={() => onClickCreate('/interInvoice/create?isMultiple=1')}
                             >
                                 Create Multiple Invoices
                             </Button>
