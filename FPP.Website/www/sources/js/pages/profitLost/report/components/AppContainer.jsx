@@ -115,7 +115,6 @@ const AppContainer = () => {
             dataIndex: bu,
             key: bu,
             width: 92,
-            align: 'right',
             render: (text, record) => {
                 if (record.isSeparator) {
                     return null;
@@ -200,10 +199,12 @@ const AppContainer = () => {
         });
     };
 
-    const tableData = useMemo(
-        () => dataSource.concat(formatTotalsFromBackend()).filter(Boolean),
-        [dataSource, bus, data.totals]
-    );
+    const tableData = useMemo(() => {
+        if (!data.categories.length) {
+            return [];
+        }
+        return dataSource.concat(formatTotalsFromBackend()).filter(Boolean);
+    }, [dataSource, bus, data.totals, data.categories.length]);
 
     const getRowClassName = record => {
         if (record.isSeparator) {

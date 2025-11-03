@@ -125,7 +125,6 @@ const AppContainer = () => {
             dataIndex: month,
             key: month,
             width: 60,
-            align: 'right',
             render: (text, record) => {
                 const value = text || '0';
                 const formattedValue = Number(value).toLocaleString('en-US');
