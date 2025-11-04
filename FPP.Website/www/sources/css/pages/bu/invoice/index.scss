@@ -1,0 +1,150 @@
+.report-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    .report-card {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+
+        .ant-card-head {
+            background-color: #fafafa;
+            border-bottom: 1px solid #e8e8e8;
+
+            .ant-card-head-title {
+                color: #1890ff;
+                font-weight: 600;
+            }
+        }
+
+        .ant-card-body {
+            padding: 10px 24px;
+        }
+    }
+
+    .report-filters {
+        margin-bottom: 20px;
+
+        .filter-item {
+            label {
+                display: block;
+                margin-bottom: 4px;
+            }
+        }
+
+        .filter-actions {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            padding-top: 20px;
+        }
+
+        .ant-picker {
+            width: 100%;
+        }
+    }
+
+    .bu-report-table {
+        .ant-table-expanded-row-fixed::after {
+            border: 0 !important;
+        }
+
+        .ant-table {
+            .ant-table-cell {
+                padding: 5px !important;
+            }
+
+            .ant-table-tbody {
+                .ant-table-row:hover {
+                    .ant-table-cell {
+                        background-color: #e6f7ff !important;
+                    }
+                }
+
+                .ant-table-cell:hover {
+                    background-color: #bae7ff !important;
+                }
+            }
+        }
+
+        .ant-table-thead {
+            .ant-table-cell {
+                font-weight: 600;
+                background-color: #5273a5 !important;
+                border-color: #607fac !important;
+                text-align: center !important;
+                color: white !important;
+
+                .ant-table-column-sorter {
+                    .ant-table-column-sorter-inner {
+
+                        .ant-table-column-sorter-up.active,
+                        .ant-table-column-sorter-down.active {
+                            color: #ff4d4f;
+                        }
+                    }
+                }
+            }
+
+            .confirmed-header {
+                color: #73d13d !important;
+            }
+
+            .pending-header {
+                color: #ffc53d !important;
+            }
+
+            .rejected-header {
+                color: #ff4d4f !important;
+            }
+        }
+
+        .ant-table-summary {
+            .ant-table-cell {
+                font-weight: bold;
+                background-color: #f5f5f5;
+
+                .summary-value-negative {
+                    color: #ff4d4f;
+                }
+
+                .summary-value-positive {
+                    color: inherit;
+                }
+
+                .summary-value-bold {
+                    font-weight: bold;
+                }
+
+                .summary-label {
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+    .ant-spin-container {
+        min-height: 400px;
+    }
+
+    .negative-value {
+        color: #ff4d4f;
+    }
+
+    .positive-value {
+        color: inherit;
+    }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+    .report-container {
+        padding: 10px;
+
+        .report-filters {
+            .filter-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    }
+}

@@ -35,6 +35,7 @@ function generateConfig(environment) {
                 pathConfig.scriptPaths.interInvoice_edit_index,
             [`${jsPath}/pages/interInvoice/report/index`]:
                 pathConfig.scriptPaths.interInvoice_report_index,
+            [`${jsPath}/pages/bu/invoice/index`]: pathConfig.scriptPaths.bu_index,
             /*css*/
             [`${cssPath}/pages/login`]: pathConfig.cssPaths.login,
             [`${cssPath}/pages/error`]: pathConfig.cssPaths.error,
@@ -55,6 +56,7 @@ function generateConfig(environment) {
                 pathConfig.cssPaths.interInvoice_detail_index,
             [`${cssPath}/pages/interInvoice/report/index`]:
                 pathConfig.cssPaths.interInvoice_report_index,
+            [`${cssPath}/pages/bu/invoice/index`]: pathConfig.cssPaths.bu_index,
         },
         output: {
             path: pathConfig.projectRoot,

@@ -18,4 +18,5 @@ public static class FunctionKey
 
     public const string GlobalInvoice = "GlobalInvoice";
 
+    public const string BUInvoiceSummary = "BUInvoiceSummary";
 }

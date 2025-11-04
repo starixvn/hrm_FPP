@@ -29,7 +29,6 @@ const AppContainer = () => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/InterInvoice/GetPreparedData');
-                debugger;
 
                 setPayerOptions(response.data.units);
                 setBillerOptions(

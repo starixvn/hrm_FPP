@@ -5,14 +5,14 @@ import dayjs from 'dayjs';
 import axios from 'axios';
 
 const { Title } = Typography;
-const { Summary} = Table;
+const { Summary } = Table;
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(false);
     const [buData, setBuData] = useState([]);
     const currentMonth = dayjs();
     const [filters, setFilters] = useState({
-        month: currentMonth.format('YYYY-MM')
+        month: currentMonth.format('YYYY-MM'),
     });
     const [selectedMonth, setSelectedMonth] = useState(currentMonth);
 
@@ -20,11 +20,7 @@ const AppContainer = () => {
         const unitData = record.units?.find(u => u.name === unitName);
         const value = unitData ? unitData.value : 0;
         const formattedValue = value.toLocaleString('en-US');
-        return (
-            <span style={{ color: value < 0 ? '#ff4d4f' : 'inherit' }}>
-                {formattedValue}
-            </span>
-        );
+        return <span style={{ color: value < 0 ? '#ff4d4f' : 'inherit' }}>{formattedValue}</span>;
     };
 
     const renderSummaryRow = pageData => {
@@ -52,10 +48,12 @@ const AppContainer = () => {
                         const formattedTotal = totalValue.toLocaleString('en-US');
                         return (
                             <Summary.Cell key={`total_${index}`} index={index + 5} align="right">
-                                <span style={{ 
-                                    color: totalValue < 0 ? '#ff4d4f' : 'inherit',
-                                    fontWeight: 'bold'
-                                }}>
+                                <span
+                                    style={{
+                                        color: totalValue < 0 ? '#ff4d4f' : 'inherit',
+                                        fontWeight: 'bold',
+                                    }}
+                                >
                                     {formattedTotal}
                                 </span>
                             </Summary.Cell>
@@ -68,47 +66,47 @@ const AppContainer = () => {
 
     const generateColumns = () => {
         const baseColumns = [
-        {
-            title: 'BU',
-            key: 'bu',
-            width: 90,
-            render: (_, record) => `${record.buId} - ${record.buCode}`,
-            sorter: (a, b) => a.buId - b.buId,
-            fixed: 'left'
-        },
-        {
-            title: 'BU Category',
-            dataIndex: 'buCategory',
-            key: 'buCategory',
-            width: 120,
-            sorter: (a, b) => a.buCategory.localeCompare(b.buCategory),
-            sortDirections: ['ascend', 'descend'],
-            fixed: 'left'
-        },
-        {
-            title: 'BU Type',
-            dataIndex: 'buType',
-            key: 'buType',
-            width: 120,
-            sorter: (a, b) => a.buType.localeCompare(b.buType),
-            fixed: 'left'
-        },
-        {
-            title: 'Accountable Area',
-            dataIndex: 'accountableArea',
-            key: 'accountableArea',
-            width: 180,
-            sorter: (a, b) => a.accountableArea.localeCompare(b.accountableArea),
-            fixed: 'left'
-        },
-        {
-            title: 'BU PIC Name',
-            dataIndex: 'buPicName',
-            key: 'buPicName',
-            width: 150,
-            sorter: (a, b) => a.buPicName.localeCompare(b.buPicName),
-            fixed: 'left'
-        },
+            {
+                title: 'BU',
+                key: 'bu',
+                width: 90,
+                render: (_, record) => `${record.buId} - ${record.buCode}`,
+                sorter: (a, b) => a.buId - b.buId,
+                fixed: 'left',
+            },
+            {
+                title: 'BU Category',
+                dataIndex: 'buCategory',
+                key: 'buCategory',
+                width: 120,
+                sorter: (a, b) => a.buCategory.localeCompare(b.buCategory),
+                sortDirections: ['ascend', 'descend'],
+                fixed: 'left',
+            },
+            {
+                title: 'BU Type',
+                dataIndex: 'buType',
+                key: 'buType',
+                width: 120,
+                sorter: (a, b) => a.buType.localeCompare(b.buType),
+                fixed: 'left',
+            },
+            {
+                title: 'Accountable Area',
+                dataIndex: 'accountableArea',
+                key: 'accountableArea',
+                width: 180,
+                sorter: (a, b) => a.accountableArea.localeCompare(b.accountableArea),
+                fixed: 'left',
+            },
+            {
+                title: 'BU PIC Name',
+                dataIndex: 'buPicName',
+                key: 'buPicName',
+                width: 150,
+                sorter: (a, b) => a.buPicName.localeCompare(b.buPicName),
+                fixed: 'left',
+            },
         ];
 
         const costCenterColumns = [];
@@ -119,7 +117,7 @@ const AppContainer = () => {
                     key: `unit_${index}`,
                     width: 105,
                     align: 'right',
-                    render: renderCostCenterValue(unit.name)
+                    render: renderCostCenterValue(unit.name),
                 });
             });
         }
@@ -134,7 +132,7 @@ const AppContainer = () => {
         if (date) {
             setFilters(prev => ({
                 ...prev,
-                month: date.format('YYYY-MM')
+                month: date.format('YYYY-MM'),
             }));
         }
     };
@@ -159,9 +157,9 @@ const AppContainer = () => {
                     </Col>
                     <Col xs={24} sm={12} md={8} lg={6}>
                         <div className="filter-actions">
-                            <Button 
-                                type="primary" 
-                                icon={<DownloadOutlined />} 
+                            <Button
+                                type="primary"
+                                icon={<DownloadOutlined />}
                                 onClick={handleExport}
                                 loading={loading}
                             >
@@ -180,12 +178,14 @@ const AppContainer = () => {
         if (response?.data) {
             setBuData(response.data);
         }
-        
+
         setLoading(false);
     };
 
     const handleExport = async () => {
-        window.location.href = `/InterInvoice/ExportInvoiceReport?month=${selectedMonth.format('YYYY-MM')}`;
+        window.location.href = `/InterInvoice/ExportInvoiceReport?month=${selectedMonth.format(
+            'YYYY-MM'
+        )}`;
     };
 
     useEffect(() => {
@@ -196,7 +196,7 @@ const AppContainer = () => {
         <div className="report-container">
             <ConfigProvider>
                 <Card
-                    title={<Title level={4}>Inter Invoice Report</Title>}
+                    title={<Title level={4}>Group Invoice Summary</Title>}
                     className="report-card"
                 >
                     {renderFilters()}
