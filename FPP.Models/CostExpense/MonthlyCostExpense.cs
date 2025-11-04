@@ -1,9 +1,12 @@
+using FPP.Models.ProfitLost;
+
 namespace FPP.Models.CostExpense
 {
     public class MonthlyCostExpenseCategory
     {
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
+        public int CategoryType { get; set; }
         public Dictionary<string, decimal> MonthlyTotalAmounts { get; set; }
         public IEnumerable<MonthlyCostExpenseDetail> Details { get; set; }
     }
@@ -21,6 +24,7 @@ namespace FPP.Models.CostExpense
         public string TermName { get; set; }
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
+        public int CategoryType { get; set; }
         public DateTime Month { get; set; }
         public decimal Amount { get; set; }
     }

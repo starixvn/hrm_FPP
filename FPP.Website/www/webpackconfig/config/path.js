@@ -27,6 +27,7 @@ const scriptPaths = {
     costExpense_upload_index: ['./www/sources/js/pages/costExpense/upload/index.jsx'],
     costExpense_report_index: ['./www/sources/js/pages/costExpense/report/index.jsx'],
     profitLost_upload_index: ['./www/sources/js/pages/profitLost/upload/index.jsx'],
+    profitLost_unit_report_index: ['./www/sources/js/pages/profitLost/unitReport/index.jsx'],
     profitLost_consolidation_report_index: [
         './www/sources/js/pages/profitLost/consolidationReport/index.jsx',
     ],

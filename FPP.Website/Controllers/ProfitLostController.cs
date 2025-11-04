@@ -12,6 +12,7 @@ namespace FPP.Website.Controllers;
 
 public class ProfitLostController(
     IUserControlSession session,
+    ICommonService commonService,
     IMinIOService minIOService,
     IBaseService baseService,
     IProfitLostService profitLostService,
@@ -87,11 +88,34 @@ public class ProfitLostController(
         return View();
     }
 
+    [FppPermission(Policy.Read, FunctionKey.BUPLMyBUData, FunctionKey.BUPLGroupBUData)]
+    public IActionResult UnitReport()
+    {
+        return View();
+    }
+
+    [FppPermission(Policy.Read, FunctionKey.BUPLMyBUData, FunctionKey.BUPLGroupBUData)]
+    public async Task<IActionResult> GetAccessibleUnits()
+    {
+        var accessibleUnits = await commonService.GetAccessibleUnitsByEmpId(EmployeeSession.EmpId);
+        return new JsonResult(accessibleUnits);
+    }
+
+
+
     [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
     [HttpGet]
     public async Task<IActionResult> GetConsolidationProfitLost(DateTime month)
     {
-        var res = await profitLostService.GetProfitLostExcelAsync(month);
+        var res = await profitLostService.GetConsolidateProfitLostAsync(month);
+        return new JsonResult(res);
+    }
+
+    [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
+    [HttpGet]
+    public async Task<IActionResult> GetUnitProfitLost(int year, int groupUnitId)
+    {
+        var res = await profitLostService.GetUnitProfitLostAsync(year, groupUnitId);
         return new JsonResult(res);
     }
 
@@ -99,9 +123,9 @@ public class ProfitLostController(
     [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
     public async Task<IActionResult> ExportConsolidationProfitLost(DateTime month)
     {
-        var res = await profitLostService.GetProfitLostExcelAsync(month);
+        var res = await profitLostService.GetConsolidateProfitLostAsync(month);
         var excelBytes = await profitLostService.ExportProfitLostToExcelAsync(res, month);
-        var fileName = $"BU P&L_{DateTimeOffset.Now.DateTime:yyyy-MM-dd}.xlsx";
+        var fileName = $"BU P&L Consolidation Report_{DateTimeOffset.Now.DateTime:yyyy-MM-dd}.xlsx";
 
         return File(excelBytes, "application/octet-stream", fileName);
     }

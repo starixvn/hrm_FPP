@@ -1,3 +1,5 @@
+using FPP.Models.CostExpense;
+
 namespace FPP.Models.ProfitLost
 {
     public class MonthlyProfitLostCategory
@@ -27,28 +29,28 @@ namespace FPP.Models.ProfitLost
         public decimal Amount { get; set; }
     }
 
-    public class BUInfo
-    {
-        public string BU { get; set; }
-        public int ColumnIndex { get; set; }
-    }
-
-    public class ProfitLostTotal
-    {
-        public string Name { get; set; }
-        public Dictionary<string, decimal> BUAmounts { get; set; }
-    }
-
     public class ProfitLostReportResponse
     {
         public IEnumerable<MonthlyProfitLostCategory> Categories { get; set; }
-        public IEnumerable<ProfitLostTotal> Totals { get; set; }
+        public IEnumerable<ProfitLostRow> Totals { get; set; }
     }
 
     public class ProfitLostRow
     {
         public string Name { get; set; }
         public Dictionary<string, decimal> BUAmounts { get; set; }
+    }
+
+    public class UnitProfitLostRow
+    {
+        public string Name { get; set; }
+        public Dictionary<string, decimal> MonthAmounts { get; set; }
+    }
+
+    public class CostExpenseReportResponse
+    {
+        public IEnumerable<MonthlyCostExpenseCategory> Categories { get; set; }
+        public IEnumerable<UnitProfitLostRow> Totals { get; set; }
     }
 }
 
