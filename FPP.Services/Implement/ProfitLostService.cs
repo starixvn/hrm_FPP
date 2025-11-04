@@ -475,7 +475,7 @@ namespace FPP.Services.Implement
         }
 
 
-        public async Task<byte[]> ExportUnitProfitLostToExcelAsync(CostExpenseReportResponse response, int year, int groupUnitId)
+        public async Task<byte[]> ExportUnitProfitLostToExcelAsync(CostExpenseReportResponse response, int year, string unitnCode)
         {
             var templatePath = Path.Combine(hostingEnvironment.ContentRootPath, UnitProfitLostExportTemplate);
 
@@ -487,7 +487,7 @@ namespace FPP.Services.Implement
             var sheet = outputPackage.Workbook.Worksheets.Add("BU P&L", templateSheet);
 
             const string buCell = "B1";
-            sheet.Cells[buCell].Value = $"BU: {groupUnitId}";
+            sheet.Cells[buCell].Value = $"BU: {unitnCode}";
 
             const string yearCell = "B2";
             sheet.Cells[yearCell].Value = $"YEAR: {year}";

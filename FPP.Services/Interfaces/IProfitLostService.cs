@@ -12,7 +12,7 @@ namespace FPP.Services.Interfaces
 
         Task<CostExpenseReportResponse> GetUnitProfitLostAsync(int year, int groupUnitId);
 
-        Task<byte[]> ExportUnitProfitLostToExcelAsync(CostExpenseReportResponse response, int year, int groupUnitId);
+        Task<byte[]> ExportUnitProfitLostToExcelAsync(CostExpenseReportResponse response, int year, string unitnCode);
 
         Task<byte[]> ExportProfitLostToExcelAsync(ProfitLostReportResponse response, DateTime month);
     }

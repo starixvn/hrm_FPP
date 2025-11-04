@@ -13,6 +13,7 @@ const AppContainer = () => {
     const [units, setUnits] = useState([]);
     const [year, setYear] = useState(2025);
     const [groupUnitId, setGroupUnitId] = useState();
+    const [selectedUnitnCode, setSelectedUnitnCode] = useState();
 
     const fetchProfitLostData = async () => {
         try {
@@ -46,6 +47,8 @@ const AppContainer = () => {
     useEffect(() => {
         if (groupUnitId) {
             fetchProfitLostData();
+            const unit = units.find(unit => unit.groupUnitId === groupUnitId);
+            setSelectedUnitnCode(`${unit.groupUnitId} - ${unit.code}`);
         }
     }, [groupUnitId, year]);
 
@@ -118,15 +121,16 @@ const AppContainer = () => {
                         type="default"
                         icon={<DownloadOutlined />}
                         onClick={() => {
-                            window.location.href = `/ProfitLost/ExportUnitConsolidationProfitLost?year=${year}&&groupUnitId=${groupUnitId}`;
+                            window.location.href = `/ProfitLost/ExportUnitConsolidationProfitLost?year=${year}&&unitnCode=${selectedUnitnCode}`;
                         }}
+                        disabled={!selectedUnitnCode}
                         >
-                            Export Excel
-                        </Button>
+                        Export Excel
+                    </Button>
                 </div>
             </Col>
         </Row>
-    );
+    )
 
     const columns = useMemo(() => {
         const baseColumns = [
