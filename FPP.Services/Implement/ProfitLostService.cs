@@ -323,79 +323,118 @@ namespace FPP.Services.Implement
             };
             var monthlyProfitLost = await baseService.GetDataAsync<MonthlyCostExpense>(criteria);
 
-            // Generate all months for the year
-            var allYearMonths = Enumerable.Range(1, 12)
-                .Select(m => new DateTime(year, m, 1).ToString("MMM"))
-                .ToList();
+            var allYearMonths = GenerateYearMonths(year);
+            var grouped = BuildCategories(monthlyProfitLost, allYearMonths);
+            var totals = CalculateTotals(grouped, allYearMonths);
 
-            var grouped = monthlyProfitLost
+            return new CostExpenseReportResponse
+            {
+                Categories = grouped,
+                Totals = totals
+            };
+        }
+
+        private static List<string> GenerateYearMonths(int year)
+        {
+            return Enumerable.Range(1, 12)
+                .Select(m => new DateTimeOffset(year, m, 1, 0, 0, 0, TimeSpan.Zero).ToString("MMM"))
+                .ToList();
+        }
+
+        private static List<MonthlyCostExpenseCategory> BuildCategories(
+            IEnumerable<MonthlyCostExpense> monthlyProfitLost,
+            List<string> allYearMonths)
+        {
+            return monthlyProfitLost
                 .GroupBy(x => new { x.CategoryId, x.CategoryName, x.CategoryType })
                 .Select(categoryGroup =>
                 {
-                    var details = categoryGroup
-                        .GroupBy(x => new { x.TermId, x.TermName })
-                        .Select(termGroup =>
-                        {
-                            var monthlyAmounts = termGroup
-                                .GroupBy(x => x.Month.ToString("MMM"))
-                                .ToDictionary(
-                                    g => g.Key,
-                                    g => g.Sum(x => x.Amount)
-                                );
-
-                            // Fill missing months with 0
-                            var filledMonthlyAmounts = new Dictionary<string, decimal>();
-                            foreach (var month in allYearMonths)
-                            {
-                                filledMonthlyAmounts[month] = monthlyAmounts.TryGetValue(month, out var amount) ? amount : 0;
-                            }
-
-                            return new MonthlyCostExpenseDetail
-                            {
-                                TermId = termGroup.Key.TermId,
-                                TermName = termGroup.Key.TermName,
-                                MonthlyAmounts = filledMonthlyAmounts
-                            };
-                        })
-                        .ToList();
-
-                    // Calculate MonthlyTotalAmounts from Details to ensure consistency
-                    var monthlyTotalAmounts = new Dictionary<string, decimal>();
-                    foreach (var month in allYearMonths)
-                    {
-                        monthlyTotalAmounts[month] = details
-                            .Sum(d => d.MonthlyAmounts?.TryGetValue(month, out var amount) == true ? amount : 0);
-                    }
+                    var firstItem = categoryGroup.First();
+                    var details = BuildCategoryDetails(categoryGroup, allYearMonths);
+                    var monthlyTotalAmounts = CalculateMonthlyTotals(details, allYearMonths);
 
                     return new MonthlyCostExpenseCategory
                     {
-                        CategoryId = categoryGroup.Key.CategoryId,
-                        CategoryName = categoryGroup.Key.CategoryName,
-                        CategoryType = categoryGroup.Key.CategoryType,
+                        CategoryId = firstItem.CategoryId,
+                        CategoryName = firstItem.CategoryName,
+                        CategoryType = firstItem.CategoryType,
                         MonthlyTotalAmounts = monthlyTotalAmounts,
                         Details = details
                     };
                 })
                 .OrderBy(x => x.CategoryType)
                 .ToList();
+        }
 
-            var totals = new List<UnitProfitLostRow>();
+        private static List<MonthlyCostExpenseDetail> BuildCategoryDetails(
+            IEnumerable<MonthlyCostExpense> categoryGroup,
+            List<string> allYearMonths)
+        {
+            return categoryGroup
+                .GroupBy(x => new { x.TermId, x.TermName })
+                .Select(termGroup =>
+                {
+                    var firstItem = termGroup.First();
+                    var monthlyAmounts = termGroup
+                        .GroupBy(x => x.Month.ToString("MMM"))
+                        .ToDictionary(
+                            g => g.Key,
+                            g => g.Sum(x => x.Amount)
+                        );
 
-            // Calculate Total Income (CategoryType = Income)
+                    var filledMonthlyAmounts = FillMissingMonths(monthlyAmounts, allYearMonths);
+
+                    return new MonthlyCostExpenseDetail
+                    {
+                        TermId = firstItem.TermId,
+                        TermName = firstItem.TermName,
+                        MonthlyAmounts = filledMonthlyAmounts
+                    };
+                })
+                .ToList();
+        }
+
+        private static Dictionary<string, decimal> FillMissingMonths(
+            Dictionary<string, decimal> monthlyAmounts,
+            List<string> allYearMonths)
+        {
+            var filledAmounts = new Dictionary<string, decimal>();
+            foreach (var month in allYearMonths)
+            {
+                filledAmounts[month] = monthlyAmounts.TryGetValue(month, out var amount) ? amount : 0;
+            }
+            return filledAmounts;
+        }
+
+        private static Dictionary<string, decimal> CalculateMonthlyTotals(
+            List<MonthlyCostExpenseDetail> details,
+            List<string> allYearMonths)
+        {
+            var monthlyTotalAmounts = new Dictionary<string, decimal>();
+            foreach (var month in allYearMonths)
+            {
+                monthlyTotalAmounts[month] = details
+                    .Sum(d => d.MonthlyAmounts?.TryGetValue(month, out var amount) == true ? amount : 0);
+            }
+            return monthlyTotalAmounts;
+        }
+
+        private static List<UnitProfitLostRow> CalculateTotals(
+            List<MonthlyCostExpenseCategory> grouped,
+            List<string> allYearMonths)
+        {
             var totalIncome = new UnitProfitLostRow
             {
                 Name = "Total Income",
                 MonthAmounts = new Dictionary<string, decimal>()
             };
 
-            // Calculate Gross Profit (Total Income - Direct Expense)
             var grossProfit = new UnitProfitLostRow
             {
                 Name = "Gross Profit",
                 MonthAmounts = new Dictionary<string, decimal>()
             };
 
-            // Calculate Net Profit (Gross Profit - Other Expense)
             var netProfit = new UnitProfitLostRow
             {
                 Name = "Net Profit",
@@ -404,32 +443,34 @@ namespace FPP.Services.Implement
 
             foreach (var monthKey in allYearMonths)
             {
-                var totalIncomeAmount = grouped
-                    .Where(c => (CategoryType)c.CategoryType == CategoryType.Income)
-                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(monthKey, out var amount) == true ? amount : 0);
-
-                var totalDirectExpense = grouped
-                    .Where(c => (CategoryType)c.CategoryType == CategoryType.DirectExpense)
-                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(monthKey, out var amount) == true ? amount : 0);
-
-                var totalOtherExpense = grouped
-                    .Where(c => (CategoryType)c.CategoryType == CategoryType.OtherExpense)
-                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(monthKey, out var amount) == true ? amount : 0);
-
-                totalIncome.MonthAmounts[monthKey] = totalIncomeAmount;
-                grossProfit.MonthAmounts[monthKey] = totalIncomeAmount - totalDirectExpense;
-                netProfit.MonthAmounts[monthKey] = grossProfit.MonthAmounts[monthKey] - totalOtherExpense;
+                var amounts = CalculateMonthlyAmounts(grouped, monthKey);
+                totalIncome.MonthAmounts[monthKey] = amounts.Income;
+                grossProfit.MonthAmounts[monthKey] = amounts.Income - amounts.DirectExpense;
+                netProfit.MonthAmounts[monthKey] = grossProfit.MonthAmounts[monthKey] - amounts.OtherExpense;
             }
 
-            totals.Add(totalIncome);
-            totals.Add(grossProfit);
-            totals.Add(netProfit);
+            return new List<UnitProfitLostRow> { totalIncome, grossProfit, netProfit };
+        }
 
-            return new CostExpenseReportResponse
-            {
-                Categories = grouped,
-                Totals = totals
-            };
+        private static (decimal Income, decimal DirectExpense, decimal OtherExpense) CalculateMonthlyAmounts(
+            List<MonthlyCostExpenseCategory> grouped,
+            string monthKey)
+        {
+            var totalIncomeAmount = GetCategoryTotal(grouped, CategoryType.Income, monthKey);
+            var totalDirectExpense = GetCategoryTotal(grouped, CategoryType.DirectExpense, monthKey);
+            var totalOtherExpense = GetCategoryTotal(grouped, CategoryType.OtherExpense, monthKey);
+
+            return (totalIncomeAmount, totalDirectExpense, totalOtherExpense);
+        }
+
+        private static decimal GetCategoryTotal(
+            List<MonthlyCostExpenseCategory> grouped,
+            CategoryType categoryType,
+            string monthKey)
+        {
+            return grouped
+                .Where(c => (CategoryType)c.CategoryType == categoryType)
+                .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(monthKey, out var amount) == true ? amount : 0);
         }
 
         public async Task<byte[]> ExportProfitLostToExcelAsync(ProfitLostReportResponse response, DateTime month)

@@ -69,9 +69,7 @@ const AppContainer = () => {
                 'Nov',
                 'Dec',
             ];
-            return monthKeys.sort((a, b) => {
-                return monthOrder.indexOf(a) - monthOrder.indexOf(b);
-            });
+            return monthKeys.sort((a, b) => monthOrder.indexOf(a) - monthOrder.indexOf(b));
         }
         return [];
     }, [data.categories]);

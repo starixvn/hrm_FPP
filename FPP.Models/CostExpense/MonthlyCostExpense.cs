@@ -1,5 +1,3 @@
-using FPP.Models.ProfitLost;
-
 namespace FPP.Models.CostExpense
 {
     public class MonthlyCostExpenseCategory
