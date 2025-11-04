@@ -19,6 +19,7 @@ namespace FPP.Services.Implement
         IWebHostEnvironment hostingEnvironment) : IProfitLostService
     {
         private const string ProfitLostExportTemplate = "ExcelTemplates/BU P&L Upload Template.xlsx";
+        private const string UnitProfitLostExportTemplate = "ExcelTemplates/BU P&L Unit Template.xlsx";
         private const int SheetIndex = 0;
         private const int MonthCellRow = 1; // Row 1
         private const int MonthCellCol = 3; // Column C (C1)
@@ -473,6 +474,89 @@ namespace FPP.Services.Implement
                 .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(monthKey, out var amount) == true ? amount : 0);
         }
 
+
+        public async Task<byte[]> ExportUnitProfitLostToExcelAsync(CostExpenseReportResponse response, int year, int groupUnitId)
+        {
+            var templatePath = Path.Combine(hostingEnvironment.ContentRootPath, UnitProfitLostExportTemplate);
+
+            await using var templateStream = new FileStream(templatePath, FileMode.Open, FileAccess.Read);
+            using var templatePackage = new ExcelPackage(templateStream);
+            using var outputPackage = new ExcelPackage();
+
+            var templateSheet = templatePackage.Workbook.Worksheets[0];
+            var sheet = outputPackage.Workbook.Worksheets.Add("BU P&L", templateSheet);
+
+            const string buCell = "B1";
+            sheet.Cells[buCell].Value = $"BU: {groupUnitId}";
+
+            const string yearCell = "B2";
+            sheet.Cells[yearCell].Value = $"YEAR: {year}";
+
+            var termRowMap = MapTermFromTemplate(sheet);
+            var buColMap = MapMonthFromTemplate(sheet);
+
+            var allRows = new List<ProfitLostRow>();
+
+            allRows.AddRange(
+                response.Categories
+                    .SelectMany(c => c.Details)
+                    .Select(d => new ProfitLostRow
+                    {
+                        Name = d.TermName,
+                        BUAmounts = d.MonthlyAmounts
+                    })
+            );
+
+            allRows.AddRange(
+                response.Categories
+                    .Where(c => c.MonthlyTotalAmounts != null)
+                    .Select(c => new ProfitLostRow
+                    {
+                        Name = c.CategoryName,
+                        BUAmounts = c.MonthlyTotalAmounts
+                    })
+            );
+
+            allRows.AddRange(
+                response.Totals.Select(t => new ProfitLostRow
+                {
+                    Name = t.Name,
+                    BUAmounts = t.MonthAmounts
+                })
+            );
+
+
+            foreach (var detail in allRows)
+            {
+                string key = detail.Name;
+
+                if (!termRowMap.TryGetValue(key, out int targetRow))
+                {
+                    continue;
+                }
+
+
+                foreach (var bu in detail.BUAmounts)
+                {
+                    var buKey = bu.Key;
+
+                    if (!buColMap.TryGetValue(buKey, out int col))
+                    {
+                        continue;
+                    }
+
+                    sheet.Cells[targetRow, col].Value = bu.Value;
+                }
+            }
+
+            // Freeze first 4 rows
+            sheet.View.FreezePanes(5, 1);
+
+            await using var ms = new MemoryStream();
+            await outputPackage.SaveAsAsync(ms);
+            return ms.ToArray();
+        }
+
         public async Task<byte[]> ExportProfitLostToExcelAsync(ProfitLostReportResponse response, DateTime month)
         {
             var templatePath = Path.Combine(hostingEnvironment.ContentRootPath, ProfitLostExportTemplate);
@@ -544,6 +628,7 @@ namespace FPP.Services.Implement
                 }
             }
 
+            // Freeze first 2 columns
             sheet.View.FreezePanes(1, 3);
 
 
@@ -555,7 +640,7 @@ namespace FPP.Services.Implement
         private static Dictionary<string, int> MapTermFromTemplate(ExcelWorksheet sheet)
         {
             const int termCol = 2;        // B column
-            const int startRow = 6;       // B6
+            const int startRow = 5;       // B6
             const int endRow = 139;       // B139
 
             var termRowMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -593,6 +678,24 @@ namespace FPP.Services.Implement
             }
 
             return buColMap;
+        }
+
+        private static Dictionary<string, int> MapMonthFromTemplate(ExcelWorksheet sheet)
+        {
+            const int headerRow = 4; // Month headers row
+            var monthColMap = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+
+            for (int col = 1; col <= sheet.Dimension.End.Column; col++)
+            {
+                var val = sheet.Cells[headerRow, col].Text?.Trim();
+                if (!string.IsNullOrWhiteSpace(val))
+                {
+                    monthColMap[val] = col;
+                }
+
+            }
+
+            return monthColMap;
         }
 
         private static string NormalizeKey(string input)

@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Table, Card, Select, Spin, ConfigProvider, Typography, Row, Col } from 'antd';
+import { Table, Card, Select, Spin, ConfigProvider, Typography, Row, Col, Button } from 'antd';
 import axios from 'axios';
 import { CategoryType } from '../../helper/enum';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 const { Title } = Typography;
@@ -108,6 +109,20 @@ const AppContainer = () => {
                         <Option value="2025">2025</Option>
                         <Option value="2026">2026</Option>
                     </Select>
+                </div>
+            </Col>
+            <Col span={8}>
+                <div className="filter-option">
+                    <Button
+                        className="btn-download"
+                        type="default"
+                        icon={<DownloadOutlined />}
+                        onClick={() => {
+                            window.location.href = `/ProfitLost/ExportUnitConsolidationProfitLost?year=${year}&&groupUnitId=${groupUnitId}`;
+                        }}
+                        >
+                            Export Excel
+                        </Button>
                 </div>
             </Col>
         </Row>

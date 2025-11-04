@@ -121,6 +121,17 @@ public class ProfitLostController(
 
     [HttpGet]
     [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
+    public async Task<IActionResult> ExportUnitConsolidationProfitLost(int year, int groupUnitId)
+    {
+        var res = await profitLostService.GetUnitProfitLostAsync(year, groupUnitId);
+        var excelBytes = await profitLostService.ExportUnitProfitLostToExcelAsync(res, year, groupUnitId);
+        var fileName = $"BU P&L Consolidation Report_{DateTimeOffset.Now.DateTime:yyyy-MM-dd}.xlsx";
+
+        return File(excelBytes, "application/octet-stream", fileName);
+    }
+
+    [HttpGet]
+    [FppPermission(Policy.Read, FunctionKey.BUPLConsolidationReport)]
     public async Task<IActionResult> ExportConsolidationProfitLost(DateTime month)
     {
         var res = await profitLostService.GetConsolidateProfitLostAsync(month);
