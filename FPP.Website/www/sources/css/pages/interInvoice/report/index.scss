@@ -1,3 +1,5 @@
+@import '../../common/common';
+
 .report-container {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -55,24 +57,21 @@
                         background-color: #e6f7ff !important;
                     }
                 }
-                
+
                 .ant-table-cell:hover {
                     background-color: #bae7ff !important;
                 }
             }
         }
-    
+
         .ant-table-thead {
             .ant-table-cell {
-                background-color: #5273a5 !important;
                 font-weight: 600;
-                color: white;
-                border-color: #607fac !important;
                 text-align: center !important;
-    
+
                 .ant-table-column-sorter {
                     .ant-table-column-sorter-inner {
-    
+
                         .ant-table-column-sorter-up.active,
                         .ant-table-column-sorter-down.active {
                             color: #ff4d4f;
@@ -81,7 +80,7 @@
                 }
             }
         }
-    
+
         .ant-table-summary {
             .ant-table-cell {
                 font-weight: bold;
