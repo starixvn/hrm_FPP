@@ -1,3 +1,5 @@
+@import '../../common/common';
+
 .report-container {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -69,10 +71,7 @@
         .ant-table-thead {
             .ant-table-cell {
                 font-weight: 600;
-                background-color: #5273a5 !important;
-                border-color: #607fac !important;
                 text-align: center !important;
-                color: white !important;
 
                 .ant-table-column-sorter {
                     .ant-table-column-sorter-inner {
