@@ -118,7 +118,7 @@ const AppContainer = () => {
                 <div className="filter-option">
                     <Button
                         className="btn-download"
-                        type="default"
+                        type="primary"
                         icon={<DownloadOutlined />}
                         onClick={() => {
                             window.location.href = `/ProfitLost/ExportUnitConsolidationProfitLost?year=${year}&&unitnCode=${selectedUnitnCode}`;

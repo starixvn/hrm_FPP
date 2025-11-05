@@ -74,7 +74,7 @@ const AppContainer = () => {
                     />
                     <Button
                         className="btn-download"
-                        type="default"
+                        type="primary"
                         icon={<DownloadOutlined />}
                         onClick={() => {
                             window.location.href = `/ProfitLost/ExportConsolidationProfitLost?month=${selectedMonth.format(
