@@ -99,15 +99,9 @@ public class ProfitLostController(
     public async Task<IActionResult> GetAccessibleUnits()
     {
         var isGroupPermission = session.HasPermissionOnFunction(FunctionKey.BUPLGroupBUData, Policy.Read);
-        IEnumerable<Unit> accessibleUnits;
-        if (isGroupPermission)
-        {
-            accessibleUnits = await commonService.GetAllUnitsAsync();
-        }
-        else
-        {
-            accessibleUnits = await commonService.GetAccessibleUnitsByEmpId(EmployeeSession.EmpId);
-        }
+        var accessibleUnits = isGroupPermission
+            ? await commonService.GetAllUnitsAsync()
+            : await commonService.GetAccessibleUnitsByEmpId(EmployeeSession.EmpId);
         return new JsonResult(accessibleUnits);
     }
 
