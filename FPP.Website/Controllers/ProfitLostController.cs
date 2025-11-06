@@ -1,6 +1,7 @@
 using FPP.Core.Constants;
 using FPP.Core.Criteria.ProfitLost;
 using FPP.Core.Services;
+using FPP.Models.Common;
 using FPP.Models.ProfitLost;
 using FPP.Services.Interfaces;
 using FPP.Website.Filters;
@@ -97,7 +98,16 @@ public class ProfitLostController(
     [FppPermission(Policy.Read, FunctionKey.BUPLMyBUData, FunctionKey.BUPLGroupBUData)]
     public async Task<IActionResult> GetAccessibleUnits()
     {
-        var accessibleUnits = await commonService.GetAccessibleUnitsByEmpId(EmployeeSession.EmpId);
+        var isGroupPermission = session.HasPermissionOnFunction(FunctionKey.BUPLGroupBUData, Policy.Read);
+        IEnumerable<Unit> accessibleUnits;
+        if (isGroupPermission)
+        {
+            accessibleUnits = await commonService.GetAllUnitsAsync();
+        }
+        else
+        {
+            accessibleUnits = await commonService.GetAccessibleUnitsByEmpId(EmployeeSession.EmpId);
+        }
         return new JsonResult(accessibleUnits);
     }
 
