@@ -6,6 +6,7 @@ import { mapInterInvoiceStatus, mapPeriodType } from '../../helper/enum';
 import { EyeOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import CommonFunctions from '../../../../common/common-functions';
 import { formatPeriod, formatAmount } from '../../helper/format';
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
 
@@ -16,6 +17,7 @@ const AppContainer = () => {
 
     const loadInvoices = async (params = {}) => {
         setLoading(true);
+        params.month = params.month ? params.month.format('YYYY-MM') : dayjs().format('YYYY-MM');
         const data = await fetchInvoices(params);
         setInvoices(data);
         setLoading(false);
@@ -30,6 +32,7 @@ const AppContainer = () => {
     };
 
     const handleExportExcel = (params = {}) => {
+        params.month = params.month ? params.month.format('YYYY-MM') : dayjs().format('YYYY-MM');
         window.location.href = `/InterInvoice/ExportInterInvoice?${new URLSearchParams(params).toString() }`;
     };
 

@@ -1,4 +1,4 @@
-namespace FPP.Models.CostExpense
+namespace FPP.Models.Common
 {
     public class Category
     {

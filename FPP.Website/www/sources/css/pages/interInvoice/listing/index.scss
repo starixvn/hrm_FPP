@@ -1,3 +1,5 @@
+@import '../../common/common';
+
 .listing-invoice-container {
     margin-top: 24px;
 
@@ -9,10 +11,7 @@
 
     .ant-table-thead {
         .ant-table-cell {
-            background-color: #5273a5 !important;
             font-weight: 600;
-            color: white;
-            border-color: #607fac !important;
             text-align: center !important;
 
             .ant-table-column-sorter {

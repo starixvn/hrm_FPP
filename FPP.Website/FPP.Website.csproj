@@ -6,6 +6,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ExcelTemplates\BU P&amp;L Unit Template.xlsx" />
+    <None Remove="ExcelTemplates\BU P&amp;L Upload Template.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ExcelTemplates\BU P&amp;L Unit Template.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ExcelTemplates\BU P&amp;L Upload Template.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\FPP.Core\FPP.Core.csproj" />
     <ProjectReference Include="..\FPP.Services\FPP.Services.csproj" />
   </ItemGroup>

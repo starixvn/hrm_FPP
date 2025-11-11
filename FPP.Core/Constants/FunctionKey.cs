@@ -6,6 +6,14 @@ public static class FunctionKey
 
     public const string CostExpenseReport = "CostExpenseReport";
 
+    public const string BUPLUpload = "BUP&LUpload";
+
+    public const string BUPLConsolidationReport = "BUP&LConsolidationReport";
+
+    public const string BUPLMyBUData = "BUP&LMyBUData";
+
+    public const string BUPLGroupBUData = "BUP&LGroupBUData";
+
     public const string InterChargingUpload = "InterChargingUpload";
 
     public const string InterChargingReport = "InterChargingReport";

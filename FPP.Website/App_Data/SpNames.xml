@@ -42,4 +42,10 @@
         <Setting Key="ActivityLog_Insert" SpName="ActivityLog_Insert" DbName="bodb_FPP" Plain="0" />
         <Setting Key="ActivityLog_Get" SpName="ActivityLog_Get" DbName="bodb_FPP" Plain="0" />
     </Function>
+    <Function Name="ProfitLost">
+        <Setting Key="MonthlyProfitLost_Import" SpName="MonthlyProfitLost_Import" DbName="bodb_FPP" Plain="0" />
+        <Setting Key="MonthlyProfitLost_Get" SpName="MonthlyProfitLost_Get" DbName="bodb_FPP" Plain="0" />
+        <Setting Key="MonthlyProfitLost_GetByUnit" SpName="MonthlyProfitLost_GetByUnit" DbName="bodb_FPP" Plain="0" />
+        <Setting Key="MonthlyProfitLost_GetUploadHistory" SpName="MonthlyProfitLost_GetUploadHistory" DbName="bodb_FPP" Plain="0" />
+    </Function>
 </Functions>

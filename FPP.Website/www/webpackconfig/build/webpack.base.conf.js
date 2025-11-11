@@ -21,6 +21,12 @@ function generateConfig(environment) {
                 pathConfig.scriptPaths.costExpense_upload_index,
             [`${jsPath}/pages/costExpense/report/index`]:
                 pathConfig.scriptPaths.costExpense_report_index,
+            [`${jsPath}/pages/profitLost/upload/index`]:
+                pathConfig.scriptPaths.profitLost_upload_index,
+                [`${jsPath}/pages/profitLost/unitReport/index`]:
+                pathConfig.scriptPaths.profitLost_unit_report_index,
+            [`${jsPath}/pages/profitLost/consolidationReport/index`]:
+                pathConfig.scriptPaths.profitLost_consolidation_report_index,
             [`${jsPath}/pages/interCharging/upload/index`]:
                 pathConfig.scriptPaths.interCharging_upload_index,
             [`${jsPath}/pages/interCharging/report/index`]:

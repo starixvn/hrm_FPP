@@ -93,6 +93,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IBaseService, BaseService>();
         services.AddSingleton<IMinIOService, MinIOService>();
         services.AddSingleton<ICostExpenseService, CostExpenseService>();
+        services.AddSingleton<IProfitLostService, ProfitLostService>();
         services.AddSingleton<IInterChargingService, InterChargingService>();
         services.AddSingleton<ICommonService, CommonService>();
         services.AddSingleton<IActivityLogService, ActivityLogService>();

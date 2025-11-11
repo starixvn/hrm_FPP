@@ -26,6 +26,11 @@ const scriptPaths = {
     dashboard_index: ['./www/sources/js/pages/dashboard/index.jsx'],
     costExpense_upload_index: ['./www/sources/js/pages/costExpense/upload/index.jsx'],
     costExpense_report_index: ['./www/sources/js/pages/costExpense/report/index.jsx'],
+    profitLost_upload_index: ['./www/sources/js/pages/profitLost/upload/index.jsx'],
+    profitLost_unit_report_index: ['./www/sources/js/pages/profitLost/unitReport/index.jsx'],
+    profitLost_consolidation_report_index: [
+        './www/sources/js/pages/profitLost/consolidationReport/index.jsx',
+    ],
     interCharging_upload_index: ['./www/sources/js/pages/interCharging/upload/index.jsx'],
     interCharging_report_index: ['./www/sources/js/pages/interCharging/report/index.jsx'],
     interInvoice_create_index: ['./www/sources/js/pages/interInvoice/create/index.jsx'],
