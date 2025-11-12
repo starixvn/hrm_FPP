@@ -248,8 +248,6 @@ namespace FPP.Services.Implement
                 .OrderBy(bu => bu)
                 .ToList();
 
-            var totals = new List<ProfitLostRow>();
-
             // Calculate Total Income (CategoryType = 2)
             var totalIncome = new ProfitLostRow
             {
