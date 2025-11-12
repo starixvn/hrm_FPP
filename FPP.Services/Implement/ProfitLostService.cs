@@ -243,6 +243,13 @@ namespace FPP.Services.Implement
                 BUAmounts = new Dictionary<string, decimal>()
             };
 
+            // Calculate Total Income (CategoryType = 1)
+            var totalExp = new ProfitLostRow
+            {
+                Name = "Total Exp",
+                BUAmounts = new Dictionary<string, decimal>()
+            };
+
             // Calculate Gross Profit (Total Income - Direct Expense)
             var grossProfit = new ProfitLostRow
             {
@@ -271,13 +278,19 @@ namespace FPP.Services.Implement
                     .Where(c => (CategoryType)c.CategoryType == CategoryType.OtherExpense)
                     .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
 
+                var totalOtherIncomeAmount = grouped
+                    .Where(c => (CategoryType)c.CategoryType == CategoryType.OtherIncome)
+                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
+
                 totalIncome.BUAmounts[bu] = totalIncomeAmount;
                 grossProfit.BUAmounts[bu] = totalIncomeAmount - totalDirectExpense;
-                netProfit.BUAmounts[bu] = grossProfit.BUAmounts[bu] - totalOtherExpense;
+                totalExp.BUAmounts[bu] = totalOtherExpense;
+                netProfit.BUAmounts[bu] = grossProfit.BUAmounts[bu] - totalOtherExpense + totalOtherIncomeAmount;
             }
 
             totals.Add(totalIncome);
             totals.Add(grossProfit);
+            totals.Add(totalExp);
             totals.Add(netProfit);
 
             return new ProfitLostReportResponse
