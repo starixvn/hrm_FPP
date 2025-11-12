@@ -196,7 +196,19 @@ namespace FPP.Services.Implement
             };
             var monthlyProfitLost = await baseService.GetDataAsync<MonthlyProfitLost>(criteria);
 
-            var grouped = monthlyProfitLost
+            var grouped = BuildConsolidateCategories(monthlyProfitLost);
+            var totals = CalculateConsolidateTotals(grouped);
+
+            return new ProfitLostReportResponse
+            {
+                Categories = grouped,
+                Totals = totals
+            };
+        }
+
+        private static List<MonthlyProfitLostCategory> BuildConsolidateCategories(IEnumerable<MonthlyProfitLost> monthlyProfitLost)
+        {
+            return monthlyProfitLost
                 .GroupBy(x => new { x.CategoryId, x.CategoryName, x.CategoryType })
                 .Select(categoryGroup => new MonthlyProfitLostCategory
                 {
@@ -226,8 +238,10 @@ namespace FPP.Services.Implement
                 })
                 .OrderBy(x => x.CategoryType)
                 .ToList();
+        }
 
-            // Calculate totals for each BU
+        private static List<ProfitLostRow> CalculateConsolidateTotals(List<MonthlyProfitLostCategory> grouped)
+        {
             var allBUs = grouped
                 .SelectMany(c => c.MonthlyTotalAmounts?.Keys ?? Enumerable.Empty<string>())
                 .Distinct()
@@ -266,38 +280,36 @@ namespace FPP.Services.Implement
 
             foreach (var bu in allBUs)
             {
-                var totalIncomeAmount = grouped
-                    .Where(c => (CategoryType)c.CategoryType == CategoryType.Income)
-                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
-
-                var totalDirectExpense = grouped
-                    .Where(c => (CategoryType)c.CategoryType == CategoryType.DirectExpense)
-                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
-
-                var totalOtherExpense = grouped
-                    .Where(c => (CategoryType)c.CategoryType == CategoryType.OtherExpense)
-                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
-
-                var totalOtherIncomeAmount = grouped
-                    .Where(c => (CategoryType)c.CategoryType == CategoryType.OtherIncome)
-                    .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
-
-                totalIncome.BUAmounts[bu] = totalIncomeAmount;
-                grossProfit.BUAmounts[bu] = totalIncomeAmount - totalDirectExpense;
-                totalExp.BUAmounts[bu] = totalOtherExpense;
-                netProfit.BUAmounts[bu] = grossProfit.BUAmounts[bu] - totalOtherExpense + totalOtherIncomeAmount;
+                var amounts = CalculateBUAmounts(grouped, bu);
+                totalIncome.BUAmounts[bu] = amounts.Income;
+                grossProfit.BUAmounts[bu] = amounts.Income - amounts.DirectExpense;
+                totalExp.BUAmounts[bu] = amounts.OtherExpense;
+                netProfit.BUAmounts[bu] = grossProfit.BUAmounts[bu] - amounts.OtherExpense + amounts.OtherIncome;
             }
 
-            totals.Add(totalIncome);
-            totals.Add(grossProfit);
-            totals.Add(totalExp);
-            totals.Add(netProfit);
+            return new List<ProfitLostRow> { totalIncome, grossProfit, totalExp, netProfit };
+        }
 
-            return new ProfitLostReportResponse
-            {
-                Categories = grouped,
-                Totals = totals
-            };
+        private static (decimal Income, decimal DirectExpense, decimal OtherExpense, decimal OtherIncome) CalculateBUAmounts(
+            List<MonthlyProfitLostCategory> grouped,
+            string bu)
+        {
+            var totalIncomeAmount = GetCategoryTotalForBU(grouped, CategoryType.Income, bu);
+            var totalDirectExpense = GetCategoryTotalForBU(grouped, CategoryType.DirectExpense, bu);
+            var totalOtherExpense = GetCategoryTotalForBU(grouped, CategoryType.OtherExpense, bu);
+            var totalOtherIncomeAmount = GetCategoryTotalForBU(grouped, CategoryType.OtherIncome, bu);
+
+            return (totalIncomeAmount, totalDirectExpense, totalOtherExpense, totalOtherIncomeAmount);
+        }
+
+        private static decimal GetCategoryTotalForBU(
+            List<MonthlyProfitLostCategory> grouped,
+            CategoryType categoryType,
+            string bu)
+        {
+            return grouped
+                .Where(c => (CategoryType)c.CategoryType == categoryType)
+                .Sum(c => c.MonthlyTotalAmounts?.TryGetValue(bu, out var amount) == true ? amount : 0);
         }
 
         public async Task<CostExpenseReportResponse> GetUnitProfitLostAsync(int year, int groupUnitId)
@@ -421,6 +433,12 @@ namespace FPP.Services.Implement
                 MonthAmounts = new Dictionary<string, decimal>()
             };
 
+            var totalExp = new UnitProfitLostRow
+            {
+                Name = "Total Exp",
+                MonthAmounts = new Dictionary<string, decimal>()
+            };
+
             var netProfit = new UnitProfitLostRow
             {
                 Name = "Net Profit",
@@ -432,21 +450,22 @@ namespace FPP.Services.Implement
                 var amounts = CalculateMonthlyAmounts(grouped, monthKey);
                 totalIncome.MonthAmounts[monthKey] = amounts.Income;
                 grossProfit.MonthAmounts[monthKey] = amounts.Income - amounts.DirectExpense;
-                netProfit.MonthAmounts[monthKey] = grossProfit.MonthAmounts[monthKey] - amounts.OtherExpense;
+                totalExp.MonthAmounts[monthKey] = amounts.OtherExpense;
+                netProfit.MonthAmounts[monthKey] = grossProfit.MonthAmounts[monthKey] - amounts.OtherExpense + amounts.OtherIncome;
             }
 
-            return new List<UnitProfitLostRow> { totalIncome, grossProfit, netProfit };
+            return new List<UnitProfitLostRow> { totalIncome, grossProfit, totalExp, netProfit };
         }
 
-        private static (decimal Income, decimal DirectExpense, decimal OtherExpense) CalculateMonthlyAmounts(
+        private static (decimal Income, decimal DirectExpense, decimal OtherExpense, decimal OtherIncome) CalculateMonthlyAmounts(
             List<MonthlyCostExpenseCategory> grouped,
             string monthKey)
         {
             var totalIncomeAmount = GetCategoryTotal(grouped, CategoryType.Income, monthKey);
             var totalDirectExpense = GetCategoryTotal(grouped, CategoryType.DirectExpense, monthKey);
             var totalOtherExpense = GetCategoryTotal(grouped, CategoryType.OtherExpense, monthKey);
-
-            return (totalIncomeAmount, totalDirectExpense, totalOtherExpense);
+            var totalOtherIncome = GetCategoryTotal(grouped, CategoryType.OtherIncome, monthKey);
+            return (totalIncomeAmount, totalDirectExpense, totalOtherExpense, totalOtherIncome);
         }
 
         private static decimal GetCategoryTotal(
