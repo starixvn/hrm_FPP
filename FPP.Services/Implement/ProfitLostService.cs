@@ -1,5 +1,6 @@
 using FPP.Core.Criteria.ProfitLost;
 using FPP.Core.Enums;
+using FPP.Core.Helpers;
 using FPP.Core.Models;
 using FPP.Core.Services;
 using FPP.Models.CostExpense;
@@ -9,7 +10,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using OfficeOpenXml;
-using System.Globalization;
 using System.Text;
 
 namespace FPP.Services.Implement
@@ -92,38 +92,10 @@ namespace FPP.Services.Implement
 
         private DateTimeOffset? ExtractMonth(ExcelWorksheet worksheet)
         {
-            var monthCellValue = worksheet.Cells[MonthCellRow, MonthCellCol].Text.Trim();
-            if (string.IsNullOrWhiteSpace(monthCellValue))
-            {
-                return null;
-            }
-
-            // Parse format like "2025 AUG"
-            var parts = monthCellValue.Split([' '], StringSplitOptions.RemoveEmptyEntries);
-            if (parts.Length < 2)
-            {
-                return null;
-            }
-
-            if (!int.TryParse(parts[0], out var year))
-            {
-                return null;
-            }
-
-            var monthAbbr = parts[1].ToUpper(CultureInfo.InvariantCulture);
-            var monthNames = new Dictionary<string, int>
-            {
-                { "JAN", 1 }, { "FEB", 2 }, { "MAR", 3 }, { "APR", 4 },
-                { "MAY", 5 }, { "JUN", 6 }, { "JUL", 7 }, { "AUG", 8 },
-                { "SEP", 9 }, { "OCT", 10 }, { "NOV", 11 }, { "DEC", 12 }
-            };
-
-            if (!monthNames.TryGetValue(monthAbbr, out var month))
-            {
-                return null;
-            }
-
-            return new DateTimeOffset(year, month, 1, 0, 0, 0, TimeSpan.Zero);
+            var monthCell = worksheet.Cells[MonthCellRow, MonthCellCol].Value;
+            var date = DateTimeHelper.ParseExcelDate(monthCell);
+            var monthStart = DateTimeHelper.GetMonthStart(date);
+            return monthStart.HasValue ? new DateTimeOffset(monthStart.Value, TimeSpan.Zero) : null;
         }
 
         private List<BUInfo> ExtractBUInfos(ExcelWorksheet worksheet)
