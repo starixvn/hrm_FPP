@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Table, Card, Spin, ConfigProvider, Typography, Row, Col, DatePicker, Button } from 'antd';
-import dayjs from 'dayjs';
 import axios from 'axios';
 import { CategoryType } from '../../helper/enum';
 import { DownloadOutlined } from '@ant-design/icons';
