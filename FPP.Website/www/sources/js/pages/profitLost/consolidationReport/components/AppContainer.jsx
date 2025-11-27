@@ -4,14 +4,14 @@ import dayjs from 'dayjs';
 import axios from 'axios';
 import { CategoryType } from '../../helper/enum';
 import { DownloadOutlined } from '@ant-design/icons';
+import DateTimeService from '../../../../common/dateTimeService';
 
 const { Title } = Typography;
 
 const AppContainer = () => {
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState({ categories: [], totals: [] });
-    const currentMonth = dayjs();
-    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+    const [selectedMonth, setSelectedMonth] = useState(DateTimeService.getPreviousMonth());
 
     const fetchPLData = async () => {
         try {
