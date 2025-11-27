@@ -25,3 +25,13 @@ export const fetchInvoices = async (params = {}) => {
         throw error;
     }
 };
+
+export const fetchAccessibleUnits = async () => {
+    try {
+        const response = await fetch('/InterInvoice/GetAccessibleUnits');
+        return await response.json();
+    } catch (error) {
+        console.error('Error fetching accessible units:', error);
+        throw error;
+    }
+};

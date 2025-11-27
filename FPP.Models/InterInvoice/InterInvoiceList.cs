@@ -3,9 +3,9 @@ namespace FPP.Models.InterInvoice;
 public class InterInvoiceList
 {
     public int InterInvoiceId { get; set; }
-    public string BillerUnitId { get; set; } = string.Empty;
+    public int BillerUnitId { get; set; }
     public string BillerUnitCode { get; set; } = string.Empty;
-    public string PayerUnitId { get; set; } = string.Empty;
+    public int PayerUnitId { get; set; }
     public string PayerUnitCode { get; set; } = string.Empty;
     private DateTime? _createdDate;
     public DateTime? CreatedDate

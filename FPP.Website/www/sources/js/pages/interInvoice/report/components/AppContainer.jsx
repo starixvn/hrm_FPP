@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Spin, ConfigProvider, DatePicker, Row, Col, Typography, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import dayjs from 'dayjs';
 import axios from 'axios';
+import DateTimeService from '../../../../common/dateTimeService';
 
 const { Title } = Typography;
 const { Summary } = Table;
@@ -10,11 +10,11 @@ const { Summary } = Table;
 const AppContainer = () => {
     const [loading, setLoading] = useState(false);
     const [buData, setBuData] = useState([]);
-    const currentMonth = dayjs();
+    const previousMonth = DateTimeService.getPreviousMonth();
     const [filters, setFilters] = useState({
-        month: currentMonth.format('YYYY-MM'),
+        month: previousMonth.format('YYYY-MM'),
     });
-    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+    const [selectedMonth, setSelectedMonth] = useState(previousMonth);
 
     const renderCostCenterValue = unitName => (_, record) => {
         const unitData = record.units?.find(u => u.name === unitName);

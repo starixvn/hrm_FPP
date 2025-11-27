@@ -61,6 +61,14 @@ public class InterInvoiceController(
         return Json(result);
     }
 
+    [HttpGet]
+    [FppPermission(Policy.Read, FunctionKey.InterInvoice)]
+    public async Task<IActionResult> GetAccessibleUnits()
+    {
+        var units = await commonService.GetAccessibleUnitsByEmpId(EmployeeSession.EmpId);
+        return Json(units);
+    }
+
     [FppPermission(Policy.Host, FunctionKey.MyBUInvoice, FunctionKey.GlobalInvoice)]
     public async Task<IActionResult> GetPreparedData()
     {

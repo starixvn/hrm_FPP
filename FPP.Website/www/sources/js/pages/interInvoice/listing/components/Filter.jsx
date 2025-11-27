@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Row, Col, Select, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { fetchBuList } from '../../helper/service';
-import dayjs from 'dayjs';
+import DateTimeService from '../../../../common/dateTimeService';
 
 const { Option } = Select;
 
@@ -23,7 +23,7 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
         const params = {
             billerUnitId: values.billerUnitId === 'all' ? undefined : values.billerUnitId,
             payerUnitId: values.payerUnitId === 'all' ? undefined : values.payerUnitId,
-            month: values.month ? values.month : dayjs(),
+            month: values.month ? values.month : DateTimeService.getPreviousMonth(),
         };
         onFilter(params);
     };
@@ -32,7 +32,7 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
         const params = {
             billerUnitId: values.billerUnitId === 'all' ? undefined : values.billerUnitId,
             payerUnitId: values.payerUnitId === 'all' ? undefined : values.payerUnitId,
-            month: values.month ? values.month : dayjs(),
+            month: values.month ? values.month : DateTimeService.getPreviousMonth(),
         };
         onExportExcel(params);
     };
@@ -47,7 +47,7 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
             onFinish={handleFilter}
             layout="vertical"
             initialValues={{
-                month: dayjs(),
+                month: DateTimeService.getPreviousMonth(),
             }}
         >
             <Row gutter={16} align="middle">
