@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Spin, ConfigProvider, Typography } from 'antd';
-import dayjs from 'dayjs';
 import axios from 'axios';
 import Filter from './Filter';
+import DateTimeService from '../../../../common/dateTimeService';
 
 const { Title } = Typography;
 const { Summary } = Table;
@@ -14,12 +14,12 @@ const AppContainer = () => {
     const [loading, setLoading] = useState(false);
     const [buData, setBuData] = useState([]);
     const [buList, setBuList] = useState([]);
-    const currentMonth = dayjs();
+    const previousMonth = DateTimeService.getPreviousMonth();
     const [filters, setFilters] = useState({
-        month: currentMonth.format('YYYY-MM'),
+        month: previousMonth.format('YYYY-MM'),
         buId: null,
     });
-    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+    const [selectedMonth, setSelectedMonth] = useState(previousMonth);
     const [selectedBUId, setSelectedBUId] = useState(null);
 
     const calculateGrandTotals = pageData => {
