@@ -172,7 +172,28 @@ const AppContainer = () => {
         },
     ];
 
-    const renderSummaryRow = pageData => {
+    const processInvoiceForUnit = (
+        invoice,
+        unitId,
+        accessibleUnits,
+        unitTotals,
+        unitCurrencies,
+        isBiller
+    ) => {
+        const unit = accessibleUnits.find(u => u.unitId === unitId);
+        if (!unit) {
+            return;
+        }
+
+        const amount = isBiller ? invoice.totalAmount : -invoice.totalAmount;
+        unitTotals[unit.unitId] = (unitTotals[unit.unitId] || 0) + amount;
+
+        if (!unitCurrencies[unit.unitId] && invoice.currency) {
+            unitCurrencies[unit.unitId] = invoice.currency;
+        }
+    };
+
+    const renderSummaryRow = _pageData => {
         if (!accessibleUnits || accessibleUnits.length === 0) {
             return null;
         }
@@ -189,24 +210,26 @@ const AppContainer = () => {
         });
 
         confirmedInvoices.forEach(invoice => {
-            if (!invoice || !invoice.totalAmount) return;
+            if (!invoice || !invoice.totalAmount) {
+                return;
+            }
 
-            const billerUnit = accessibleUnits.find(unit => unit.unitId === invoice.billerUnitId);
-            if (billerUnit) {
-                unitTotals[billerUnit.unitId] =
-                    (unitTotals[billerUnit.unitId] || 0) + invoice.totalAmount;
-                if (!unitCurrencies[billerUnit.unitId] && invoice.currency) {
-                    unitCurrencies[billerUnit.unitId] = invoice.currency;
-                }
-            }
-            const payerUnit = accessibleUnits.find(unit => unit.unitId === invoice.payerUnitId);
-            if (payerUnit) {
-                unitTotals[payerUnit.unitId] =
-                    (unitTotals[payerUnit.unitId] || 0) - invoice.totalAmount;
-                if (!unitCurrencies[payerUnit.unitId] && invoice.currency) {
-                    unitCurrencies[payerUnit.unitId] = invoice.currency;
-                }
-            }
+            processInvoiceForUnit(
+                invoice,
+                invoice.billerUnitId,
+                accessibleUnits,
+                unitTotals,
+                unitCurrencies,
+                true
+            );
+            processInvoiceForUnit(
+                invoice,
+                invoice.payerUnitId,
+                accessibleUnits,
+                unitTotals,
+                unitCurrencies,
+                false
+            );
         });
 
         const allTotal = Object.values(unitTotals).reduce((sum, total) => sum + total, 0);
