@@ -11,6 +11,8 @@ namespace FPP.Core.Enums
         [Description("DirectExpense")]
         DirectExpense = 3,
         [Description("OtherExpense")]
-        OtherExpense = 4
+        OtherExpense = 4,
+        [Description("OtherIncome")]
+        OtherIncome = 5,
     }
 }
