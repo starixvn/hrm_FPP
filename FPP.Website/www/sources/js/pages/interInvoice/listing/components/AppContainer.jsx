@@ -239,6 +239,9 @@ const AppContainer = () => {
                 ? confirmedInvoices[0].currency
                 : null;
 
+        const showAllRow = accessibleUnits.length > 1;
+        const rowSpan = showAllRow ? accessibleUnits.length + 1 : accessibleUnits.length;
+
         return (
             <Table.Summary fixed>
                 {accessibleUnits.map((unit, index) => {
@@ -251,7 +254,7 @@ const AppContainer = () => {
                                     index={0}
                                     colSpan={2}
                                     align="center"
-                                    rowSpan={accessibleUnits.length + 1}
+                                    rowSpan={rowSpan}
                                 >
                                     Total Confirmed
                                 </Table.Summary.Cell>
@@ -271,20 +274,22 @@ const AppContainer = () => {
                         </Table.Summary.Row>
                     );
                 })}
-                <Table.Summary.Row key="all">
-                    <Table.Summary.Cell index={2} colSpan={1} align="left">
-                        All
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell index={3} align="right">
-                        <span className={allTotal < 0 ? 'negative-amount' : ''}>
-                            {formatAmount(allTotal)}
-                        </span>
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell index={4} align="left">
-                        {allCurrency}
-                    </Table.Summary.Cell>
-                    <Table.Summary.Cell index={5} colSpan={7} />
-                </Table.Summary.Row>
+                {showAllRow && (
+                    <Table.Summary.Row key="all">
+                        <Table.Summary.Cell index={2} colSpan={1} align="left">
+                            All
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={3} align="right">
+                            <span className={allTotal < 0 ? 'negative-amount' : ''}>
+                                {formatAmount(allTotal)}
+                            </span>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={4} align="left">
+                            {allCurrency}
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={5} colSpan={7} />
+                    </Table.Summary.Row>
+                )}
             </Table.Summary>
         );
     };
