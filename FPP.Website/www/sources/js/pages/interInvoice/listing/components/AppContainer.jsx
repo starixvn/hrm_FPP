@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Card, Typography, Button, Tooltip } from 'antd';
-import { fetchInvoices } from '../../helper/service';
+import { fetchAccessibleUnits, fetchInvoices } from '../../helper/service';
 import Filter from './Filter';
-import { mapInterInvoiceStatus, mapPeriodType } from '../../helper/enum';
+import { mapInterInvoiceStatus, mapPeriodType, InterInvoiceStatus } from '../../helper/enum';
 import { EyeOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import CommonFunctions from '../../../../common/common-functions';
 import { formatPeriod, formatAmount } from '../../helper/format';
@@ -13,6 +13,7 @@ const { Title } = Typography;
 const AppContainer = () => {
     const [invoices, setInvoices] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [accessibleUnits, setAccessibleUnits] = useState([]);
     const isHost = document.getElementById('app-container').dataset.isHost === 'True';
 
     const loadInvoices = async (params = {}) => {
@@ -25,8 +26,14 @@ const AppContainer = () => {
         setLoading(false);
     };
 
+    const loadAccessibleUnits = async () => {
+        const data = await fetchAccessibleUnits();
+        setAccessibleUnits(data);
+    };
+
     useEffect(() => {
         loadInvoices();
+        loadAccessibleUnits();
     }, []);
 
     const handleView = id => {
@@ -165,6 +172,128 @@ const AppContainer = () => {
         },
     ];
 
+    const processInvoiceForUnit = (
+        invoice,
+        unitId,
+        accessibleUnits,
+        unitTotals,
+        unitCurrencies,
+        isBiller
+    ) => {
+        const unit = accessibleUnits.find(u => u.unitId === unitId);
+        if (!unit) {
+            return;
+        }
+
+        const amount = isBiller ? invoice.totalAmount : -invoice.totalAmount;
+        unitTotals[unit.unitId] = (unitTotals[unit.unitId] || 0) + amount;
+
+        if (!unitCurrencies[unit.unitId] && invoice.currency) {
+            unitCurrencies[unit.unitId] = invoice.currency;
+        }
+    };
+
+    const renderSummaryRow = _pageData => {
+        if (!accessibleUnits || accessibleUnits.length === 0) {
+            return null;
+        }
+
+        const confirmedInvoices = invoices.filter(
+            record => record.status === InterInvoiceStatus.Confirmed
+        );
+
+        const unitTotals = {};
+        const unitCurrencies = {};
+        accessibleUnits.forEach(unit => {
+            unitTotals[unit.unitId] = 0;
+            unitCurrencies[unit.unitId] = null;
+        });
+
+        confirmedInvoices.forEach(invoice => {
+            if (!invoice || !invoice.totalAmount) {
+                return;
+            }
+
+            processInvoiceForUnit(
+                invoice,
+                invoice.billerUnitId,
+                accessibleUnits,
+                unitTotals,
+                unitCurrencies,
+                true
+            );
+            processInvoiceForUnit(
+                invoice,
+                invoice.payerUnitId,
+                accessibleUnits,
+                unitTotals,
+                unitCurrencies,
+                false
+            );
+        });
+
+        const allTotal = Object.values(unitTotals).reduce((sum, total) => sum + total, 0);
+        // Get currency for "All" - use the most common currency or first found
+        const allCurrency =
+            confirmedInvoices.length > 0 && confirmedInvoices[0].currency
+                ? confirmedInvoices[0].currency
+                : null;
+
+        const showAllRow = accessibleUnits.length > 1;
+        const rowSpan = showAllRow ? accessibleUnits.length + 1 : accessibleUnits.length;
+
+        return (
+            <Table.Summary fixed>
+                {accessibleUnits.map((unit, index) => {
+                    const total = unitTotals[unit.unitId] || 0;
+                    const displayCode = `${unit.groupUnitId} - ${unit.code}`;
+                    return (
+                        <Table.Summary.Row key={unit.unitId}>
+                            {index === 0 ? (
+                                <Table.Summary.Cell
+                                    index={0}
+                                    colSpan={2}
+                                    align="center"
+                                    rowSpan={rowSpan}
+                                >
+                                    Total Confirmed
+                                </Table.Summary.Cell>
+                            ) : null}
+                            <Table.Summary.Cell index={2} colSpan={1} align="left">
+                                {displayCode}
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell index={3} align="right">
+                                <span className={total < 0 ? 'negative-amount' : ''}>
+                                    {formatAmount(total)}
+                                </span>
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell index={4} align="left">
+                                {unitCurrencies[unit.unitId]}
+                            </Table.Summary.Cell>
+                            <Table.Summary.Cell index={5} colSpan={7} />
+                        </Table.Summary.Row>
+                    );
+                })}
+                {showAllRow && (
+                    <Table.Summary.Row key="all">
+                        <Table.Summary.Cell index={2} colSpan={1} align="left">
+                            All
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={3} align="right">
+                            <span className={allTotal < 0 ? 'negative-amount' : ''}>
+                                {formatAmount(allTotal)}
+                            </span>
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={4} align="left">
+                            {allCurrency}
+                        </Table.Summary.Cell>
+                        <Table.Summary.Cell index={5} colSpan={7} />
+                    </Table.Summary.Row>
+                )}
+            </Table.Summary>
+        );
+    };
+
     return (
         <div className="listing-invoice-container">
             <Card title={<Title level={4}>Inter Invoice</Title>} className="report-card">
@@ -175,6 +304,7 @@ const AppContainer = () => {
                     loading={loading}
                     rowKey="interInvoiceId"
                     pagination={false}
+                    summary={renderSummaryRow}
                     size="small"
                     scroll={{ x: 'max-content', y: 'calc(100vh - 375px)' }}
                     bordered
