@@ -96,9 +96,21 @@ const AppContainer = () => {
             loadInvoices(urlParams);
         };
 
+        // This ensures data is reloaded when page is restored from browser cache
+        const handlePageShow = event => {
+            if (event.persisted) {
+                const urlParams = getParamsFromURL();
+                setFilterParams(urlParams);
+                loadInvoices(urlParams);
+            }
+        };
+
         window.addEventListener('popstate', handlePopState);
+        window.addEventListener('pageshow', handlePageShow);
+
         return () => {
             window.removeEventListener('popstate', handlePopState);
+            window.removeEventListener('pageshow', handlePageShow);
         };
     }, []);
 
