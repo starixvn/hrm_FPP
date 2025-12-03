@@ -7,6 +7,7 @@ import { EyeOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import CommonFunctions from '../../../../common/common-functions';
 import { formatPeriod, formatAmount } from '../../helper/format';
 import DateTimeService from '../../../../common/dateTimeService';
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
 
@@ -15,18 +16,90 @@ const AppContainer = () => {
     const [loading, setLoading] = useState(false);
     const isHost = document.getElementById('app-container').dataset.isHost === 'True';
 
+    const getParamsFromURL = () => {
+        const params = new URLSearchParams(window.location.search);
+        const billerUnitId = params.get('billerUnitId');
+        const payerUnitId = params.get('payerUnitId');
+        const month = params.get('month');
+
+        return {
+            billerUnitId: billerUnitId ? Number(billerUnitId) : undefined,
+            payerUnitId: payerUnitId ? Number(payerUnitId) : undefined,
+            month: month ? dayjs(month, 'YYYY-MM') : DateTimeService.getPreviousMonth(),
+        };
+    };
+
+    const [filterParams, setFilterParams] = useState(() => getParamsFromURL());
+
+    const updateURL = params => {
+        const urlParams = new URLSearchParams();
+
+        if (params.billerUnitId) {
+            urlParams.set('billerUnitId', params.billerUnitId);
+        }
+        if (params.payerUnitId) {
+            urlParams.set('payerUnitId', params.payerUnitId);
+        }
+        if (params.month) {
+            const monthStr = params.month.format ? params.month.format('YYYY-MM') : params.month;
+            urlParams.set('month', monthStr);
+        }
+
+        const newURL = `${window.location.pathname}${
+            urlParams.toString() ? '?' + urlParams.toString() : ''
+        }`;
+        window.history.pushState({}, '', newURL);
+    };
+
     const loadInvoices = async (params = {}) => {
         setLoading(true);
-        params.month = params.month
+        const apiParams = {};
+        if (params.billerUnitId !== undefined) {
+            apiParams.billerUnitId = params.billerUnitId;
+        }
+        if (params.payerUnitId !== undefined) {
+            apiParams.payerUnitId = params.payerUnitId;
+        }
+        apiParams.month = params.month
             ? params.month.format('YYYY-MM')
-            : DateTimeService.getPreviousMonth().format('YYYY-MM');
-        const data = await fetchInvoices(params);
+            : DateTimeService.getPreviousMonth();
+        const data = await fetchInvoices(apiParams);
         setInvoices(data);
         setLoading(false);
     };
 
+    const handleFilter = params => {
+        const filterParams = {
+            billerUnitId: params.billerUnitId,
+            payerUnitId: params.payerUnitId,
+            month: params.month || DateTimeService.getPreviousMonth(),
+        };
+
+        updateURL(filterParams);
+        loadInvoices(filterParams);
+
+        setFilterParams({
+            billerUnitId: params.billerUnitId,
+            payerUnitId: params.payerUnitId,
+            month: params.month || DateTimeService.getPreviousMonth(),
+        });
+    };
+
     useEffect(() => {
-        loadInvoices();
+        const initialParams = getParamsFromURL();
+        setFilterParams(initialParams);
+        loadInvoices(initialParams);
+
+        const handlePopState = () => {
+            const urlParams = getParamsFromURL();
+            setFilterParams(urlParams);
+            loadInvoices(urlParams);
+        };
+
+        window.addEventListener('popstate', handlePopState);
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
     }, []);
 
     const handleView = id => {
@@ -168,7 +241,12 @@ const AppContainer = () => {
     return (
         <div className="listing-invoice-container">
             <Card title={<Title level={4}>Inter Invoice</Title>} className="report-card">
-                <Filter onFilter={loadInvoices} onExportExcel={handleExportExcel} isHost={isHost} />
+                <Filter
+                    onFilter={handleFilter}
+                    onExportExcel={handleExportExcel}
+                    isHost={isHost}
+                    initialValues={filterParams}
+                />
                 <Table
                     columns={columns}
                     dataSource={invoices}

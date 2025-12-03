@@ -82,7 +82,7 @@ const AppContainer = () => {
     };
 
     const handleBack = () => {
-        window.location.href = '/interInvoice/index';
+        window.history.back();
     };
 
     const renderPeriodTimeRange = () => {

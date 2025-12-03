@@ -6,7 +6,7 @@ import DateTimeService from '../../../../common/dateTimeService';
 
 const { Option } = Select;
 
-const Filter = ({ onFilter, onExportExcel, isHost }) => {
+const Filter = ({ onFilter, onExportExcel, isHost, initialValues }) => {
     const [buList, setBuList] = useState([]);
     const [form] = Form.useForm();
 
@@ -18,6 +18,12 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
     useEffect(() => {
         loadBuList();
     }, []);
+
+    useEffect(() => {
+        if (initialValues) {
+            form.setFieldsValue(initialValues);
+        }
+    }, [initialValues, form]);
 
     const handleFilter = values => {
         const params = {
@@ -42,14 +48,7 @@ const Filter = ({ onFilter, onExportExcel, isHost }) => {
     };
 
     return (
-        <Form
-            form={form}
-            onFinish={handleFilter}
-            layout="vertical"
-            initialValues={{
-                month: DateTimeService.getPreviousMonth(),
-            }}
-        >
+        <Form form={form} onFinish={handleFilter} layout="vertical" initialValues={initialValues}>
             <Row gutter={16} align="middle">
                 <Col span={4}>
                     <Form.Item name="billerUnitId" label="Biller" initialValue="all">
